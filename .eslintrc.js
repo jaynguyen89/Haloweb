@@ -8,7 +8,7 @@ module.exports = {
     env: { node: true },
     rules: {
         semi: 1,
-        "block-scoped-var": 1,
+        "block-scoped-var": 2,
         "comma-dangle": 1,
         "default-case": 1,
         "max-params": 1,
@@ -24,6 +24,7 @@ module.exports = {
         "no-var": 1,
         "prefer-const": 1,
         "require-await": 1,
+        "jsx-quotes": 1,
         eqeqeq: 2,
         indent: 1,
         quotes: 1

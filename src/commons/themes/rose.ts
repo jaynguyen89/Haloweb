@@ -3,7 +3,7 @@ import _cloneDeep from 'lodash/cloneDeep';
 import { DEFAULT_THEME_SHADOWS } from '../constants';
 import colors from '../colors';
 
-let shadows = _cloneDeep(DEFAULT_THEME_SHADOWS);
+const shadows = _cloneDeep(DEFAULT_THEME_SHADOWS);
 shadows[0] = `0 3px 6px rgba(0,0,0,0.16)`;
 shadows[1] = `0 3px 6px rgba(0,0,0,0.23)`;
 

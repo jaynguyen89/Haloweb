@@ -7,7 +7,7 @@ import store from './foundation/store';
 import themes from './commons/themes';
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+  document.getElementById('root') as HTMLElement,
 );
 
 root.render(
@@ -17,5 +17,5 @@ root.render(
             <App />
         </ThemeProvider>
     </Provider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

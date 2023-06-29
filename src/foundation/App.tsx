@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes } from 'react-router-dom';
 
-function App() {
+const App = () => {
     return (
         <BrowserRouter>
             <Routes>
@@ -8,6 +8,6 @@ function App() {
             </Routes>
         </BrowserRouter>
     );
-}
+};
 
 export default App;

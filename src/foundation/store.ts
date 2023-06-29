@@ -13,7 +13,7 @@ const loadLocalStorageData = () => (next: any) => (action: any) => {
 
     if (action.type === authenticationConstants.AUTHENTICATION_VOID) localStorage.clear();
     next(action);
-}
+};
 
 const composeEnhancer = (
     window && (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__

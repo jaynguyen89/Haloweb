@@ -149,7 +149,17 @@ class RequestBuilder<T> {
         const headers = this.buildHeaders(authenticatedUser);
         const body = this.buildBody();
         const interceptorChains = this.buildInterceptorChains();
-        return new Request<T>(endpointUrl, this.method, headers, body, interceptorChains[0], interceptorChains[1], this.options, this.downloadResponse);
+
+        return new Request<T>(
+            endpointUrl,
+            this.method,
+            headers,
+            body,
+            interceptorChains[0],
+            interceptorChains[1],
+            this.options,
+            this.downloadResponse,
+        );
     }
 
     private buildEndpointUrl(): string {

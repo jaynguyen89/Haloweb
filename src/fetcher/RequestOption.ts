@@ -12,6 +12,9 @@ class RequestOption {
         retryThreshold?: number,
         cookiesToIncludeByKeys?: Array<string>,
     ) {
+        if (shouldRetryOnFailure && (!retryInterval || !retryThreshold))
+            throw new Error('Please specify \'retryInterval\' and \'retryThreshold\' when enabling \'shouldRetryOnFailure\'.');
+
         this.shouldRetryOnFailure = shouldRetryOnFailure;
         this.shouldIncludeCookies = shouldIncludeCookies;
         this.retryInterval = retryInterval;

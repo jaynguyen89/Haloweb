@@ -1,4 +1,6 @@
+import { AxiosError, AxiosResponse } from 'axios';
 import { InterceptorTarget } from '../commons/enums';
+import Request from './Request';
 
 export class Interceptor {
     target: InterceptorTarget;
@@ -22,8 +24,14 @@ export class InterceptorChain {
         this.next = next;
     }
 
-    public run(): void {
-        this.callback();
-        if (this.next) this.next.callback();
+    public runRequestInterceptors(data: Request<unknown>): void {
+        this.callback(data);
+        if (this.next) this.next.callback(data);
+    }
+
+    /* eslint-disable  @typescript-eslint/no-explicit-any */
+    public runResponseInterceptors(data: AxiosResponse<any, any> | AxiosError<unknown, any> | unknown): void {
+        this.callback(data);
+        if (this.next) this.next.callback(data);
     }
 }

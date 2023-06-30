@@ -3,6 +3,7 @@ import { RequestMethods } from '../commons/enums';
 import { InterceptorChain } from './Interceptor';
 import RequestOption from './RequestOption';
 import configs from '../commons/configs';
+import { delay } from '../utilities/timeUtilities';
 
 class Request<T> {
     endpointUrl: string;
@@ -35,10 +36,10 @@ class Request<T> {
         this.downloadResponse = downloadResponse;
     }
 
-    public send(): Promise<T> {
-        this.requestInterceptorChain?.run();
+    public async send(callback?: Function, retryIteration: number = 1): Promise<T | undefined> {
+        this.requestInterceptorChain?.runRequestInterceptors(this);
 
-        axios.defaults.withCredentials = true; // include cookies
+        if (this.options?.shouldIncludeCookies) axios.defaults.withCredentials = true; // include cookies
 
         const requestOptions = {
             timeout: +configs.requestTimeout,
@@ -49,12 +50,28 @@ class Request<T> {
             responseType: (this.downloadResponse ? 'arraybuffer' : 'json') as ResponseType,
         };
 
-        return axios(requestOptions).then((result: AxiosResponse<any, any> | AxiosError<unknown, any>) => {
-            if (result.status !== 200)
-                this.responseInterceptorChain?.run();
-            else
-                return (result as any).data;
-        });
+        /* eslint-disable  @typescript-eslint/no-explicit-any */
+        const result: AxiosResponse<any, any> | AxiosError<unknown, any> = await axios(requestOptions);
+        this.responseInterceptorChain?.runResponseInterceptors(result);
+
+        if (result.status === 200) {
+            const data = (result as AxiosResponse<any, any>).data;
+            callback && callback(data);
+            return data;
+        }
+
+        if (
+            this.options &&
+            this.options.shouldRetryOnFailure &&
+            (this.options.retryThreshold || 2) >= retryIteration
+        ) {
+            if (this.options.retryInterval) await delay(this.options.retryInterval);
+
+            retryIteration += 1;
+            await this.send(callback, retryIteration);
+        }
+
+        return undefined;
     }
 }
 

@@ -21,6 +21,10 @@ module.exports = {
                 extendDefaults: true,
             },
         ],
+        '@typescript-eslint/no-explicit-any': ['error', {
+            fixToUnknown: false,
+            ignoreRestArgs: true,
+        }],
         '@typescript-eslint/no-inferrable-types': ['error', {
             ignoreParameters: true,
             ignoreProperties: true,

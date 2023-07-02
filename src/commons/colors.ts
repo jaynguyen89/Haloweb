@@ -79,6 +79,6 @@ const colors = {
     accentPink: '#ff4081',
     shallowPink: '#c51162',
     deepPink: '#4d0028',
-}
+};
 
 export default colors;

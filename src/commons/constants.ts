@@ -25,3 +25,11 @@ export const DEFAULT_THEME_SHADOWS = [
     'none',
     'none',
 ];
+
+export const themeBreakpoints = {
+    xs: 480,
+    sm: 767,
+    md: 996,
+    lg: 1200,
+    xl: 1400,
+};

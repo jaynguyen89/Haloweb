@@ -1,5 +1,5 @@
 import React from 'react';
-import { useIsStageIncluded } from '../../../hooks/useStage';
+import { useIsStageIncluded } from 'src/hooks/useStage';
 import { Box, LinearProgress, LinearProgressProps, Typography } from '@mui/material';
 
 type TProgress = LinearProgressProps & {
@@ -12,7 +12,7 @@ const Progress = ({
     sx,
 }: TProgress) => {
     const visible = useIsStageIncluded(stage);
-    if (!visible) return undefined;
+    if (!visible) return null;
 
     return (
         <LinearProgress
@@ -35,7 +35,7 @@ export const LabelProgress = ({
     sx,
 }: TLabelProgress) => {
     const visible = useIsStageIncluded(stage);
-    if (!visible) return undefined;
+    if (!visible) return null;
 
     return (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>

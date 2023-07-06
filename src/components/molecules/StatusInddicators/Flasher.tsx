@@ -1,8 +1,8 @@
 import React from 'react';
 import { Alert, AlertProps, Collapse, CollapseProps, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { useIsStageIncluded } from '../../../hooks/useStage';
-import { removeStage } from '../../../redux/actions/stageActions';
+import { useIsStageIncluded } from 'src/hooks/useStage';
+import { removeStage } from 'src/redux/actions/stageActions';
 
 type TFlasher = CollapseProps & AlertProps & {
     message: string,

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Skeleton, SkeletonProps } from '@mui/material';
 
-type TSkeleton = Omit<SkeletonProps, 'animation', 'variant'>;
+type TSkeleton = Omit<SkeletonProps, 'animation' | 'variant'>;
 
 export const TextSkeleton = ({
     sx = { fontSize: '0.7rem' },

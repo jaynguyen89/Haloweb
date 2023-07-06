@@ -1,7 +1,7 @@
 import { createTheme, Shadows } from '@mui/material';
 import _cloneDeep from 'lodash/cloneDeep';
-import { DEFAULT_THEME_SHADOWS, themeBreakpoints } from '../constants';
-import colors from '../colors';
+import { DEFAULT_THEME_SHADOWS, themeBreakpoints } from 'src/commons/constants';
+import colors from 'src/commons/colors';
 
 const shadows = _cloneDeep(DEFAULT_THEME_SHADOWS);
 shadows[0] = `0 3px 6px rgba(0,0,0,0.16)`;

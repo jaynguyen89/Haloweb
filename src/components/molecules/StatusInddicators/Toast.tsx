@@ -1,9 +1,9 @@
 import React from 'react';
 import { Alert, AlertProps, IconButton, Snackbar, SnackbarOrigin, SnackbarProps } from '@mui/material';
-import { useIsStageIncluded } from '../../../hooks/useStage';
-import { removeStage } from '../../../redux/actions/stageActions';
+import { useIsStageIncluded } from 'src/hooks/useStage';
+import { removeStage } from 'src/redux/actions/stageActions';
 import CloseIcon from '@mui/icons-material/Close';
-import configs from '../../../commons/configs';
+import configs from 'src/commons/configs';
 
 type TToast = SnackbarProps & AlertProps & {
     stage: string,

@@ -1,9 +1,9 @@
-import { Environments, InterceptorTarget, RequestContentTypes, RequestMethods } from '../commons/enums';
-import { Interceptor, InterceptorChain } from './Interceptor';
-import RequestOption from './RequestOption';
-import configs from '../commons/configs';
-import Request from './Request';
-import IAuthenticatedUser from '../models/AuthenticatedUser';
+import { Environments, InterceptorTarget, RequestContentTypes, RequestMethods } from 'src/commons/enums';
+import { Interceptor, InterceptorChain } from 'src/fetcher/Interceptor';
+import RequestOption from 'src/fetcher/RequestOption';
+import configs from 'src/commons/configs';
+import Request from 'src/fetcher/Request';
+import IAuthenticatedUser from 'src/models/AuthenticatedUser';
 import assert from 'assert';
 
 class RequestBuilder<T> {

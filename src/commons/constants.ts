@@ -1,3 +1,5 @@
+import vars from 'src/commons/variables/cssVariables.scss';
+
 export const DEFAULT_THEME_SHADOWS = [
     'none',
     'none',
@@ -27,9 +29,9 @@ export const DEFAULT_THEME_SHADOWS = [
 ];
 
 export const themeBreakpoints = {
-    xs: 480,
-    sm: 767,
-    md: 996,
-    lg: 1200,
-    xl: 1400,
+    xs: +vars.none.slice(0, 1), // 0px
+    sm: +vars.mediumWidth.slice(0, -2), // 667px
+    md: +vars.desktopWidth.slice(0, -2), // 992px
+    lg: +vars.wideWidth.slice(0, -2), // 1280px
+    xl: +vars.ultrawideWidth.slice(0, -2), // 1536px
 };

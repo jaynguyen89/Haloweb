@@ -79,7 +79,6 @@ module.exports = {
             allowTemplateLiterals: true,
         }],
         'require-await': 'error',
-        'spaced-comment': ['error', 'always', { exceptions: ['-', '+'] }],
         'jsx-quotes': ['error', 'prefer-single'],
         eqeqeq: ['error', 'always'],
         indent: 'off',

@@ -14,16 +14,22 @@
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,100;0,300;0,600;0,900;1,100;1,300;1,600;1,900&display=swap" rel="stylesheet">
     <title>React App</title>
   </head>
-  <body>
-    <div style="width: 100%; text-align: center; margin-top: 150px;">
-      <h1>
-        <p style="color: #EF81A8; font-size: 3em;">&#9888;</p>
-        <span style="color: #EA8F61;">Halo</span> requires Javascript in order to run.
-        <br />Please enable Javascript in your browser. Thanks!
-      </h1>
-    </div>
+  <body style="margin: 0; padding: 0; width: 100%; height: 100%">
+    <noscript>
+      <div style="width: 100%; text-align: center; margin-top: 150px;">
+        <h1>
+          <p style="color: #EF81A8; font-size: 3em;">&#9888;</p>
+          <span style="color: #EA8F61;">Halo</span> requires Javascript in order to run.
+          <br />Please enable Javascript in your browser. Thanks!
+        </h1>
+      </div>
+    </noscript>
+
     <div id="root"></div>
   </body>
 </html>

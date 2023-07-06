@@ -1,7 +1,7 @@
 import { createTheme, Shadows } from '@mui/material';
 import _cloneDeep from 'lodash/cloneDeep';
-import { DEFAULT_THEME_SHADOWS, themeBreakpoints } from '../constants';
-import colors from '../colors';
+import { DEFAULT_THEME_SHADOWS, themeBreakpoints } from 'src/commons/constants';
+import colors from 'src/commons/colors';
 
 const shadows = _cloneDeep(DEFAULT_THEME_SHADOWS);
 shadows[0] = `0 3px 6px rgba(0,0,0,0.16)`;
@@ -12,44 +12,48 @@ export const ThemeDay = createTheme({
     palette: {
         text: {
             primary: colors.white,
-            secondary: colors.lightGrey,
+            secondary: colors.grey,
             disabled: colors.darkGrey,
         },
         primary: {
-            main: colors.lightBlack,
-            light: colors.darkerGrey,
-            dark: colors.black,
+            main: colors.lightGrey,
+            light: colors.white,
+            dark: colors.darkGrey,
             contrastText: colors.lightBlack,
         },
         secondary: {
-            main: colors.darkerTeal,
-            light: colors.lighterTeal,
+            main: colors.darkTeal,
+            light: colors.lightTeal,
             dark: colors.deepTeal,
-            contrastText: colors.teal,
+            contrastText: colors.lighterTeal,
         },
         error: {
-            main: colors.darkerRed,
-            light: colors.lighterRed,
+            main: colors.darkRed,
+            light: colors.lightRed,
             dark: colors.deepRed,
-            contrastText: colors.red,
+            contrastText: colors.lighterRed,
         },
         warning: {
-            main: colors.darkerYellow,
-            light: colors.lighterYellow,
+            main: colors.darkYellow,
+            light: colors.lightYellow,
             dark: colors.deepYellow,
-            contrastText: colors.yellow,
+            contrastText: colors.lighterYellow,
         },
         info: {
-            main: colors.darkerBlue,
-            light: colors.lighterBlue,
+            main: colors.darkBlue,
+            light: colors.lightBlue,
             dark: colors.deepBlue,
-            contrastText: colors.blue,
+            contrastText: colors.lighterBlue,
         },
         success: {
-            main: colors.darkerGreen,
-            light: colors.lighterGreen,
+            main: colors.darkGreen,
+            light: colors.lightGreen,
             dark: colors.deepGreen,
-            contrastText: colors.green,
+            contrastText: colors.lighterGreen,
+        },
+        common: {
+            white: colors.lighterGrey,
+            black: colors.black,
         },
     },
     shadows: shadows as Shadows,

@@ -1,5 +1,5 @@
 import produce from 'immer';
-import * as stageConstants from '../constants/stageConstants';
+import * as stageConstants from 'src/redux/constants/stageConstants';
 import { AnyAction } from 'redux';
 import _remove from 'lodash/remove';
 

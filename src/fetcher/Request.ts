@@ -1,9 +1,9 @@
 import axios, { AxiosError, AxiosResponse, ResponseType } from 'axios';
-import { RequestMethods } from '../commons/enums';
-import { InterceptorChain } from './Interceptor';
-import RequestOption from './RequestOption';
-import configs from '../commons/configs';
-import { delay } from '../utilities/timeUtilities';
+import { RequestMethods } from 'src/commons/enums';
+import { InterceptorChain } from 'src/fetcher/Interceptor';
+import RequestOption from 'src/fetcher/RequestOption';
+import configs from 'src/commons/configs';
+import { delay } from 'src/utilities/timeUtilities';
 
 class Request<T> {
     endpointUrl: string;

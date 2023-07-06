@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
-import themeStore from './reducers/themeReducer';
-import stageStore from './reducers/stageReducer';
+import themeStore from 'src/redux/reducers/themeReducer';
+import stageStore from 'src/redux/reducers/stageReducer';
 
 const reducers = combineReducers({
     themeStore,

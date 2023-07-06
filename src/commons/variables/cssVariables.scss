@@ -1,0 +1,149 @@
+@use 'src/commons/variables/variables' as vars;
+
+:export {
+  // typography
+  xh1: vars.$xh1; // 80px
+  mh1: vars.$mh1; // 78px
+  h1: vars.$h1; // 76px
+  sh1: vars.$sh1; // 74px
+  xh2: vars.$xh2; // 72px
+  mh2: vars.$mh2; // 70px
+  h2: vars.$h2; // 68px
+  sh2: vars.$sh2; // 66px
+  xh3: vars.$xh3; // 64px
+  mh3: vars.$mh3; // 62px
+  h3: vars.$h3; // 60px
+  sh3: vars.$sh3; // 58px
+  xh4: vars.$xh4; // 56px
+  mh4: vars.$mh4; // 54px
+  h4: vars.$h4; // 52px
+  sh4: vars.$sh4; // 50px
+  xh5: vars.$xh5; // 48px
+  mh5: vars.$mh5; // 46px
+  h5: vars.$h5; // 44px
+  sh5: vars.$sh5; // 42px
+  xh6: vars.$xh6; // 40px
+  mh6: vars.$mh6; // 38px
+  h6: vars.$h6; // 36px
+  sh6: vars.$sh6; // 34px
+  xh7: vars.$xh6; // 32px
+  mh7: vars.$mh7; // 30px
+  h7: vars.$h7; // 28px
+  sh7: vars.$sh7; // 26px
+  xh8: vars.$xh8; // 24px
+  mh8: vars.$mh8; // 22px
+  h8: vars.$h8; // 20px
+  sh8: vars.$sh8; // 18px
+  xh9: vars.$xh9; // 16px
+  mh9: vars.$mh9; // 14px
+  h9: vars.$h9; // 12px
+  sh9: vars.$sh9; // 10px
+
+  // screen sizes
+  ultrawideWidth: vars.$ultrawide-width;
+  wideWidth: vars.$wide-width;
+  largeWidth: vars.$large-width;
+  desktopWidth: vars.$desktop-width;
+  mediumWidth: vars.$medium-width;
+  smallWidth: vars.$small-width;
+  tinyWidth: vars.$tiny-width;
+
+  // padding, margin, border, border radius
+  xxlarge: vars.$xxlarge; // 40px
+  xlarge: vars.$xlarge; // 37px
+  large: vars.$large; // 34px
+  xxmedium: vars.$xxmedium; // 31px
+  xmedium: vars.$xmedium; // 28px
+  medium: vars.$medium; // 25px
+  small: vars.$small; // 22px
+  xsmall: vars.$xsmall; // 19px
+  xxsmall: vars.$xxsmall; // 16px
+  tiny: vars.$tiny; // 13px
+  xtiny: vars.$xtiny; // 10px
+  xxtiny: vars.$xxtiny; // 7px
+  micro: vars.$micro; // 4px
+  xmicro: vars.$xmicro; // 1px
+  none: vars.$none; // 0px
+
+  // colors as in colors.ts
+  white: vars.$white;
+  lighterGrey: vars.$lighterGrey;
+  lightGrey: vars.$lightGrey;
+  grey: vars.$grey;
+  darkGrey: vars.$darkGrey;
+  darkerGrey: vars.$darkerGrey;
+  lightBlack: vars.$lightBlack;
+  black: vars.$black;
+  lighterBlue: vars.$lighterBlue;
+  lightBlue: vars.$lightBlue;
+  blue: vars.$blue;
+  darkBlue: vars.$darkBlue;
+  darkerBlue: vars.$darkerBlue;
+  accentBlue: vars.$accentBlue;
+  shallowBlue: vars.$shallowBlue;
+  deepBlue: vars.$deepBlue;
+  lighterViolet: vars.$lighterViolet;
+  lightViolet: vars.$lightViolet;
+  violet: vars.$violet;
+  darkViolet: vars.$darkViolet;
+  darkerViolet: vars.$darkerViolet;
+  accentViolet: vars.$accentViolet;
+  shallowViolet: vars.$shallowViolet;
+  deepViolet: vars.$deepViolet;
+  lighterRed: vars.$lighterViolet;
+  lightRed: vars.$lightRed;
+  red: vars.$red;
+  darkRed: vars.$darkRed;
+  darkerRed: vars.$darkerRed;
+  accentRed: vars.$accentRed;
+  shallowRed: vars.$shallowRed;
+  deepRed: vars.$deepRed;
+  lighterBrown: vars.$lighterBrown;
+  lightBrown: vars.$lightBrown;
+  brown: vars.$brown;
+  darkBrown: vars.$darkBrown;
+  darkerBrown: vars.$darkerBrown;
+  accentBrown: vars.$accentBrown;
+  shallowBrown: vars.$shallowBrown;
+  deepBrown: vars.$deepBrown;
+  lighterTeal: vars.$lighterTeal;
+  lightTeal: vars.$lightTeal;
+  teal: vars.$teal;
+  darkTeal: vars.$darkTeal;
+  darkerTeal: vars.$darkerTeal;
+  accentTeal: vars.$accentTeal;
+  shallowTeal: vars.$shallowTeal;
+  deepTeal: vars.$deepTeal;
+  lighterGreen: vars.$lighterGreen;
+  lightGreen: vars.$lightGreen;
+  green: vars.$green;
+  darkGreen: vars.$darkGreen;
+  darkerGreen: vars.$darkerGreen;
+  accentGreen: vars.$accentGreen;
+  shallowGreen: vars.$shallowGreen;
+  deepGreen: vars.$deepGreen;
+  lighterYellow: vars.$lighterYellow;
+  lightYellow: vars.$lightYellow;
+  yellow: vars.$yellow;
+  darkYellow: vars.$darkYellow;
+  darkerYellow: vars.$darkerYellow;
+  accentYellow: vars.$accentYellow;
+  shallowYellow: vars.$shallowYellow;
+  deepYellow: vars.$deepYellow;
+  lighterOrange: vars.$lighterOrange;
+  lightOrange: vars.$lightOrange;
+  orange: vars.$orange;
+  darkOrange: vars.$darkOrange;
+  darkerOrange: vars.$darkerOrange;
+  accentOrange: vars.$accentOrange;
+  shallowOrange: vars.$shallowOrange;
+  deepOrange: vars.$deepOrange;
+  lighterPink: vars.$lighterPink;
+  lightPink: vars.$lightPink;
+  pink: vars.$pink;
+  darkPink: vars.$darkPink;
+  darkerPink: vars.$darkerPink;
+  accentPink: vars.$accentPink;
+  shallowPink: vars.$shallowPink;
+  deepPink: vars.$deepPink;
+};

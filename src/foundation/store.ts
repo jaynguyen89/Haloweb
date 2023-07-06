@@ -1,7 +1,7 @@
 import { applyMiddleware, compose, legacy_createStore as createStore, AnyAction } from 'redux';
 import thunk from 'redux-thunk';
-import reducers from '../redux/reducers';
-import * as authenticationConstants from '../redux/constants/authenticationConstants';
+import reducers from 'src/redux/reducers';
+import * as authenticationConstants from 'src/redux/constants/authenticationConstants';
 
 const setLocalStorageData = () => (next: (action: AnyAction) => void) => (action: AnyAction): void => {
     if (action.type === authenticationConstants.AUTHENTICATED) {

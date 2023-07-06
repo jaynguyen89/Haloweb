@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, CircularProgress, CircularProgressProps, Typography } from '@mui/material';
-import { useIsStageIncluded } from '../../../hooks/useStage';
+import { useIsStageIncluded } from 'src/hooks/useStage';
 
 type TSpinner = CircularProgressProps & {
     stage: string,
@@ -13,7 +13,7 @@ const Spinner = ({
     thickness = 2,
 }: TSpinner) => {
     const visible = useIsStageIncluded(stage);
-    if (!visible) return undefined;
+    if (!visible) return null;
 
     return (
         <CircularProgress
@@ -30,7 +30,7 @@ export default Spinner;
 type TLabelSpinner = CircularProgressProps & {
     stage: string,
     progress: number,
-    textVariant: string,
+    textVariant?: string,
 };
 
 export const LabelSpinner = ({
@@ -42,7 +42,7 @@ export const LabelSpinner = ({
     textVariant = 'h6',
 }: TLabelSpinner) => {
     const visible = useIsStageIncluded(stage);
-    if (!visible) return undefined;
+    if (!visible) return null;
 
     return (
         <Box sx={{ position: 'relative', display: 'inline-flex' }}>

@@ -1,67 +1,67 @@
-$baseSize: 20px;
+$baseSize: 10px;
 
 // typography
-$xh1: 4.0rem; // 80px
-$mh1: 3.9rem; // 78px
-$h1: 3.8rem; // 76px
-$sh1: 3.7rem; // 74px
-$xh2: 3.6rem; // 72px
-$mh2: 3.5rem; // 70px
-$h2: 3.4rem; // 68px
-$sh2: 3.3rem; // 66px
-$xh3: 3.2rem; // 64px
-$mh3: 3.1rem; // 62px
-$h3: 3.0rem; // 60px
-$sh3: 2.9rem; // 58px
-$xh4: 2.8rem; // 56px
-$mh4: 2.7rem; // 54px
-$h4: 2.6rem; // 52px
-$sh4: 2.5rem; // 50px
-$xh5: 2.4rem; // 48px
-$mh5: 2.3rem; // 46px
-$h5: 2.2rem; // 44px
-$sh5: 2.1rem; // 42px
-$xh6: 2.0rem; // 40px
-$mh6: 1.9rem; // 38px
-$h6: 1.8rem; // 36px
-$sh6: 1.7rem; // 34px
-$xh7: 1.6rem; // 32px
-$mh7: 1.5rem; // 30px
-$h7: 1.4rem; // 28px
-$sh7: 1.3rem; // 26px
-$xh8: 1.2rem; // 24px
-$mh8: 1.1rem; // 22px
-$h8: 1.0rem; // 20px
-$sh8: 0.9rem; // 18px
-$xh9: 0.8rem; // 16px
-$mh9: 0.7rem; // 14px
-$h9: 0.6rem; // 12px
-$sh9: 0.5rem; // 10px
+$xh1: 8.0rem; // 80px
+$mh1: 7.8rem; // 78px
+$h1: 7.6rem; // 76px
+$sh1: 7.4rem; // 74px
+$xh2: 7.2rem; // 72px
+$mh2: 7.0rem; // 70px
+$h2: 6.8rem; // 68px
+$sh2: 6.6rem; // 66px
+$xh3: 6.4rem; // 64px
+$mh3: 6.2rem; // 62px
+$h3: 6.0rem; // 60px
+$sh3: 5.8rem; // 58px
+$xh4: 5.6rem; // 56px
+$mh4: 5.4rem; // 54px
+$h4: 5.2rem; // 52px
+$sh4: 5.0rem; // 50px
+$xh5: 4.8rem; // 48px
+$mh5: 4.6rem; // 46px
+$h5: 4.4rem; // 44px
+$sh5: 4.2rem; // 42px
+$xh6: 4.0rem; // 40px
+$mh6: 3.8rem; // 38px
+$h6: 3.6rem; // 36px
+$sh6: 3.4rem; // 34px
+$xh7: 3.2rem; // 32px
+$mh7: 3.0rem; // 30px
+$h7: 2.8rem; // 28px
+$sh7: 2.6rem; // 26px
+$xh8: 2.4rem; // 24px
+$mh8: 2.2rem; // 22px
+$h8: 2.0rem; // 20px
+$sh8: 1.8rem; // 18px
+$xh9: 1.6rem; // 16px
+$mh9: 1.4rem; // 14px
+$h9: 1.2rem; // 12px
+$sh9: 1.0rem; // 10px
 
 // screen sizes
-$ultrawide-width: 1400px;
-$wide-width: 1200px;
+$ultrawide-width: 1536px;
+$wide-width: 1280px;
 $large-width: 1024px;
-$desktop-width: 996px;
-$medium-width: 767px;
+$desktop-width: 992px;
+$medium-width: 667px;
 $small-width: 480px;
 $tiny-width: 360px;
 
 // padding, margin, border, border radius
-$xxlarge: 2rem; // 40px
-$xlarge: 1.85rem; // 37px
-$large: 1.7rem; // 34px
-$xxmedium: 1.55rem; // 31px
-$xmedium: 1.4rem; // 28px
-$medium: 1.25rem; // 25px
-$small: 1.1rem; // 22px
-$xsmall: 0.95rem; // 19px
-$xxsmall: 0.8rem; // 16px
-$tiny: 0.65rem; // 13px
-$xtiny: 0.5rem; // 10px
-$xxtiny: 0.35rem; // 7px
-$micro: 0.2rem; // 4px
-$xmicro: 0.05rem; // 1px
+$xxlarge: 4.0rem; // 40px
+$xlarge: 3.7rem; // 37px
+$large: 3.4rem; // 34px
+$xxmedium: 3.1rem; // 31px
+$xmedium: 2.8rem; // 28px
+$medium: 2.5rem; // 25px
+$small: 2.2rem; // 22px
+$xsmall: 1.9rem; // 19px
+$xxsmall: 1.6rem; // 16px
+$tiny: 1.3rem; // 13px
+$xtiny: 1.0rem; // 10px
+$xxtiny: 0.7rem; // 7px
+$micro: 0.4rem; // 4px
+$xmicro: 0.1rem; // 1px
 $none: 0rem; // 0px
 
 // colors as in colors.ts

@@ -1,6 +1,6 @@
 import { AxiosError, AxiosResponse } from 'axios';
-import { InterceptorTarget } from '../commons/enums';
-import Request from './Request';
+import { InterceptorTarget } from 'src/commons/enums';
+import Request from 'src/fetcher/Request';
 
 export class Interceptor {
     target: InterceptorTarget;

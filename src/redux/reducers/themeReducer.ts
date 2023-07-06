@@ -1,7 +1,7 @@
 import produce from 'immer';
-import * as themeConstants from '../constants/themeConstants';
+import * as themeConstants from 'src/redux/constants/themeConstants';
 import { Theme } from '@mui/material';
-import themes from '../../commons/themes';
+import themes from 'src/commons/themes';
 import { AnyAction } from 'redux';
 
 export interface IThemeStore {

@@ -1,10 +1,10 @@
 import { Dispatch } from 'redux';
 import { Theme } from '@mui/material';
-import { StorageKeys } from '../../models/enums/account';
-import IAuthenticatedUser from '../../models/AuthenticatedUser';
-import * as authenticationConstants from '../constants/authenticationConstants';
-import * as themeConstants from '../constants/themeConstants';
-import themes from '../../commons/themes';
+import { StorageKeys } from 'src/models/enums/account';
+import IAuthenticatedUser from 'src/models/AuthenticatedUser';
+import * as authenticationConstants from 'src/redux/constants/authenticationConstants';
+import * as themeConstants from 'src/redux/constants/themeConstants';
+import themes from 'src/commons/themes';
 
 export const prefetchAccountDataOnLaunch = () => {
     const storedAuthUser = localStorage.getItem(StorageKeys.AUTH_USER);

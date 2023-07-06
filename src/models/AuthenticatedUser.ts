@@ -1,5 +1,5 @@
-import { ITimestamp } from '../commons/interfaces';
-import Roles from './enums/roles';
+import { ITimestamp } from 'src/commons/interfaces';
+import Roles from 'src/models/enums/roles';
 
 interface IAuthenticatedUser extends ITimestamp {
     isAuthenticated: boolean,

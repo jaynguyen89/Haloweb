@@ -1,16 +1,22 @@
+import React, { FunctionComponent, ReactNode } from 'react';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
-import React, { FunctionComponent, ReactElement } from 'react';
-import { containerSx } from 'src/components/atoms/ContentContainer/styles';
+import { pageSx, containerSx } from 'src/components/atoms/Page/styles';
 
-const ContentContainer: FunctionComponent<{ children: ReactElement}> = ({ children }) => {
+const Page: FunctionComponent<{
+    children: ReactNode,
+    styles?: React.CSSProperties,
+}> = ({
+    children,
+    styles,
+}) => {
     return (
-        <Box sx={containerSx}>
-            <Container maxWidth='xl'>
+        <Box sx={pageSx} style={styles}>
+            <Container maxWidth='xl' sx={containerSx}>
                 {children}
             </Container>
         </Box>
     );
 };
 
-export default ContentContainer;
+export default Page;

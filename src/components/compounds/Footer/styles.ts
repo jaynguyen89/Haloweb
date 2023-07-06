@@ -5,7 +5,6 @@ import { makeStyles } from '@mui/styles';
 export const footerSx: SxProps<Theme> = {
     minHeight: vars.xxmedium,
     width: '100%',
-    position: 'absolute',
     bottom: 0,
     overflow: 'hidden',
     mt: vars.medium,

@@ -40,13 +40,13 @@
   sh9: vars.$sh9; // 10px
 
   // screen sizes
-  ultrawideWidth: vars.$ultrawide-width;
-  wideWidth: vars.$wide-width;
-  largeWidth: vars.$large-width;
-  desktopWidth: vars.$desktop-width;
-  mediumWidth: vars.$medium-width;
-  smallWidth: vars.$small-width;
-  tinyWidth: vars.$tiny-width;
+  ultrawideWidth: vars.$ultrawide-width; // 1536px
+  wideWidth: vars.$wide-width; // 1280px
+  largeWidth: vars.$large-width; // 1024px
+  desktopWidth: vars.$desktop-width; // 992px
+  mediumWidth: vars.$medium-width; // 667px
+  smallWidth: vars.$small-width; // 480px
+  tinyWidth: vars.$tiny-width; // 360px
 
   // padding, margin, border, border radius
   xxlarge: vars.$xxlarge; // 40px

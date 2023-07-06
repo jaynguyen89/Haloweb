@@ -2,12 +2,18 @@ import { createTheme, Shadows } from '@mui/material';
 import _cloneDeep from 'lodash/cloneDeep';
 import { DEFAULT_THEME_SHADOWS, themeBreakpoints } from 'src/commons/constants';
 import colors from 'src/commons/colors';
+import { IMixins } from 'src/commons/interfaces';
 
 const shadows = _cloneDeep(DEFAULT_THEME_SHADOWS);
-shadows[0] = `0 3px 6px rgba(0,0,0,0.16)`;
-shadows[1] = `0 3px 6px rgba(0,0,0,0.23)`;
+shadows[0] = '0 3px 6px rgba(0,0,0,0.16)';
+shadows[1] = '0 3px 6px rgba(0,0,0,0.23)';
 
 export const ThemeDay = createTheme({
+    mixins: {
+        toolbar: { width: '100%' },
+        shadowLight: '0 3px 6px rgba(255,255,255,0.16); 0 3px 6px rgba(255,255,255,0.23)',
+        shadowDark: '0 3px 6px rgba(0,0,0,0.16); 0 3px 6px rgba(0,0,0,0.23)',
+    } as IMixins,
     breakpoints: { values: themeBreakpoints },
     palette: {
         text: {

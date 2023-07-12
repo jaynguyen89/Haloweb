@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "wsetup": "rmdir /s /q node_modules & del package-lock.json & npm install",
-    "lsetup": "rm -r node_modules & rm package-lock.json & npm install",
+    "wsetup": "rmdir /s /q node_modules & del package-lock.json & npm install --legacy-peer-deps",
+    "lsetup": "rm -r node_modules & rm package-lock.json & npm install --legacy-peer-deps",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

@@ -4,7 +4,8 @@ import { Provider } from 'react-redux';
 import { AnyAction } from 'redux';
 import App from 'src/foundation/App';
 import store from 'src/foundation/store';
-import { prefetchAccountDataOnLaunch, prefetchDefaultTheme } from 'src/redux/actions/authenticationActions';
+import { prefetchAccountDataOnLaunch } from 'src/redux/actions/authenticationActions';
+import { prefetchDefaultTheme } from './redux/actions/themeActions';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,

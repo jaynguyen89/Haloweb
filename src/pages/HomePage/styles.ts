@@ -1,6 +1,6 @@
-import { IMixins } from 'src/commons/interfaces';
 import vars from 'src/commons/variables/cssVariables.scss';
 import { SxProps, Theme } from '@mui/material';
+import { IMixins } from 'src/commons/interfaces';
 import { makeStyles } from '@mui/styles';
 
 export const textSx: SxProps<Theme> = {

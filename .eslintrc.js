@@ -47,7 +47,6 @@ module.exports = {
             ignoreRegExpLiterals: true,
         }],
         'max-params': ['error', 5],
-        'multiline-comment-style': ['error', 'starred-block'],
         'no-await-in-loop': 'error',
         'no-class-assign': 'error',
         'no-compare-neg-zero': 'error',

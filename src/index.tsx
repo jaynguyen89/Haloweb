@@ -8,16 +8,17 @@ import { prefetchAccountDataOnLaunch } from 'src/redux/actions/authenticationAct
 import { prefetchDefaultTheme } from './redux/actions/themeActions';
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement,
+    document.getElementById('root') as HTMLElement,
 );
 
 store.dispatch(prefetchAccountDataOnLaunch() as unknown as AnyAction);
 store.dispatch(prefetchDefaultTheme() as unknown as AnyAction);
 
 root.render(
-  <React.StrictMode>
-    <Provider store={store}>
-        <App />
-    </Provider>
-  </React.StrictMode>,
+
+    <React.StrictMode>
+        <Provider store={store}>
+            <App/>
+        </Provider>
+    </React.StrictMode>,
 );

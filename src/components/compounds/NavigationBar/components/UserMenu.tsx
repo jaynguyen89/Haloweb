@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { AccountCircle } from '@mui/icons-material';
-import { Badge } from '@mui/material';
+import { Badge, Theme, useTheme } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
@@ -9,6 +9,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import { AvatarPlaceholderImg } from 'src/assets/images';
 import { userMenuSx } from 'src/components/compounds/NavigationBar/styles';
+import { useNavigate } from 'react-router-dom';
 
 const guestSettings = ['Sign up', 'Log in'];
 const userSettings = ['Profile', 'Account', 'Dashboard', 'Preferences', 'Logout'];
@@ -22,6 +23,9 @@ const UserMenu: FunctionComponent<{
     openMenu,
     closeMenu,
 }) => {
+    const navigate = useNavigate();
+    const theme: Theme = useTheme();
+
     const authenticated = false;
     const settings = authenticated ? userSettings : guestSettings;
 
@@ -52,7 +56,6 @@ const UserMenu: FunctionComponent<{
                 <Avatar alt='Remy Sharp' src={AvatarPlaceholderImg} />
             </IconButton>
             <Menu
-                sx={userMenuSx}
                 id='menu-appbar'
                 anchorEl={anchor}
                 anchorOrigin={{
@@ -66,9 +69,13 @@ const UserMenu: FunctionComponent<{
                 }}
                 open={Boolean(anchor)}
                 onClose={closeMenu}
+                sx={userMenuSx}
             >
                 {settings.map((setting) => (
-                    <MenuItem key={setting} onClick={closeMenu}>
+                    <MenuItem key={setting} onClick={() => {
+                        closeMenu();
+                        navigate('/login');
+                    }}>
                         <Typography textAlign='left'>{setting}</Typography>
                     </MenuItem>
                 ))}

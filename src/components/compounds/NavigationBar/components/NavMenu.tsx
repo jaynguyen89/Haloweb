@@ -60,7 +60,6 @@ const NavMenu: FunctionComponent<{
                             open={Boolean(anchor)}
                             onClose={closeMenu}
                             sx={navMenuSx}
-
                         >
                             {pages.map((page) => (
                                 <MenuItem key={page} onClick={closeMenu}>

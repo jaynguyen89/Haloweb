@@ -1,4 +1,5 @@
 import { SxProps, Theme } from '@mui/material';
+import { IMixins } from 'src/commons/interfaces';
 
 export const brandSx: SxProps<Theme> = {
     mr: 2,
@@ -13,18 +14,18 @@ export const brandSx: SxProps<Theme> = {
 export const navMenuSx: SxProps<Theme> = {
     display: { xs: 'block', md: 'none' },
     '& .MuiMenu-paper': (theme: Theme) => ({
-        backgroundColor: theme.palette.common.white,
-        color: theme.palette.primary.dark,
-        boxShadow: theme.shadows,
+        backgroundColor: `${theme.palette.primary.light} !important;`,
+        color: `${theme.palette.primary.contrastText} !important;`,
+        boxShadow: (theme.mixins as IMixins).shadowDark,
     }),
 };
 
 export const userMenuSx: SxProps<Theme> = {
     mt: '45px',
     '& .MuiMenu-paper': (theme: Theme) => ({
-        backgroundColor: theme.palette.common.white,
-        color: theme.palette.primary.dark,
-        boxShadow: theme.shadows,
+        backgroundColor: `${theme.palette.primary.light} !important;`,
+        color: `${theme.palette.primary.contrastText} !important;`,
+        boxShadow: (theme.mixins as IMixins).shadowDark,
     }),
 };
 

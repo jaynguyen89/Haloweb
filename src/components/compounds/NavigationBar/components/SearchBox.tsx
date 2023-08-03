@@ -15,13 +15,15 @@ const SearchBox: FunctionComponent<{
 }) => {
     const Wrapper = variant === 'mobile' ? XsSearch : SearchWrapper;
     const authenticated = false;
+    const isMobileView = variant === 'mobile';
 
     return (
         <Wrapper
             style={{
-                right: variant === 'mobile' ? 0 : (
+                right: isMobileView ? 0 : (
                     authenticated ? '8.75rem' : '3.5rem'
                 ),
+                marginBottom: isMobileView ? '1rem' : 0,
             }}
         >
             <SearchIconWrapper>

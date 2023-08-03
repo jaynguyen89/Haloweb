@@ -9,5 +9,5 @@ export const useStage = () => {
 
 export const useIsStageIncluded = (stage: string) => {
     const stages = useStage();
-    return stages.includes(stage);
+    return stages.some(member => member.name === stage);
 };

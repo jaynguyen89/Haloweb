@@ -11,21 +11,21 @@ shadows[1] = '0 3px 6px rgba(0,0,0,0.23)';
 export const ThemeDay = createTheme({
     mixins: {
         toolbar: { width: '100%' },
-        shadowLight: '0 3px 6px rgba(255,255,255,0.16); 0 3px 6px rgba(255,255,255,0.23)',
-        shadowDark: '0 3px 6px rgba(0,0,0,0.16); 0 3px 6px rgba(0,0,0,0.23)',
+        shadowLight: '0 3px 6px rgba(255,255,255,0.16), 0 3px 6px rgba(255,255,255,0.23)',
+        shadowDark: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
     } as IMixins,
     breakpoints: { values: themeBreakpoints },
     palette: {
         text: {
-            primary: colors.white,
-            secondary: colors.grey,
-            disabled: colors.darkGrey,
+            primary: colors.lightBlack,
+            secondary: colors.darkGrey,
+            disabled: colors.grey,
         },
         primary: {
             main: colors.lightGrey,
-            light: colors.white,
+            light: colors.lighterGrey,
             dark: colors.darkGrey,
-            contrastText: colors.lightBlack,
+            contrastText: colors.darkerGrey,
         },
         secondary: {
             main: colors.darkTeal,

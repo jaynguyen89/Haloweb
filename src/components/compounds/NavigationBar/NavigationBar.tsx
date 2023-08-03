@@ -1,7 +1,9 @@
+import { Theme, useTheme } from '@mui/material';
 import React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
+import { IMixins } from 'src/commons/interfaces';
 import LogoAndBrand from 'src/components/compounds/NavigationBar/components/LogoAndBrand';
 import NavMenu from 'src/components/compounds/NavigationBar/components/NavMenu';
 import SearchBox from 'src/components/compounds/NavigationBar/components/SearchBox';
@@ -11,6 +13,7 @@ import { xsToolbarSx } from 'src/components/compounds/NavigationBar/styles';
 const NavigationBar = () => {
     const [navMenuAnchor, setNavMenuAnchor] = React.useState<null | HTMLElement>(null);
     const [userMenuAnchor, setUserMenuAnchor] = React.useState<null | HTMLElement>(null);
+    const theme: Theme = useTheme();
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setNavMenuAnchor(event.currentTarget);
@@ -28,7 +31,16 @@ const NavigationBar = () => {
     };
 
     return (
-        <AppBar position='sticky' color='primary'>
+        <>
+        <AppBar position='sticky'
+                style={{
+                    boxShadow: (theme.mixins as IMixins).shadowDark,
+                }}
+                ref={node => {
+                    node?.style?.setProperty('background-color', theme.palette.primary.main, 'important');
+                    node?.style?.setProperty('color', theme.palette.primary.contrastText, 'important');
+                }}
+        >
             <Container maxWidth='xl'>
                 <Toolbar disableGutters>
                     <LogoAndBrand />
@@ -61,6 +73,7 @@ const NavigationBar = () => {
                 </Toolbar>
             </Container>
         </AppBar>
+        </>
     );
 };
 

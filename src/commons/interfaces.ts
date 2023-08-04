@@ -10,5 +10,7 @@ export interface ITimestamp {
 
 export interface IMixins extends Mixins {
     shadowLight: string,
-    shadowDark?: string,
+    shadowDark: string,
+    shadowLightUp: string,
+    shadowDarkUp: string,
 }

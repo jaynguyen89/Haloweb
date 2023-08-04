@@ -13,6 +13,8 @@ export const ThemeDay = createTheme({
         toolbar: { width: '100%' },
         shadowLight: '0 3px 6px rgba(255,255,255,0.16), 0 3px 6px rgba(255,255,255,0.23)',
         shadowDark: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
+        shadowLightUp: '0 -3px 6px rgba(255,255,255,0.2)',
+        shadowDarkUp: '0px -3px 6px rgba(0, 0, 0, 0.2)',
     } as IMixins,
     breakpoints: { values: themeBreakpoints },
     palette: {
@@ -58,7 +60,7 @@ export const ThemeDay = createTheme({
             contrastText: colors.lighterGreen,
         },
         common: {
-            white: colors.lighterGrey,
+            white: colors.white,
             black: colors.black,
         },
     },

@@ -7,12 +7,54 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import React, {useEffect} from 'react';
 import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { AnyAction } from 'redux';
+import {
+  FacebookLogoSvg,
+  GoogleLogoSvg,
+  InstagramLogoSvg, LinkedInLogoSvg,
+  MicrosoftMailLogoSvg,
+  TwitterLogoSvg,
+} from 'src/assets/images';
 import CountryFlag from 'src/components/atoms/CountryFlag/CountryFlag';
 import Stages from 'src/models/enums/stage';
-import useStyles, { loginBoxSx, loginFormSx } from 'src/pages/LoginPage/styles';
+import useStyles, { helpBoxSx, loginBoxSx, loginFormSx } from 'src/pages/LoginPage/styles';
 import { setStage } from 'src/redux/actions/stageActions';
 import { faFingerprint } from '@fortawesome/free-solid-svg-icons/faFingerprint';
+import vars from 'src/commons/variables/cssVariables.scss';
+
+const socialLoginData = [
+  {
+    title: 'Facebook',
+    icon: FacebookLogoSvg,
+    handler: undefined,
+  },
+  {
+    title: 'Google',
+    icon: GoogleLogoSvg,
+    handler: undefined,
+  },
+  {
+    title: 'Twitter',
+    icon: TwitterLogoSvg,
+    handler: undefined,
+  },
+  {
+    title: 'Instagram',
+    icon: InstagramLogoSvg,
+    handler: undefined,
+  },
+  {
+    title: 'Microsoft',
+    icon: MicrosoftMailLogoSvg,
+    handler: undefined,
+  },
+  {
+    title: 'Linkedin',
+    icon: LinkedInLogoSvg,
+    handler: undefined,
+  },
+];
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -96,6 +138,26 @@ const LoginPage = () => {
             </Button>
           </Grid>
         </Grid>
+      </Box>
+      <Box sx={helpBoxSx}>
+        <Typography variant='subtitle2' mb={vars.micro}>
+          Forgot your password? Please <Link to='/forgot-password'>click here</Link> to reset password.
+        </Typography>
+        <Typography variant='subtitle2'>
+          Haven't had an account yet? Please <Link to='/register'>click here</Link> to create a new account.
+        </Typography>
+
+        <Box className={styles.socialLogins}>
+          <p>A quicker way, login with social networks</p>
+          <Grid container spacing={2}>
+            {
+              socialLoginData.map(data =>
+                <Grid item sm={2} xs={4} key={data.title}>
+                  <Box component='img' src={data.icon} />
+                </Grid>)
+            }
+          </Grid>
+        </Box>
       </Box>
     </div>
   );

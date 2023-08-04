@@ -11,7 +11,7 @@ const Footer = () => {
     const styles = useStyles();
 
     return (
-        <Box sx={{ ...footerSx, backgroundColor: theme.palette.primary.main }}>
+        <Box sx={{ ...footerSx }}>
             <Container maxWidth='xl'>
                 <Grid container spacing={{ md: 2, xs: 1 }}>
                     <Grid md={8} xs={12}>

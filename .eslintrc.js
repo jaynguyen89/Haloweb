@@ -21,6 +21,7 @@ module.exports = {
                 extendDefaults: true,
             },
         ],
+        '@typescript-eslint/no-array-constructor': ['off'],
         '@typescript-eslint/no-explicit-any': ['error', {
             fixToUnknown: false,
             ignoreRestArgs: true,
@@ -29,6 +30,7 @@ module.exports = {
             ignoreParameters: true,
             ignoreProperties: true,
         }],
+        '@typescript-eslint/no-unused-vars': ['warn'],
         'block-scoped-var': 'error',
         'comma-dangle': ['error', 'always-multiline'],
         'default-case': 'error',

@@ -1,11 +1,10 @@
-import React from 'react';
 import { InputBase } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 export const SearchWrapper = styled('div')(({ theme }) => ({
     position: 'absolute',
     borderRadius: theme.shape.borderRadius,
-    backgroundColor: theme.palette.primary.light,
+    backgroundColor: theme.palette.common.white,
     width: '100%',
     [theme.breakpoints.up('sm')]: {
         marginLeft: theme.spacing(3),
@@ -19,7 +18,7 @@ export const SearchWrapper = styled('div')(({ theme }) => ({
 export const XsSearch = styled('div')(({ theme }) => ({
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
-    backgroundColor: theme.palette.primary.light,
+    backgroundColor: theme.palette.common.white,
     width: '100%',
 }));
 

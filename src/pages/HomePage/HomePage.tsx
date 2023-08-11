@@ -18,7 +18,7 @@ const HomePage = () => {
     }, []);
 
     return (
-        <Page key='homepage' styles={{ position: 'relative' }}>
+        <Page key='homepage' pageStyle={{ position: 'relative' }}>
             <img src={HomeBackgroundImg} alt='home-background' className={styles.homeBg} />
             <Box sx={textSx}>
                 <Typography className={styles.heading}>

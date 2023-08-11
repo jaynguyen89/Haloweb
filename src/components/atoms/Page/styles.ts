@@ -11,4 +11,5 @@ export const pageSx: SxProps<Theme> = {
 export const containerSx: SxProps<Theme> = {
     mt: vars.medium,
     mb: vars.xxsmall,
+    padding: vars.none,
 };

@@ -13,7 +13,7 @@ export const TextSkeleton = ({
 
 export const RoundedSkeleton = ({
     width,
-    height,
+    height = 50,
 }: TSkeleton) => {
     return (
         <Skeleton variant='rounded' width={width} height={height} />
@@ -22,7 +22,7 @@ export const RoundedSkeleton = ({
 
 export const RectangularSkeleton = ({
     width,
-    height,
+    height = 50,
 }: TSkeleton) => {
     return (
         <Skeleton variant='rectangular' width={width} height={height} />
@@ -30,8 +30,8 @@ export const RectangularSkeleton = ({
 };
 
 export const CircularSkeleton = ({
-    width,
-    height,
+    width = 50,
+    height = 50,
 }: TSkeleton) => {
     return (
         <Skeleton variant='circular' width={width} height={height} />

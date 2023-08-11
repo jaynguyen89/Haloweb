@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, CircularProgress, CircularProgressProps, Typography } from '@mui/material';
 import { useIsStageIncluded } from 'src/hooks/useStage';
 
-type TSpinner = CircularProgressProps & {
+type TSpinner = Omit<CircularProgressProps, 'variant'> & {
     stage: string,
 };
 
@@ -12,7 +12,7 @@ const Spinner = ({
     size = 100,
     thickness = 2,
 }: TSpinner) => {
-    const visible = useIsStageIncluded(stage);
+    const visible = stage === 'showcase' || useIsStageIncluded(stage);
     if (!visible) return null;
 
     return (
@@ -27,7 +27,7 @@ const Spinner = ({
 
 export default Spinner;
 
-type TLabelSpinner = CircularProgressProps & {
+type TLabelSpinner = TSpinner & {
     stage: string,
     progress: number,
     textVariant?: string,
@@ -41,7 +41,7 @@ export const LabelSpinner = ({
     thickness = 2,
     textVariant = 'h6',
 }: TLabelSpinner) => {
-    const visible = useIsStageIncluded(stage);
+    const visible = stage === 'showcase' || useIsStageIncluded(stage);
     if (!visible) return null;
 
     return (

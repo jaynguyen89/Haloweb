@@ -19,7 +19,7 @@ const Flasher = ({
         mb: 2,
     },
 }: TFlasher) => {
-    const visible = useIsStageIncluded(stage);
+    const visible = stage === 'showcase' || useIsStageIncluded(stage);
 
     return (
         <Collapse in={visible} orientation={orientation}>
@@ -29,7 +29,7 @@ const Flasher = ({
                         aria-label='close'
                         color='inherit'
                         size='small'
-                        onClick={() => removeStage(stage)}
+                        onClick={() => stage !== 'showcase' && removeStage(stage)}
                     >
                         <CloseIcon fontSize='inherit' />
                     </IconButton>

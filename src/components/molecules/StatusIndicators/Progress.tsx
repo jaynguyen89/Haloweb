@@ -2,7 +2,7 @@ import React from 'react';
 import { useIsStageIncluded } from 'src/hooks/useStage';
 import { Box, LinearProgress, LinearProgressProps, Typography } from '@mui/material';
 
-type TProgress = LinearProgressProps & {
+type TProgress = Omit<LinearProgressProps, 'variant'> & {
     stage: string,
 };
 
@@ -11,7 +11,7 @@ const Progress = ({
     color,
     sx,
 }: TProgress) => {
-    const visible = useIsStageIncluded(stage);
+    const visible = stage === 'showcase' || useIsStageIncluded(stage);
     if (!visible) return null;
 
     return (
@@ -34,7 +34,7 @@ export const LabelProgress = ({
     color,
     sx,
 }: TLabelProgress) => {
-    const visible = useIsStageIncluded(stage);
+    const visible = stage === 'showcase' || useIsStageIncluded(stage);
     if (!visible) return null;
 
     return (

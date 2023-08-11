@@ -5,14 +5,25 @@ import { pageSx, containerSx } from 'src/components/atoms/Page/styles';
 
 const Page: FunctionComponent<{
     children: ReactNode,
-    styles?: React.CSSProperties,
+    pageStyle?: React.CSSProperties,
+    pageClassName?: string,
+    containerStyle?: React.CSSProperties,
+    containerClassName?: string,
 }> = ({
     children,
-    styles,
+    pageStyle,
+    pageClassName,
+    containerStyle,
+    containerClassName,
 }) => {
     return (
-        <Box sx={pageSx} style={styles}>
-            <Container maxWidth='xl' sx={containerSx}>
+        <Box sx={pageSx} style={pageStyle} className={pageClassName}>
+            <Container
+                maxWidth='xl'
+                sx={containerSx}
+                style={containerStyle}
+                className={containerClassName}
+            >
                 {children}
             </Container>
         </Box>

@@ -18,8 +18,9 @@ const Toast = ({
     sx = { width: '100%' },
     autoHideDuration = configs.statusIndicatorsTimeout,
     position = { vertical: 'bottom', horizontal: 'right' },
+    ...rest
 }: TToast) => {
-    const visible = useIsStageIncluded(stage);
+    const visible = stage === 'showcase' || useIsStageIncluded(stage);
 
     return (
         <Snackbar
@@ -27,6 +28,7 @@ const Toast = ({
             autoHideDuration={autoHideDuration}
             onClose={autoHideDuration ? () => removeStage(stage) : undefined}
             anchorOrigin={position}
+            {...rest}
         >
             <Alert
                 action={
@@ -34,13 +36,14 @@ const Toast = ({
                         aria-label='close'
                         color='inherit'
                         size='small'
-                        onClick={() => removeStage(stage)}
+                        onClick={() => stage !== 'showcase' && removeStage(stage)}
                     >
                         <CloseIcon fontSize='inherit' />
                     </IconButton>
                 }
                 sx={sx}
                 severity={severity}
+                {...rest}
             >
                 {message}
             </Alert>

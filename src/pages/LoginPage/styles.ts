@@ -77,7 +77,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         width: '100%',
         '& p': {
             fontWeight: 600,
-            fontSize: vars.$xh8,
+            fontSize: `${vars.h9} !important`,
         },
         '& div.MuiGrid-item': {
             textAlign: 'center',

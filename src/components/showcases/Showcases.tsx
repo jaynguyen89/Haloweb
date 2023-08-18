@@ -15,6 +15,7 @@ import { useDispatch } from 'react-redux';
 import { AnyAction } from 'redux';
 import Page from 'src/components/atoms/Page/Page';
 import Loading from 'src/components/molecules/StatusIndicators/Loading/Loading';
+import CustomFormUiShowcase from 'src/components/showcases/components/CustomFormUiShowcase';
 import useStyles from 'src/components/showcases/styles';
 import Stages from 'src/models/enums/stage';
 import { setStage } from 'src/redux/actions/stageActions';
@@ -80,6 +81,11 @@ const components = [
         key: 'social-icons',
         label: 'Social Icons',
         showcase: <SocialIconsShowcase />,
+    },
+    {
+        key: 'custom-form-ui',
+        label: 'Form Elements with Icon',
+        showcase: <CustomFormUiShowcase />,
     },
 ];
 

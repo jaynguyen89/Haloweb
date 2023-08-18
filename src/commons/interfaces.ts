@@ -1,4 +1,5 @@
 import { Mixins } from '@mui/material';
+import { TTranslationMap } from 'src/commons/types';
 
 export interface ITimestamp {
     firstLoginOn: string,
@@ -13,4 +14,9 @@ export interface IMixins extends Mixins {
     shadowDark: string,
     shadowLightUp: string,
     shadowDarkUp: string,
+}
+
+export interface ITranslation {
+    translation: TTranslationMap,
+    [namespace: string]: TTranslationMap,
 }

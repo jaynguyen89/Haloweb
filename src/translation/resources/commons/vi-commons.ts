@@ -1,17 +1,20 @@
 import { TTranslationMap } from 'src/commons/types';
 
-export const viCommonButtons: TTranslationMap = {
-    'button.save': 'Lưu',
-    'button.submit': 'Gửi',
-    'button.done': 'Xong!',
-    'button.cancel': 'Huỷ',
-    'button.update': 'Cập Nhật',
-    'button.delete': 'Xoá',
-    'button.remove': 'Loại Bỏ',
-    'button.view-details': 'Chi Tiết',
+const viCommons: TTranslationMap = {
+    buttons: {
+        save: 'Lưu',
+        submit: 'Gửi',
+        done: 'Xong!',
+        cancel: 'Huỷ',
+        update: 'Cập Nhật',
+        delete: 'Xoá',
+        remove: 'Loại Bỏ',
+        'view-details': 'Chi Tiết',
+    },
+    labels: {
+        loading: 'Đang tải...',
+        'please-wait': 'Vui lòng chờ...',
+    },
 };
 
-export const viCommonLabels: TTranslationMap = {
-    'label.loading': 'Đang tải...',
-    'label.please-wait': 'Vui lòng chờ...',
-};
+export default viCommons;

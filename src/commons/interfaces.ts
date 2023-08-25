@@ -20,3 +20,11 @@ export interface ITranslation {
     translation: TTranslationMap,
     [namespace: string]: TTranslationMap,
 }
+
+export interface IMenuItem {
+    title: string,
+    icon?: string, // use Font-Awesome icon name (ie. fas fa-user, far fa-facebook)
+    endpoint?: string,
+    separator?: true,
+    children?: Array<Omit<IMenuItem, 'children'>>,
+}

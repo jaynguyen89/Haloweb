@@ -65,9 +65,6 @@ const Footer = ({
                                 <MenuItem value='en'>
                                     <Typography variant='subtitle2'>English</Typography>
                                 </MenuItem>
-                                <MenuItem value='jp'>
-                                    <Typography variant='subtitle2'>Japanese</Typography>
-                                </MenuItem>
                             </Select>
                         </FormControl>
                     </Grid>

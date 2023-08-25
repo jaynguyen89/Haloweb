@@ -20,6 +20,24 @@ export const navMenuSx: SxProps<Theme> = {
     }),
 };
 
+export const subMenuSx: SxProps<Theme> = {
+    display: { xs: 'none', md: 'block' },
+    '& .MuiMenu-paper': (theme: Theme) => ({
+        backgroundColor: `${theme.palette.primary.light} !important;`,
+        color: `${theme.palette.primary.contrastText} !important;`,
+        boxShadow: (theme.mixins as IMixins).shadowDark,
+    }),
+};
+
+export const childMenuSx: SxProps<Theme> = {
+    display: { xs: 'none', md: 'block' },
+    '& .MuiMenu-paper': (theme: Theme) => ({
+        backgroundColor: `${theme.palette.primary.light} !important;`,
+        color: `${theme.palette.primary.contrastText} !important;`,
+        boxShadow: (theme.mixins as IMixins).shadowDark,
+    }),
+};
+
 export const userMenuSx: SxProps<Theme> = {
     mt: '45px',
     '& .MuiMenu-paper': (theme: Theme) => ({

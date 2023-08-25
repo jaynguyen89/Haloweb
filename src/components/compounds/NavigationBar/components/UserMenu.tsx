@@ -15,13 +15,19 @@ const guestSettings = ['Sign up', 'Log in'];
 const userSettings = ['Profile', 'Account', 'Dashboard', 'Preferences', 'Logout'];
 
 const UserMenu: FunctionComponent<{
-    anchor: null | HTMLElement,
-    openMenu: (event: React.MouseEvent<HTMLElement>) => void,
-    closeMenu: () => void,
+    userMenuAnchor: null | HTMLElement,
+    subMenuAnchor: null | HTMLElement,
+    openUserMenu: (event: React.MouseEvent<HTMLElement>) => void,
+    closeUserMenu: () => void,
+    openSubMenu: (event: React.MouseEvent<HTMLElement>) => void,
+    closeSubMenu: () => void,
 }> = ({
-    anchor,
-    openMenu,
-    closeMenu,
+    userMenuAnchor,
+    subMenuAnchor,
+    openUserMenu,
+    closeUserMenu,
+    openSubMenu,
+    closeSubMenu,
 }) => {
     const navigate = useNavigate();
     const theme: Theme = useTheme();
@@ -52,12 +58,12 @@ const UserMenu: FunctionComponent<{
                 )
             }
 
-            <IconButton onClick={openMenu} sx={{ p: 0, ml: '5px' }}>
+            <IconButton onClick={openUserMenu} sx={{ p: 0, ml: '5px' }}>
                 <Avatar alt='Remy Sharp' src={AvatarPlaceholderImg} />
             </IconButton>
             <Menu
                 id='menu-appbar'
-                anchorEl={anchor}
+                anchorEl={userMenuAnchor}
                 anchorOrigin={{
                     vertical: 'top',
                     horizontal: 'right',
@@ -67,13 +73,13 @@ const UserMenu: FunctionComponent<{
                     vertical: 'top',
                     horizontal: 'right',
                 }}
-                open={Boolean(anchor)}
-                onClose={closeMenu}
+                open={Boolean(userMenuAnchor)}
+                onClose={closeUserMenu}
                 sx={userMenuSx}
             >
                 {settings.map((setting) => (
                     <MenuItem key={setting} onClick={() => {
-                        closeMenu();
+                        closeUserMenu();
                         navigate('/login');
                     }}>
                         <Typography textAlign='left'>{setting}</Typography>

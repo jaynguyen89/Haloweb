@@ -6,22 +6,38 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import React, { FunctionComponent } from 'react';
-import { navMenuSx } from 'src/components/compounds/NavigationBar/styles';
+import { childMenuSx, navMenuSx, subMenuSx } from 'src/components/compounds/NavigationBar/styles';
 
 const pages = ['Products', 'Pricing', 'Blog'];
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 const NavMenu: FunctionComponent<{
     variant?: 'mobile' | 'desktop',
-    anchor: null | HTMLElement,
-    openMenu: (event: React.MouseEvent<HTMLElement>) => void,
-    closeMenu: () => void,
+    mainMenuAnchor: null | HTMLElement,
+    subMenuAnchor: null | HTMLElement,
+    openMainMenu: (event: React.MouseEvent<HTMLElement>) => void,
+    closeMainMenu: () => void,
+    openSubMenu: (event: React.MouseEvent<HTMLElement>) => void,
+    closeSubMenu: () => void,
 }> = ({
     variant = 'desktop',
-    anchor,
-    openMenu,
-    closeMenu,
+    mainMenuAnchor,
+    subMenuAnchor,
+    openMainMenu,
+    closeMainMenu,
+    openSubMenu,
+    closeSubMenu,
 }) => {
+    const [childMenuAnchor, setChildMenuAnchor] = React.useState<null | HTMLElement>(null);
+
+    const handleOpenChildMenu = (event: React.MouseEvent<HTMLElement>) => {
+        setChildMenuAnchor(event.currentTarget);
+    };
+
+    const handleCloseChildMenu = () => {
+        setChildMenuAnchor(null);
+    };
+
     return (
         <Box
             sx={{
@@ -37,17 +53,16 @@ const NavMenu: FunctionComponent<{
                     <>
                         <IconButton
                             size='large'
-                            aria-label='account of current user'
-                            aria-controls='menu-appbar'
+                            aria-controls='main-menu-mobile-variant'
                             aria-haspopup='true'
-                            onClick={openMenu}
+                            onClick={openMainMenu}
                             color='inherit'
                         >
                             <MenuIcon color={'primary.dark' as any} />
                         </IconButton>
                         <Menu
-                            id='menu-appbar'
-                            anchorEl={anchor}
+                            id='main-menu-mobile-variant'
+                            anchorEl={mainMenuAnchor}
                             anchorOrigin={{
                                 vertical: 'bottom',
                                 horizontal: 'left',
@@ -57,12 +72,12 @@ const NavMenu: FunctionComponent<{
                                 vertical: 'top',
                                 horizontal: 'left',
                             }}
-                            open={Boolean(anchor)}
-                            onClose={closeMenu}
+                            open={Boolean(mainMenuAnchor)}
+                            onClose={closeMainMenu}
                             sx={navMenuSx}
                         >
                             {pages.map((page) => (
-                                <MenuItem key={page} onClick={closeMenu}>
+                                <MenuItem key={page} onClick={closeMainMenu}>
                                     <Typography textAlign='center'>{page}</Typography>
                                 </MenuItem>
                             ))}
@@ -71,13 +86,68 @@ const NavMenu: FunctionComponent<{
                 )) || (
                     <>
                         {pages.map((page) => (
-                            <Button
-                                key={page}
-                                onClick={closeMenu}
-                                sx={{ my: 2, color: 'black', display: 'block' }}
-                            >
-                                {page}
-                            </Button>
+                            <>
+                                <Button
+                                    key={page}
+                                    aria-controls={`main-menu-desktop-variant-${page}`}
+                                    aria-haspopup='true'
+                                    onClick={openSubMenu}
+                                    sx={{ my: 2, color: 'black', display: 'block' }}
+                                >
+                                    {page}
+                                </Button>
+                                <Menu
+                                    id={`main-menu-desktop-variant-${page}`}
+                                    anchorEl={subMenuAnchor}
+                                    anchorOrigin={{
+                                        vertical: 'bottom',
+                                        horizontal: 'left',
+                                    }}
+                                    keepMounted
+                                    transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'left',
+                                    }}
+                                    open={Boolean(subMenuAnchor)}
+                                    onClose={closeSubMenu}
+                                    sx={subMenuSx}
+                                >
+                                    {pages.map((page) => (
+                                        <MenuItem key={page}>
+                                            <Typography
+                                                textAlign='center'
+                                                aria-controls={`main-menu-desktop-variant-${page}-test1`}
+                                                aria-haspopup='true'
+                                                onClick={handleOpenChildMenu}
+                                            >
+                                                {page}
+                                            </Typography>
+                                            <Menu
+                                                id={`main-menu-desktop-variant-${page}-test1`}
+                                                anchorEl={childMenuAnchor}
+                                                anchorOrigin={{
+                                                    vertical: 'bottom',
+                                                    horizontal: 'right',
+                                                }}
+                                                keepMounted
+                                                transformOrigin={{
+                                                    vertical: 'top',
+                                                    horizontal: 'left',
+                                                }}
+                                                open={Boolean(childMenuAnchor)}
+                                                onClose={handleCloseChildMenu}
+                                                sx={childMenuSx}
+                                            >
+                                                {pages.map((page) => (
+                                                    <MenuItem key={page} onClick={handleCloseChildMenu}>
+                                                        <Typography textAlign='center'>{page}</Typography>
+                                                    </MenuItem>
+                                                ))}
+                                            </Menu>
+                                        </MenuItem>
+                                    ))}
+                                </Menu>
+                            </>
                         ))}
                     </>
                 )

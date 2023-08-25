@@ -13,6 +13,7 @@ import { xsToolbarSx } from 'src/components/compounds/NavigationBar/styles';
 const NavigationBar = () => {
     const [navMenuAnchor, setNavMenuAnchor] = React.useState<null | HTMLElement>(null);
     const [userMenuAnchor, setUserMenuAnchor] = React.useState<null | HTMLElement>(null);
+    const [subMenuAnchor, setSubMenuAnchor] = React.useState<null | HTMLElement>(null);
     const theme: Theme = useTheme();
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -22,12 +23,20 @@ const NavigationBar = () => {
         setUserMenuAnchor(event.currentTarget);
     };
 
+    const handleOpenSubMenu = (event: React.MouseEvent<HTMLElement>) => {
+        setSubMenuAnchor(event.currentTarget);
+    };
+
     const handleCloseNavMenu = () => {
         setNavMenuAnchor(null);
     };
 
     const handleCloseUserMenu = () => {
         setUserMenuAnchor(null);
+    };
+
+    const handleCloseSubMenu = () => {
+        setSubMenuAnchor(null);
     };
 
     return (
@@ -47,9 +56,12 @@ const NavigationBar = () => {
 
                     <NavMenu
                         variant='mobile'
-                        anchor={navMenuAnchor}
-                        openMenu={handleOpenNavMenu}
-                        closeMenu={handleCloseNavMenu}
+                        mainMenuAnchor={navMenuAnchor}
+                        subMenuAnchor={subMenuAnchor}
+                        openMainMenu={handleOpenNavMenu}
+                        closeMainMenu={handleCloseNavMenu}
+                        openSubMenu={handleOpenSubMenu}
+                        closeSubMenu={handleCloseSubMenu}
                     />
 
                     <LogoAndBrand variant='mobile' />
@@ -57,15 +69,21 @@ const NavigationBar = () => {
                     <SearchBox />
 
                     <NavMenu
-                        anchor={navMenuAnchor}
-                        openMenu={handleOpenNavMenu}
-                        closeMenu={handleCloseNavMenu}
+                        mainMenuAnchor={navMenuAnchor}
+                        subMenuAnchor={subMenuAnchor}
+                        openMainMenu={handleOpenNavMenu}
+                        closeMainMenu={handleCloseNavMenu}
+                        openSubMenu={handleOpenSubMenu}
+                        closeSubMenu={handleCloseSubMenu}
                     />
 
                     <UserMenu
-                        anchor={userMenuAnchor}
-                        openMenu={handleOpenUserMenu}
-                        closeMenu={handleCloseUserMenu}
+                        userMenuAnchor={userMenuAnchor}
+                        subMenuAnchor={subMenuAnchor}
+                        openUserMenu={handleOpenUserMenu}
+                        closeUserMenu={handleCloseUserMenu}
+                        openSubMenu={handleOpenSubMenu}
+                        closeSubMenu={handleCloseSubMenu}
                     />
                 </Toolbar>
                 <Toolbar sx={xsToolbarSx}>

@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     title: {
         fontSize: `${vars.h8} !important`,
-        fontWeight: 'bold !important',
+        fontWeight: `${vars.bold} !important`,
         textAlign: 'center',
         margin: `${vars.tiny} auto ${vars.small} !important`,
 
@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         textTransform: 'uppercase',
         lineHeight: vars.xmedium,
         fontSize: vars.h9,
-        fontWeight: 600,
+        fontWeight: vars.thick,
     },
     flagIcon: {
         position: 'absolute !important' as 'absolute',
@@ -76,7 +76,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         padding: 0,
         width: '100%',
         '& p': {
-            fontWeight: 600,
+            fontWeight: vars.thick,
             fontSize: `${vars.h9} !important`,
         },
         '& div.MuiGrid-item': {

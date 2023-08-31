@@ -18,7 +18,7 @@ export const languageResourceKeys = Object.keys(resources);
 
 const i18nextOptions: InitOptions = {
     resources,
-    fallbackLng: 'en',
+    fallbackLng: ['en', 'vi'],
     interpolation: {
         escapeValue: false,
     },
@@ -59,8 +59,10 @@ export default i18n;
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 export const changeLanguageErrorHandler = (error: any) => {
+    if (!error) return;
+
     console.error('Failed to set preferred user language, default English is used.');
-    console.error(error);
+    console.error('error=' + JSON.stringify(error));
 
     const options = _cloneDeep(i18nextOptions);
     options.lng = 'en';

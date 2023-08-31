@@ -16,7 +16,7 @@ export const footerSx: SxProps<Theme> = {
 const useStyles = makeStyles(() => ({
     brand: {
         fontFamily: 'monospace',
-        fontWeight: 900,
+        fontWeight: vars.bold,
         letterSpacing: '.25rem',
         textTransform: 'uppercase',
     },

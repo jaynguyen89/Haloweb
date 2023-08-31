@@ -27,7 +27,9 @@ export const changeSiteLanguage = (
     i18next: i18n,
 ) => {
     localStorage.setItem(StorageKeys.DEFAULT_SITE_LANGUAGE, language);
-    i18next.changeLanguage(language, changeLanguageErrorHandler).then();
+    i18next
+        .changeLanguage(language, changeLanguageErrorHandler)
+        .then();
 
     return (dispatch: Dispatch) => dispatch({
         type: languageConstants.CHANGE_SITE_LANGUAGE,

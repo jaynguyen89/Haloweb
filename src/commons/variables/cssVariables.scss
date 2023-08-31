@@ -1,6 +1,13 @@
 @use 'src/commons/variables/variables' as vars;
 
 :export {
+  //font weights
+  thin: vars.$thin; // 100
+  light: vars.$light; // 300
+  regular: vars.$regular; // 500
+  thick: vars.$thick; // 700
+  bold: vars.$bold; // 900
+
   // typography
   xh1: vars.$xh1; // 80px
   mh1: vars.$mh1; // 78px

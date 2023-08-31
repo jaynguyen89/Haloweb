@@ -1,10 +1,11 @@
 import { SxProps, Theme } from '@mui/material';
 import { IMixins } from 'src/commons/interfaces';
+import vars from 'src/commons/variables/cssVariables.scss';
 
 export const brandSx: SxProps<Theme> = {
     mr: 2,
     fontFamily: 'monospace',
-    fontWeight: 900,
+    fontWeight: vars.bold,
     letterSpacing: '.25rem',
     color: 'inherit',
     textDecoration: 'none',
@@ -21,16 +22,6 @@ export const navMenuSx: SxProps<Theme> = {
 };
 
 export const subMenuSx: SxProps<Theme> = {
-    display: { xs: 'none', md: 'block' },
-    '& .MuiMenu-paper': (theme: Theme) => ({
-        backgroundColor: `${theme.palette.primary.light} !important;`,
-        color: `${theme.palette.primary.contrastText} !important;`,
-        boxShadow: (theme.mixins as IMixins).shadowDark,
-    }),
-};
-
-export const childMenuSx: SxProps<Theme> = {
-    display: { xs: 'none', md: 'block' },
     '& .MuiMenu-paper': (theme: Theme) => ({
         backgroundColor: `${theme.palette.primary.light} !important;`,
         color: `${theme.palette.primary.contrastText} !important;`,
@@ -45,6 +36,15 @@ export const userMenuSx: SxProps<Theme> = {
         color: `${theme.palette.primary.contrastText} !important;`,
         boxShadow: (theme.mixins as IMixins).shadowDark,
     }),
+};
+
+export const menuItemSx: SxProps<Theme> = {
+    pl: 0,
+    pr: 0,
+    '& p': {
+        pl: 2,
+        pr: 2,
+    },
 };
 
 export const xsToolbarSx: SxProps<Theme> = {

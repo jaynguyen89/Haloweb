@@ -1,5 +1,7 @@
-import { InputBase } from '@mui/material';
+import { alpha, InputBase, MenuProps, TypographyProps } from '@mui/material';
+import Menu from '@mui/material/Menu';
 import { styled } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
 
 export const SearchWrapper = styled('div')(({ theme }) => ({
     position: 'absolute',
@@ -47,4 +49,46 @@ export const StyledInputBase = styled(InputBase)(({ theme }) => ({
             width: '30ch',
         },
     },
+}));
+
+export const NavDropdown = styled((props: MenuProps) => (
+    <Menu
+        elevation={0}
+        anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+        }}
+        transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+        }}
+        {...props}
+    />
+))(({ theme }) => ({
+    '& .MuiPaper-root': {
+        borderRadius: 4,
+        marginTop: theme.spacing(1),
+        minWidth: 150,
+        '& .MuiMenu-list': {
+            padding: '4px 0',
+        },
+        '& .MuiMenuItem-root': {
+            '& .MuiSvgIcon-root': {
+                fontSize: 18,
+                marginRight: theme.spacing(1.5),
+            },
+            '&:active': {
+                backgroundColor: alpha(
+                    theme.palette.primary.main,
+                    theme.palette.action.selectedOpacity,
+                ),
+            },
+        },
+    },
+}));
+
+export const MenuText = styled(({children, ...props}: TypographyProps) => (
+    <Typography {...props}>{children}</Typography>
+))(({ theme: Theme }) => ({
+   width: '100%',
 }));

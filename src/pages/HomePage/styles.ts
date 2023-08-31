@@ -15,13 +15,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     heading: {
         fontSize: `${vars.h6} !important`,
-        fontWeight: '600 !important',
+        fontWeight: `${vars.thick} !important`,
         color: theme.palette.common.white,
         textShadow: (theme.mixins as IMixins).shadowDark,
     },
     description: {
         fontSize: `${vars.h9} !important`,
-        fontWeight: '300 !important',
+        fontWeight: `${vars.light} !important`,
         color: theme.palette.common.white,
         textShadow: (theme.mixins as IMixins).shadowDark,
     },

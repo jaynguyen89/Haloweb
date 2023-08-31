@@ -23,8 +23,9 @@ export interface ITranslation {
 
 export interface IMenuItem {
     title: string,
-    icon?: string, // use Font-Awesome icon name (ie. fas fa-user, far fa-facebook)
     endpoint?: string,
     separator?: true,
+    icon?: string, // use Font-Awesome icon name (ie. user, facebook)
+    authenticated?: true,
     children?: Array<Omit<IMenuItem, 'children'>>,
 }

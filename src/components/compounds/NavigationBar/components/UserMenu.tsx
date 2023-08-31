@@ -1,68 +1,68 @@
-import React, { FunctionComponent } from 'react';
-import { AccountCircle } from '@mui/icons-material';
+import React, { useState } from 'react';
 import { Badge, Theme, useTheme } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import Typography from '@mui/material/Typography';
+import { useTranslation } from 'react-i18next';
 import { AvatarPlaceholderImg } from 'src/assets/images';
+import { IMenuItem } from 'src/commons/interfaces';
+import FaIcon from 'src/components/atoms/FaIcon';
+import { SubMenu } from 'src/components/compounds/NavigationBar/components/NavMenu';
+import { userMenuItems } from 'src/components/compounds/NavigationBar/menusData';
 import { userMenuSx } from 'src/components/compounds/NavigationBar/styles';
 import { useNavigate } from 'react-router-dom';
 
-const guestSettings = ['Sign up', 'Log in'];
-const userSettings = ['Profile', 'Account', 'Dashboard', 'Preferences', 'Logout'];
-
-const UserMenu: FunctionComponent<{
-    userMenuAnchor: null | HTMLElement,
-    subMenuAnchor: null | HTMLElement,
-    openUserMenu: (event: React.MouseEvent<HTMLElement>) => void,
-    closeUserMenu: () => void,
-    openSubMenu: (event: React.MouseEvent<HTMLElement>) => void,
-    closeSubMenu: () => void,
-}> = ({
-    userMenuAnchor,
-    subMenuAnchor,
-    openUserMenu,
-    closeUserMenu,
-    openSubMenu,
-    closeSubMenu,
-}) => {
+const UserMenu = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const theme: Theme = useTheme();
 
+    const [userMenuAnchor, setUserMenuAnchor] = React.useState<null | HTMLElement>(null);
+    const [subMenuAnchor, setSubMenuAnchor] = useState<Record<string, null | HTMLElement>>({});
+
     const authenticated = false;
-    const settings = authenticated ? userSettings : guestSettings;
 
     return (
         <Box sx={{ flexGrow: 0 }}>
-            {
-                authenticated && (
-                    <>
-                        <IconButton size='large' aria-label='show 4 new mails' color='inherit'>
-                            <Badge badgeContent={4} color='error'>
-                                <AccountCircle />
-                            </Badge>
-                        </IconButton>
-                        <IconButton
-                            size='large'
-                            aria-label='show 17 new notifications'
-                            color='inherit'
-                        >
-                            <Badge badgeContent={17} color='error'>
-                                <AccountCircle />
-                            </Badge>
-                        </IconButton>
-                    </>
-                )
-            }
+            {authenticated && (
+                <>
+                    <IconButton
+                        size='large'
+                        aria-label='show 4 new mails'
+                        color='inherit'
+                    >
+                        <Badge badgeContent={4} color='error'>
+                            <FaIcon wrapper='i' ic='envelope' />
+                        </Badge>
+                    </IconButton>
 
-            <IconButton onClick={openUserMenu} sx={{ p: 0, ml: '5px' }}>
+                    <IconButton
+                        size='large'
+                        aria-label='show 17 new notifications'
+                        color='inherit'
+                    >
+                        <Badge badgeContent={17} color='error'>
+                            <FaIcon wrapper='i' ic='bell' />
+                        </Badge>
+                    </IconButton>
+                </>
+            )}
+
+            <IconButton
+                aria-controls='user-menu-dropdown'
+                aria-haspopup={authenticated}
+                onClick={(e) => {
+                    if (authenticated) setUserMenuAnchor(e.currentTarget);
+                    else navigate('/login');
+                }}
+                sx={{ p: 0, ml: '5px' }}
+            >
                 <Avatar alt='Remy Sharp' src={AvatarPlaceholderImg} />
             </IconButton>
             <Menu
-                id='menu-appbar'
+                id='user-menu-dropdown'
                 anchorEl={userMenuAnchor}
                 anchorOrigin={{
                     vertical: 'top',
@@ -74,16 +74,35 @@ const UserMenu: FunctionComponent<{
                     horizontal: 'right',
                 }}
                 open={Boolean(userMenuAnchor)}
-                onClose={closeUserMenu}
+                onClose={() => setUserMenuAnchor(null)}
                 sx={userMenuSx}
             >
-                {settings.map((setting) => (
-                    <MenuItem key={setting} onClick={() => {
-                        closeUserMenu();
-                        navigate('/login');
-                    }}>
-                        <Typography textAlign='left'>{setting}</Typography>
-                    </MenuItem>
+                {userMenuItems.map((menuItem: IMenuItem) => (
+                    <div key={menuItem.title}>
+                        <MenuItem
+                            aria-controls={`user-sub-menu-${menuItem.title}`}
+                            aria-haspopup={Boolean(menuItem.children)}
+                            onClick={(e) => {
+                                menuItem.endpoint
+                                    ? navigate(menuItem.endpoint)
+                                    : setSubMenuAnchor({ [menuItem.title]: e.currentTarget });
+                            }}
+                        >
+                            <FaIcon wrapper='i' ic={menuItem.icon} />
+                            <span style={{marginLeft: '10px'}}>{t(menuItem.title)}</span>
+                        </MenuItem>
+
+                        {
+                            menuItem.children &&
+                            <SubMenu
+                                isUserMenu
+                                menuItem={menuItem}
+                                subMenuAnchor={subMenuAnchor}
+                                setSubMenuAnchor={setSubMenuAnchor}
+                                setMainMenuAnchor={setUserMenuAnchor}
+                            />
+                        }
+                    </div>
                 ))}
             </Menu>
         </Box>

@@ -6,7 +6,6 @@ const vietnamese: ITranslation = {
         ...viCommons,
         navMenu: {
             'my-feeds': 'Tin Nổi Bật',
-            subscriptions: 'Theo Dõi',
             'my-deals': {
                 nav: 'Deals',
                 children: {
@@ -33,7 +32,17 @@ const vietnamese: ITranslation = {
                     purchases: 'Đơn Hàng Đã Mua',
                 },
             },
-            manage: 'Quản Lý',
+            explore: {
+                nav: 'Khám Phá',
+                children: {
+                    'buying-n-selling': 'Mua & Bán',
+                    'store-features': 'Mở Cửa Hàng',
+                    'listing-features': 'Đăng Bán Sản Phẩm',
+                    'shipping-features': 'Chuyển Phát Hàng Hóa',
+                    'about': 'Halo Marketplace',
+                },
+            },
+            'blog': 'Blog',
         },
         userMenu: {
             profile: {
@@ -41,12 +50,17 @@ const vietnamese: ITranslation = {
                 children: {
                     'view-profile': 'Xem Trang Cá Nhân',
                     'manage-addresses': 'Quản Lý Địa Chỉ',
-                    'interests-hobbies': 'Quan Tâm & Sở Thích',
+                    subscriptions: 'Theo Dõi',
                     'shopping-lists': 'Danh Sách Mua Sắm',
                 },
             },
-            'security-privacy': 'Bảo Mật & Riêng Tư',
-            preferences: 'Tuỳ Chỉnh Chung',
+            manage: {
+                nav: 'Quản Lý',
+                children: {
+                    'security-privacy': 'Bảo Mật & Riêng Tư',
+                    preferences: 'Tùy Chỉnh Chung',
+                },
+            },
             logout: 'Đăng Xuất',
         },
     },

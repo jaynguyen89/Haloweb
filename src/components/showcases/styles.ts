@@ -7,7 +7,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         margin: `${vars.large} 0`,
         padding: 0,
         '& span': {
-            fontWeight: 600,
+            fontWeight: vars.thick,
             fontSize: vars.sh8,
         },
     },

@@ -5,38 +5,28 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
-import React, { FunctionComponent } from 'react';
-import { childMenuSx, navMenuSx, subMenuSx } from 'src/components/compounds/NavigationBar/styles';
+import React, { FunctionComponent, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
+import { IMenuItem } from 'src/commons/interfaces';
+import FaIcon from 'src/components/atoms/FaIcon';
+import { MenuText, NavDropdown } from 'src/components/compounds/NavigationBar/components';
+import { menuItemSx, navMenuSx, subMenuSx } from 'src/components/compounds/NavigationBar/styles';
+import { authNavMenuItems, guestNavMenuItems } from 'src/components/compounds/NavigationBar/menusData';
 
-const pages = ['Products', 'Pricing', 'Blog'];
-
-/* eslint-disable  @typescript-eslint/no-explicit-any */
 const NavMenu: FunctionComponent<{
     variant?: 'mobile' | 'desktop',
-    mainMenuAnchor: null | HTMLElement,
-    subMenuAnchor: null | HTMLElement,
-    openMainMenu: (event: React.MouseEvent<HTMLElement>) => void,
-    closeMainMenu: () => void,
-    openSubMenu: (event: React.MouseEvent<HTMLElement>) => void,
-    closeSubMenu: () => void,
 }> = ({
     variant = 'desktop',
-    mainMenuAnchor,
-    subMenuAnchor,
-    openMainMenu,
-    closeMainMenu,
-    openSubMenu,
-    closeSubMenu,
 }) => {
-    const [childMenuAnchor, setChildMenuAnchor] = React.useState<null | HTMLElement>(null);
+    const [mainMenuAnchor, setMainMenuAnchor] = React.useState<null | HTMLElement>(null);
+    const [subMenuAnchor, setSubMenuAnchor] = useState<Record<string, null | HTMLElement>>({});
+    const authenticated = false;
 
-    const handleOpenChildMenu = (event: React.MouseEvent<HTMLElement>) => {
-        setChildMenuAnchor(event.currentTarget);
-    };
-
-    const handleCloseChildMenu = () => {
-        setChildMenuAnchor(null);
-    };
+    const navMenuItems = useMemo(
+        () => authenticated ? authNavMenuItems : guestNavMenuItems,
+        [authenticated],
+    );
 
     return (
         <Box
@@ -50,111 +40,199 @@ const NavMenu: FunctionComponent<{
         >
             {
                 (variant === 'mobile' && (
-                    <>
-                        <IconButton
-                            size='large'
-                            aria-controls='main-menu-mobile-variant'
-                            aria-haspopup='true'
-                            onClick={openMainMenu}
-                            color='inherit'
-                        >
-                            <MenuIcon color={'primary.dark' as any} />
-                        </IconButton>
-                        <Menu
-                            id='main-menu-mobile-variant'
-                            anchorEl={mainMenuAnchor}
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'left',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'left',
-                            }}
-                            open={Boolean(mainMenuAnchor)}
-                            onClose={closeMainMenu}
-                            sx={navMenuSx}
-                        >
-                            {pages.map((page) => (
-                                <MenuItem key={page} onClick={closeMainMenu}>
-                                    <Typography textAlign='center'>{page}</Typography>
-                                </MenuItem>
-                            ))}
-                        </Menu>
-                    </>
+                    <NavMenuMobile
+                        menuItems={navMenuItems}
+                        mainMenuAnchor={mainMenuAnchor}
+                        setMainMenuAnchor={setMainMenuAnchor}
+                        subMenuAnchor={subMenuAnchor}
+                        setSubMenuAnchor={setSubMenuAnchor}
+                    />
                 )) || (
-                    <>
-                        {pages.map((page) => (
-                            <>
-                                <Button
-                                    key={page}
-                                    aria-controls={`main-menu-desktop-variant-${page}`}
-                                    aria-haspopup='true'
-                                    onClick={openSubMenu}
-                                    sx={{ my: 2, color: 'black', display: 'block' }}
-                                >
-                                    {page}
-                                </Button>
-                                <Menu
-                                    id={`main-menu-desktop-variant-${page}`}
-                                    anchorEl={subMenuAnchor}
-                                    anchorOrigin={{
-                                        vertical: 'bottom',
-                                        horizontal: 'left',
-                                    }}
-                                    keepMounted
-                                    transformOrigin={{
-                                        vertical: 'top',
-                                        horizontal: 'left',
-                                    }}
-                                    open={Boolean(subMenuAnchor)}
-                                    onClose={closeSubMenu}
-                                    sx={subMenuSx}
-                                >
-                                    {pages.map((page) => (
-                                        <MenuItem key={page}>
-                                            <Typography
-                                                textAlign='center'
-                                                aria-controls={`main-menu-desktop-variant-${page}-test1`}
-                                                aria-haspopup='true'
-                                                onClick={handleOpenChildMenu}
-                                            >
-                                                {page}
-                                            </Typography>
-                                            <Menu
-                                                id={`main-menu-desktop-variant-${page}-test1`}
-                                                anchorEl={childMenuAnchor}
-                                                anchorOrigin={{
-                                                    vertical: 'bottom',
-                                                    horizontal: 'right',
-                                                }}
-                                                keepMounted
-                                                transformOrigin={{
-                                                    vertical: 'top',
-                                                    horizontal: 'left',
-                                                }}
-                                                open={Boolean(childMenuAnchor)}
-                                                onClose={handleCloseChildMenu}
-                                                sx={childMenuSx}
-                                            >
-                                                {pages.map((page) => (
-                                                    <MenuItem key={page} onClick={handleCloseChildMenu}>
-                                                        <Typography textAlign='center'>{page}</Typography>
-                                                    </MenuItem>
-                                                ))}
-                                            </Menu>
-                                        </MenuItem>
-                                    ))}
-                                </Menu>
-                            </>
-                        ))}
-                    </>
+                    <NavMenuDesktop
+                        menuItems={navMenuItems}
+                        subMenuAnchor={subMenuAnchor}
+                        setSubMenuAnchor={setSubMenuAnchor}
+                    />
                 )
             }
-
         </Box>
     );
 };
 
 export default NavMenu;
+
+
+type TNavDesktop = {
+    menuItems: Array<IMenuItem>,
+    subMenuAnchor: Record<string, null | HTMLElement>,
+    setSubMenuAnchor: React.Dispatch<Record<string, null | HTMLElement>>,
+};
+
+type TNavMobile = TNavDesktop & {
+    mainMenuAnchor: null | HTMLElement,
+    setMainMenuAnchor: React.Dispatch<null | HTMLElement>,
+};
+
+const NavMenuMobile = ({
+    menuItems,
+    mainMenuAnchor,
+    setMainMenuAnchor,
+    subMenuAnchor,
+    setSubMenuAnchor,
+}: TNavMobile) => {
+    const navigate = useNavigate();
+    const { t } = useTranslation();
+
+    return (
+        <>
+            <IconButton
+                size='large'
+                aria-controls='main-menu-mobile-variant'
+                aria-haspopup='true'
+                onClick={(e) => setMainMenuAnchor(e.currentTarget)}
+                color='inherit'
+            >
+                <MenuIcon color={'primary.dark' as 'primary'} />
+            </IconButton>
+            <Menu
+                id='main-menu-mobile-variant'
+                anchorEl={mainMenuAnchor}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                }}
+                keepMounted
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+                open={Boolean(mainMenuAnchor)}
+                onClose={() => setMainMenuAnchor(null)}
+                sx={navMenuSx}
+            >
+                {menuItems.map((menuItem) => (
+                    <div key={menuItem.title}>
+                        <MenuItem
+                            aria-controls={`main-menu-mobile-variant-${menuItem.title}`}
+                            aria-haspopup={Boolean(menuItem.children)}
+                            onClick={(e) => {
+                                menuItem.endpoint
+                                    ? navigate(menuItem.endpoint)
+                                    : setSubMenuAnchor({ [menuItem.title]: e.currentTarget });
+                            }}
+                        >
+                            <Typography>{t(menuItem.title)}</Typography>
+                        </MenuItem>
+
+                        {
+                            menuItem.children &&
+                            <SubMenu
+                                mobile
+                                menuItem={menuItem}
+                                subMenuAnchor={subMenuAnchor}
+                                setSubMenuAnchor={setSubMenuAnchor}
+                                setMainMenuAnchor={setMainMenuAnchor}
+                            />
+                        }
+                    </div>
+                ))}
+            </Menu>
+        </>
+    );
+};
+
+const NavMenuDesktop = ({
+    menuItems,
+    subMenuAnchor,
+    setSubMenuAnchor,
+}: TNavDesktop) => {
+    const navigate = useNavigate();
+    const { t } = useTranslation();
+    
+    return (
+        <>
+            {menuItems.map((menuItem: IMenuItem) => (
+                <div key={menuItem.title}>
+                    <Button
+                        aria-controls={`main-menu-desktop-variant-${menuItem.title}`}
+                        aria-haspopup={Boolean(menuItem.children)}
+                        onClick={(e) => {
+                            menuItem.endpoint
+                                ? navigate(menuItem.endpoint)
+                                : setSubMenuAnchor({ [menuItem.title]: e.currentTarget });
+                        }}
+                        sx={{ my: 2, color: 'black', display: 'block' }}
+                    >
+                        {t(menuItem.title)}
+                    </Button>
+
+                    {
+                        menuItem.children &&
+                        <SubMenu
+                            menuItem={menuItem}
+                            subMenuAnchor={subMenuAnchor}
+                            setSubMenuAnchor={setSubMenuAnchor}
+                        />
+                    }
+                </div>
+            ))}
+        </>
+    );
+};
+
+type TSubMenu = {
+    mobile?: true,
+    isUserMenu?: true,
+    menuItem: IMenuItem,
+    setMainMenuAnchor?: React.Dispatch<null | HTMLElement>,
+} & Omit<TNavDesktop, 'menuItems'>;
+
+export const SubMenu = ({
+    mobile,
+    isUserMenu,
+    menuItem,
+    subMenuAnchor,
+    setSubMenuAnchor,
+    setMainMenuAnchor,
+}: TSubMenu) => {
+    const navigate = useNavigate();
+    const { t } = useTranslation();
+
+    return (
+        <NavDropdown
+            id={`main-menu-${mobile ? 'mobile' : 'desktop'}-variant-${menuItem.title}`}
+            anchorEl={subMenuAnchor[menuItem.title]}
+            anchorOrigin={{
+                vertical: mobile || isUserMenu ? 'top' : 'bottom',
+                horizontal: mobile ? 'right' : 'left',
+            }}
+            keepMounted
+            transformOrigin={{
+                vertical: 'top',
+                horizontal: isUserMenu ? 'right' : 'left',
+            }}
+            open={Boolean(subMenuAnchor[menuItem.title])}
+            onClose={() => setSubMenuAnchor({})}
+            sx={subMenuSx}
+        >
+            {menuItem.children!.map((subMenuItem) => (
+                <MenuItem
+                    key={subMenuItem.title}
+                    sx={menuItemSx}
+                >
+                    <MenuText
+                        sx={{width: '100%'}}
+                        onClick={() => {
+                            navigate(subMenuItem.endpoint!);
+                            setSubMenuAnchor({});
+                            setMainMenuAnchor && setMainMenuAnchor(null);
+                        }}
+                    >
+                        <FaIcon wrapper='i' ic={subMenuItem.icon} />
+                        <span style={{marginLeft: '10px'}}>{t(subMenuItem.title)}</span>
+                    </MenuText>
+                </MenuItem>
+            ))}
+        </NavDropdown>
+    );
+};

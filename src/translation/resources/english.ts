@@ -6,7 +6,6 @@ const english: ITranslation = {
         ...enCommons,
         navMenu: {
             'my-feeds': 'My Feeds',
-            subscriptions: 'Subscriptions',
             'my-deals': {
                 nav: 'Deals',
                 children: {
@@ -33,7 +32,17 @@ const english: ITranslation = {
                     purchases: 'Purchases',
                 },
             },
-            manage: 'Manage',
+            explore: {
+                nav: 'Explore',
+                children: {
+                    'buying-n-selling': 'Buy & Sell Features',
+                    'store-features': 'Store Features',
+                    'listing-features': 'Listing Features',
+                    'shipping-features': 'Shipping Features',
+                    'about': 'About Halo Marketplace',
+                },
+            },
+            'blog': 'Blog',
         },
         userMenu: {
             profile: {
@@ -41,12 +50,17 @@ const english: ITranslation = {
                 children: {
                     'manage-profile': 'Manage Profile',
                     'manage-addresses': 'Manage Addresses',
-                    'interests-hobbies': 'Interests & Hobbies',
+                    subscriptions: 'Subscriptions',
                     'shopping-lists': 'Shopping Lists',
                 },
             },
-            'security-privacy': 'Security & Privacy',
-            preferences: 'Preferences',
+            manage: {
+                nav: 'Manage',
+                children: {
+                    'security-privacy': 'Security & Privacy',
+                    preferences: 'Preferences',
+                },
+            },
             logout: 'Sign Out',
         },
     },

@@ -14,6 +14,8 @@ const enCommons: TTranslationMap = {
     labels: {
         loading: 'Loading...',
         'please-wait': 'Please wait...',
+        'or': 'Or',
+        'and': 'And',
     },
 };
 

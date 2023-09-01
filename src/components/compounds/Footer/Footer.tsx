@@ -1,9 +1,9 @@
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
-import React, { useEffect } from 'react';
+import React from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import { FormControl, InputLabel, Select, SelectChangeEvent, useTheme } from '@mui/material';
+import { FormControl, InputLabel, Select, SelectChangeEvent } from '@mui/material';
 import Container from '@mui/material/Container';
 import { useTranslation } from 'react-i18next';
 import { connect, useDispatch } from 'react-redux';
@@ -24,8 +24,7 @@ const Footer = ({
     },
 }: ReturnType<typeof mapStateToProps>) => {
     const dispatch = useDispatch();
-    const { i18n } = useTranslation();
-    const theme = useTheme();
+    const { t, i18n } = useTranslation();
     const styles = useStyles();
 
     const handleSelectSiteLanguage = (event: SelectChangeEvent) => {
@@ -47,23 +46,25 @@ const Footer = ({
                             Halo Marketplace
                         </Typography>
                         <Typography variant='body2'>
-                            Initialized since July 2023 by <b>Jay Nguyen</b>
+                            {t('footer.project-intro', {whom: 'Jay Nguyen'})}
                         </Typography>
                     </Grid>
                     <Grid item md={2} xs={12} sx={{alignSelf: 'center'}}>
                         <FormControl size='small' fullWidth>
-                            <InputLabel id='language-select-label'>Site Language</InputLabel>
+                            <InputLabel id='language-select-label'>
+                                {t('footer.language-select.label')}
+                            </InputLabel>
                             <Select
                                 labelId='language-select-label'
-                                label='Site Language'
+                                label={t('footer.language-select.label')}
                                 value={selectedLanguage ?? detectedLanguage}
                                 onChange={handleSelectSiteLanguage}
                             >
                                 <MenuItem value='vi'>
-                                    <Typography variant='subtitle2'>Vietnamese</Typography>
+                                    <Typography variant='subtitle2'>{t('footer.language-select.vi')}</Typography>
                                 </MenuItem>
                                 <MenuItem value='en'>
-                                    <Typography variant='subtitle2'>English</Typography>
+                                    <Typography variant='subtitle2'>{t('footer.language-select.en')}</Typography>
                                 </MenuItem>
                             </Select>
                         </FormControl>

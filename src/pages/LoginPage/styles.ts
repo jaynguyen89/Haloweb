@@ -46,7 +46,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         fontWeight: `${vars.bold} !important`,
         textAlign: 'center',
         margin: `${vars.tiny} auto ${vars.small} !important`,
-
     },
     orLabel: {
         color: theme.palette.primary.dark,

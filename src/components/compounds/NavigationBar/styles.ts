@@ -3,10 +3,10 @@ import { IMixins } from 'src/commons/interfaces';
 import vars from 'src/commons/variables/cssVariables.scss';
 
 export const brandSx: SxProps<Theme> = {
-    mr: 2,
+    mr: vars.micro,
     fontFamily: 'monospace',
     fontWeight: vars.bold,
-    letterSpacing: '.25rem',
+    letterSpacing: vars.micro,
     color: 'inherit',
     textDecoration: 'none',
     textTransform: 'uppercase',
@@ -30,7 +30,7 @@ export const subMenuSx: SxProps<Theme> = {
 };
 
 export const userMenuSx: SxProps<Theme> = {
-    mt: '45px',
+    mt: vars.mh5,
     '& .MuiMenu-paper': (theme: Theme) => ({
         backgroundColor: `${theme.palette.primary.light} !important;`,
         color: `${theme.palette.primary.contrastText} !important;`,

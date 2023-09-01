@@ -14,6 +14,8 @@ const viCommons: TTranslationMap = {
     labels: {
         loading: 'Đang tải...',
         'please-wait': 'Vui lòng chờ...',
+        'or': 'Hoặc',
+        'and': 'Và',
     },
 };
 

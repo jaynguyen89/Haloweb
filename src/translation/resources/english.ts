@@ -6,6 +6,7 @@ const english: ITranslation = {
         ...enCommons,
         'recaptcha-intro': 'This site is protected by reCAPTCHA, and the Google <1>Privacy Policy</1> and <3>Terms of Service</3> apply.',
         navMenu: {
+            search: 'Search',
             'my-feeds': 'My Feeds',
             'my-deals': {
                 nav: 'Deals',
@@ -97,12 +98,36 @@ const english: ITranslation = {
             'family-name-label': 'Family name',
             'full-name-label': 'Is this how your Full Name looked like?',
             'gender-label': 'Gender',
+            'social-registration-text': 'Register with your social network account',
         },
         'forgot-password-page': {
             title: 'Forgot Password',
             'email-address-label': 'Email Address',
             'area-code-label': 'Area Code',
             'phone-number-label': 'Phone Number',
+        },
+        'reset-password-page': {
+            'reset-password-title': 'Set new password',
+            'change-password-title': 'Change password',
+            'email-address-label': 'Email address',
+            'phone-number-label': 'Phone number',
+            'username-label': 'Username',
+            'current-password-label': 'Current Password',
+            'new-password-label': 'New Password',
+            'new-password-confirm-label': 'Confirm New Password',
+        },
+        'otp-page': {
+            'otp-title': 'One-Time Password',
+            'tfa-title': 'Two-Factor PIN',
+            subtitle: 'Don\'t get your {{what}}? <1>Send it to your {{which}}</1>.',
+        },
+        'activate-account-page': {
+            title: 'Activate account',
+            'email-address-label': 'Email address',
+            'phone-number-label': 'Phone number',
+            'username-label': 'Username',
+            'secret-code-title': 'Please enter the secret code',
+            'secret-code-caption': 'The secret code has been sent to your {{which}} just now, please check your {{which}}.',
         },
     },
 };

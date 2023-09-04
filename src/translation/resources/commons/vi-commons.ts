@@ -17,6 +17,10 @@ const viCommons: TTranslationMap = {
         'or': 'Hoặc',
         'and': 'Và',
     },
+    texts: {
+        'email-address': 'địa chỉ email',
+        'phone-number': 'số điện thoại',
+    },
 };
 
 export default viCommons;

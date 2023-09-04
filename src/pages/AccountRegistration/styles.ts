@@ -19,6 +19,19 @@ export const registrationBoxSx: SxProps<Theme> = {
     boxShadow: (theme) => (theme.mixins as IMixins).shadowDark,
 };
 
+export const helpBoxSx: SxProps<Theme> = {
+    pl: vars.xxtiny,
+    pr: vars.xxtiny,
+    height: '100%',
+    minWidth: '14rem',
+    maxWidth: {
+        xs: '20rem',
+        sm: '34rem',
+        md: '50rem',
+    },
+    margin: `0 auto ${vars.small} auto`,
+};
+
 export const registrationFormSx: SxProps<Theme> = {
     mb: vars.xxsmall,
 };

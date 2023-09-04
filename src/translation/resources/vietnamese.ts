@@ -6,6 +6,7 @@ const vietnamese: ITranslation = {
         ...viCommons,
         'recaptcha-intro': 'Trang này được bảo vệ bởi reCAPTCHA, các <1>Chính sách riêng tư</1> và <3>Điều khoản dịch vụ</3> của Google được áp dụng.',
         navMenu: {
+            search: 'Tìm Kiếm',
             'my-feeds': 'Tin Nổi Bật',
             'my-deals': {
                 nav: 'Deals',
@@ -97,12 +98,36 @@ const vietnamese: ITranslation = {
             'family-name-label': 'Họ',
             'full-name-label': 'Đây có phải là tên đầy đủ của bạn?',
             'gender-label': 'Giới tính',
+            'social-registration-text': 'Đăng ký với tài khoản mạng xã hội',
         },
         'forgot-password-page': {
             title: 'Quên mật khẩu',
             'email-address-label': 'Địa chỉ email',
             'area-code-label': 'Mã vùng',
             'phone-number-label': 'Số điện thoại',
+        },
+        'reset-password-page': {
+            'reset-password-title': 'Đặt lại mật khẩu',
+            'change-password-title': 'Thay đổi mật khẩu',
+            'email-address-label': 'Địa chỉ email',
+            'phone-number-label': 'Số điện thoại',
+            'username-label': 'Username',
+            'current-password-label': 'Mật khẩu hiện tại',
+            'new-password-label': 'Mật khẩu mới',
+            'new-password-confirm-label': 'Xác nhận mật khẩu mới',
+        },
+        'otp-page': {
+            'otp-title': 'Xác thực OTP',
+            'tfa-title': 'Xác thực 2 bước (PIN)',
+            subtitle: 'Không nhận được {{what}} của bạn? <1>Gửi nó đến {{which}}</1>.',
+        },
+        'activate-account-page': {
+            title: 'Kích hoạt tài khoản',
+            'email-address-label': 'Địa chỉ email',
+            'phone-number-label': 'Số điện thoại',
+            'username-label': 'Username',
+            'secret-code-title': 'Vui lòng nhập mã bảo mật',
+            'secret-code-caption': 'Mã bảo mật vừa được gửi đến {{which}} của bạn, kiểm tra {{which}} nhé!',
         },
     },
 };

@@ -10,15 +10,10 @@ import {
 } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
-import React, { lazy, Suspense, useEffect, useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { AnyAction } from 'redux';
+import React, { lazy, Suspense, useMemo, useState } from 'react';
 import Page from 'src/components/atoms/Page/Page';
 import Loading from 'src/components/molecules/StatusIndicators/Loading/Loading';
-import CustomFormUiShowcase from 'src/components/showcases/components/CustomFormUiShowcase';
 import useStyles from 'src/components/showcases/styles';
-import Stages from 'src/models/enums/stage';
-import { setStage } from 'src/redux/actions/stageActions';
 import _isEqual from 'lodash/isEqual';
 
 import { ThemeDay } from 'src/commons/themes/day';
@@ -40,6 +35,7 @@ const SpinnerShowcase = lazy(() => import('src/components/showcases/components/S
 const ToastShowcase = lazy(() => import('src/components/showcases/components/ToastShowcase'));
 const CountryFlagsShowcase = lazy(() => import('src/components/showcases/components/CountryFlagsShowcase'));
 const SocialIconsShowcase = lazy(() => import('src/components/showcases/components/SocialIconsShowcase'));
+const NumberCellShowcase = lazy(() => import('src/components/showcases/components/NumberCellShowcase'));
 
 const components = [
     {
@@ -83,9 +79,9 @@ const components = [
         showcase: <SocialIconsShowcase />,
     },
     {
-        key: 'custom-form-ui',
-        label: 'Form Elements with Icon',
-        showcase: <CustomFormUiShowcase />,
+        key: 'number-cell',
+        label: 'Number Cell',
+        showcase: <NumberCellShowcase />,
     },
 ];
 
@@ -104,7 +100,6 @@ const themes = [
 
 const Showcases = () => {
     const styles = useStyles();
-    const dispatch = useDispatch();
     const [selectedComponent, setSelectedComponent] = useState(components[0].key);
     const [selectedTheme, setSelectedTheme] = useState(useTheme() as Theme);
 
@@ -117,13 +112,6 @@ const Showcases = () => {
         const found = components.filter(item => item.key === selectedComponent)[0];
         return { componentName: found.label, showcase: found.showcase };
     }, [selectedComponent]);
-
-    useEffect(() => {
-        dispatch(setStage({
-            name: Stages.HIDE_SITE_HEADER,
-            canClear: false,
-        }) as unknown as AnyAction);
-    });
 
     const handleSelectTheme = (e: SelectChangeEvent) => {
         const found = themes.filter(item => item.key === e.target.value)[0];

@@ -41,7 +41,7 @@ const Footer = ({
         <Box sx={{ ...footerSx }}>
             <Container maxWidth='xl'>
                 <Grid container spacing={2}>
-                    <Grid item md={10} xs={12}>
+                    <Grid item md={10} sm={6} xs={12}>
                         <Typography variant='h5' className={styles.brand}>
                             Halo Marketplace
                         </Typography>
@@ -49,7 +49,7 @@ const Footer = ({
                             {t('footer.project-intro', {whom: 'Jay Nguyen'})}
                         </Typography>
                     </Grid>
-                    <Grid item md={2} xs={12} sx={{alignSelf: 'center'}}>
+                    <Grid item md={2} sm={6} xs={12} sx={{alignSelf: 'center'}}>
                         <FormControl size='small' fullWidth>
                             <InputLabel id='language-select-label'>
                                 {t('footer.language-select.label')}

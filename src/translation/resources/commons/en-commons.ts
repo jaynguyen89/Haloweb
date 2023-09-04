@@ -17,6 +17,10 @@ const enCommons: TTranslationMap = {
         'or': 'Or',
         'and': 'And',
     },
+    texts: {
+        'email-address': 'email address',
+        'phone-number': 'phone number',
+    },
 };
 
 export default enCommons;

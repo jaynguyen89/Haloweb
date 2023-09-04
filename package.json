@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "setup:win": "rmdir /s /q node_modules & del package-lock.json & npm install --legacy-peer-deps",
+    "setup:win": "rmdir node_modules /s /q & del package-lock.json & npm install --legacy-peer-deps",
     "setup:lin": "rm -r node_modules & rm package-lock.json & npm install --legacy-peer-deps",
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -59,6 +59,7 @@
     "@types/jest": "^27.5.2",
     "@types/lodash": "^4.14.195",
     "@types/react-google-recaptcha": "^2.1.5",
+    "@types/react-helmet": "^6.1.6",
     "enzyme": "^3.11.0",
     "jest": "^27.5.1",
     "sass": "^1.63.6"

@@ -1,5 +1,6 @@
 import SearchIcon from '@mui/icons-material/Search';
 import React, { FunctionComponent } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     SearchIconWrapper,
     SearchWrapper,
@@ -13,6 +14,7 @@ const SearchBox: FunctionComponent<{
 }> = ({
     variant = 'desktop',
 }) => {
+    const { t } = useTranslation();
     const Wrapper = variant === 'mobile' ? XsSearch : SearchWrapper;
     const authenticated = false;
     const isMobileView = variant === 'mobile';
@@ -30,7 +32,7 @@ const SearchBox: FunctionComponent<{
                 <SearchIcon color={'primary.dark' as any} />
             </SearchIconWrapper>
             <StyledInputBase
-                placeholder='Search…'
+                placeholder={t('navMenu.search')}
                 inputProps={{ 'aria-label': 'search' }}
             />
         </Wrapper>

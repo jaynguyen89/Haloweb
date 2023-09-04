@@ -4,37 +4,33 @@ import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
-import React, { useEffect } from 'react';
+import React from 'react';
+import { Helmet } from 'react-helmet';
 import { Trans, useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { AnyAction } from 'redux';
 import CountryFlag from 'src/components/atoms/CountryFlag/CountryFlag';
 import FaIcon from 'src/components/atoms/FaIcon';
+import Recaptcha from 'src/components/atoms/Recaptcha';
 import SocialIcons from 'src/components/atoms/SocialIcons/SocialIcons';
-import Stages from 'src/models/enums/stage';
 import useStyles, { helpBoxSx, loginBoxSx, loginFormSx } from 'src/pages/LoginPage/styles';
-import { setStage } from 'src/redux/actions/stageActions';
 import { faFingerprint } from '@fortawesome/free-solid-svg-icons/faFingerprint';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons/faPaperPlane';
 import vars from 'src/commons/variables/cssVariables.scss';
 
 const LoginPage = () => {
-    const {t} = useTranslation();
-    const dispatch = useDispatch();
+    const { t } = useTranslation();
     const styles = useStyles();
-
-    useEffect(() => {
-        dispatch(setStage({
-            name: Stages.HIDE_SITE_HEADER,
-            canClear: false,
-        }) as unknown as AnyAction);
-    });
 
     return (
         <div className={styles.loginWrapper}>
+            <Helmet>
+                <title>Sign into Halo Marketplace</title>
+                <link rel='canonical' href={window.location.href} />
+                <meta name='description' content='Sign in with email address or phone number, or using social media accounts' />
+            </Helmet>
+
             <Box sx={loginBoxSx}>
-                <Typography className={styles.title}>
+                <Typography variant='h1' className={styles.title}>
                     {t('login-page.title')}&nbsp;
                     <FaIcon wrapper='fa' t='obj' ic={faFingerprint} />
                 </Typography>
@@ -88,6 +84,11 @@ const LoginPage = () => {
                         <FormControlLabel
                             control={<Checkbox defaultChecked/>}
                             label={t('login-page.trusted-checkbox-text')}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Recaptcha
+                            onChange={(token) => console.log(token)}
                         />
                     </Grid>
                     <Grid item xs={12}>

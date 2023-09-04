@@ -19,7 +19,7 @@ const ForgotPassword = () => {
     return (
         <div className={styles.forgotPasswordWrapper}>
             <Box sx={forgotPasswordBoxSx}>
-                <Typography className={styles.title}>
+                <Typography variant='h1' className={styles.title}>
                     {t('forgot-password-page.title')}&nbsp;
                     <FaIcon wrapper='fa' t='obj' ic={faUnlock} />
                 </Typography>

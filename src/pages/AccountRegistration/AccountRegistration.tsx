@@ -10,7 +10,9 @@ import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import CountryFlag from 'src/components/atoms/CountryFlag/CountryFlag';
 import FaIcon from 'src/components/atoms/FaIcon';
-import useStyles, { registrationBoxSx, registrationFormSx } from 'src/pages/AccountRegistration/styles';
+import Recaptcha from 'src/components/atoms/Recaptcha';
+import SocialIcons from 'src/components/atoms/SocialIcons/SocialIcons';
+import useStyles, { registrationBoxSx, registrationFormSx, helpBoxSx } from 'src/pages/AccountRegistration/styles';
 
 const AccountRegistration = () => {
     const { t } = useTranslation();
@@ -19,7 +21,7 @@ const AccountRegistration = () => {
     return (
         <div className={styles.registrationWrapper}>
             <Box sx={registrationBoxSx}>
-                <Typography className={styles.title}>
+                <Typography variant='h1' className={styles.title}>
                     {t('registration-page.title')}&nbsp;
                     <FaIcon wrapper='fa' t='obj' ic={faCircleUser}/>
                 </Typography>
@@ -131,6 +133,11 @@ const AccountRegistration = () => {
                         />
                     </Grid>
                     <Grid item xs={12}>
+                        <Recaptcha
+                            onChange={(token) => console.log(token)}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
                         <Button
                             variant='contained'
                             className={styles.submitButton}
@@ -140,6 +147,19 @@ const AccountRegistration = () => {
                         </Button>
                     </Grid>
                 </Grid>
+            </Box>
+            <Box sx={helpBoxSx}>
+                <p>{t('registration-page.social-registration-text')}</p>
+                <SocialIcons
+                    icons={[
+                        {iconName: 'facebook'},
+                        {iconName: 'google'},
+                        {iconName: 'twitter'},
+                        {iconName: 'instagram'},
+                        {iconName: 'microsoft'},
+                        {iconName: 'linkedin'},
+                    ]}
+                />
             </Box>
         </div>
     );

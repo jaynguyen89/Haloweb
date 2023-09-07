@@ -6,6 +6,7 @@ import { AnyAction } from 'redux';
 import App from 'src/foundation/App';
 import store from 'src/foundation/store';
 import { prefetchAccountDataOnLaunch } from 'src/redux/actions/authenticationActions';
+import { prefetchPublicDataOnLaunch } from 'src/redux/actions/publicDataActions';
 import { prefetchDefaultTheme } from './redux/actions/themeActions';
 
 import i18next from 'src/translation/i18next';
@@ -16,6 +17,7 @@ const root = ReactDOM.createRoot(
 
 store.dispatch(prefetchAccountDataOnLaunch() as unknown as AnyAction);
 store.dispatch(prefetchDefaultTheme() as unknown as AnyAction);
+store.dispatch(prefetchPublicDataOnLaunch() as unknown as AnyAction);
 
 root.render(
     <React.StrictMode>

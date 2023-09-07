@@ -5,15 +5,19 @@ import _remove from 'lodash/remove';
 
 export interface IStage {
     name: string,
+    code?: string,
+    message?: string,
     canClear?: boolean,
 }
 
 export interface IStageStore {
     stages: Array<IStage>;
+    errorData: object | null,
 }
 
 const initialState: IStageStore = {
     stages: new Array<IStage>(),
+    errorData: null,
 };
 
 const reducer = produce((state: IStageStore, action: AnyAction) => {
@@ -37,6 +41,12 @@ const reducer = produce((state: IStageStore, action: AnyAction) => {
             return;
         case stageConstants.DANGEROUSLY_CLEAR_ALL_STAGE:
             state.stages = new Array<IStage>();
+            return;
+        case stageConstants.SET_ERROR_DATA:
+            state.errorData = action.payload;
+            return;
+        case stageConstants.REMOVE_ERROR_DATA:
+            state.errorData = null;
             return;
         default:
             return;

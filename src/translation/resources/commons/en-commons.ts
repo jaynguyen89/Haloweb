@@ -21,6 +21,9 @@ const enCommons: TTranslationMap = {
         'email-address': 'email address',
         'phone-number': 'phone number',
     },
+    messages: {
+        'error-network': 'Please check your internet connection or proxy configurations.',
+    },
 };
 
 export default enCommons;

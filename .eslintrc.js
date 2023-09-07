@@ -37,7 +37,7 @@ module.exports = {
         'default-param-last': 'error',
         'dot-notation': ['error', { allowPattern: '^[a-z]+(_[a-z]+)+$' }],
         'func-style': ['error', 'expression'],
-        'max-depth': ['error', 3],
+        'max-depth': ['error', 5],
         'max-len': ['error', {
             code: 150,
             tabWidth: 4,

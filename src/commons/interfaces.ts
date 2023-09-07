@@ -29,3 +29,10 @@ export interface IMenuItem {
     authenticated?: true,
     children?: Array<Omit<IMenuItem, 'children'>>,
 }
+
+export interface IErrorCodeData {
+    isHandled: boolean,
+    statusCodeName: string,
+    message?: string,
+    value?: object,
+}

@@ -25,3 +25,10 @@ export enum RequestContentTypes {
     HTML = 'text/html',
     PLAIN = 'text/plain',
 }
+
+export enum ControllerEndpoints {
+    AUTHENTICATION = 'authentication',
+    ACCOUNT = 'account',
+    PROFILE = 'profile',
+    PUBLIC_DATA = 'public-data',
+}

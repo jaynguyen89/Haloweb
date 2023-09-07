@@ -1,13 +1,15 @@
+import configs from 'src/commons/configs';
+
 class RequestOption {
-    shouldRetryOnFailure: boolean;
     shouldIncludeCookies: boolean;
+    shouldRetryOnFailure: boolean;
     retryInterval?: number;
     retryThreshold?: number;
     cookiesToIncludeByKeys?: Array<string>;
 
     constructor(
-        shouldRetryOnFailure: boolean,
         shouldIncludeCookies: boolean,
+        shouldRetryOnFailure?: boolean,
         retryInterval?: number,
         retryThreshold?: number,
         cookiesToIncludeByKeys?: Array<string>,
@@ -15,10 +17,10 @@ class RequestOption {
         if (shouldRetryOnFailure && (!retryInterval || !retryThreshold))
             throw new Error('Please specify \'retryInterval\' and \'retryThreshold\' when enabling \'shouldRetryOnFailure\'.');
 
-        this.shouldRetryOnFailure = shouldRetryOnFailure;
         this.shouldIncludeCookies = shouldIncludeCookies;
-        this.retryInterval = retryInterval;
-        this.retryThreshold = retryThreshold;
+        this.shouldRetryOnFailure = shouldRetryOnFailure ?? configs.requestShouldRetryOnFailure;
+        this.retryInterval = retryInterval ?? configs.requestRetryInterval;
+        this.retryThreshold = retryThreshold ?? configs.requestRetryThreshold;
         this.cookiesToIncludeByKeys = cookiesToIncludeByKeys;
     }
 }

@@ -4,7 +4,6 @@ import RequestOption from 'src/fetcher/RequestOption';
 import configs from 'src/commons/configs';
 import Request from 'src/fetcher/Request';
 import IAuthenticatedUser from 'src/models/AuthenticatedUser';
-import assert from 'assert';
 
 class RequestBuilder<T> {
     baseUrl: string;
@@ -45,6 +44,7 @@ class RequestBuilder<T> {
         return this;
     }
 
+    /* Pass the endpoint without leading or trailing slashes */
     public withEndpoint(endpoint: string): RequestBuilder<T> {
         this.endpoint = endpoint;
         return this;
@@ -136,7 +136,7 @@ class RequestBuilder<T> {
         return this;
     }
 
-    public build(authenticatedUser: IAuthenticatedUser): Request<T> {
+    public build(authenticatedUser?: IAuthenticatedUser): Request<T> {
         if ((this.method === RequestMethods.GET || this.method === RequestMethods.DELETE) && (this.body || this.form))
             throw new Error('The request METHOD is invalid, consider to use \'POST\', or \'PUT\', or \'PATCH\'.');
 
@@ -173,7 +173,7 @@ class RequestBuilder<T> {
         return endpointUrl;
     }
 
-    private buildHeaders(authenticatedUser: IAuthenticatedUser): Record<string, string | undefined> {
+    private buildHeaders(authenticatedUser?: IAuthenticatedUser): Record<string, string | undefined> {
         const authenticationHeaders = authenticatedUser
             ? {
                 UserId: authenticatedUser.userId,
@@ -227,44 +227,44 @@ class RequestBuilder<T> {
     private buildInterceptorChains(): [InterceptorChain | undefined, InterceptorChain | undefined] {
         let requestInterceptorChain = undefined;
         let responseInterceptorChain = undefined;
-        
-        let nextInterceptor = undefined;
+
+        let currentInterceptorChain = undefined;
         let nextInterceptorChain = undefined;
         
         if (this.requestInterceptors) {
-            for (let i = 0; i < this.requestInterceptors.length; i++) {
-                nextInterceptor = this.requestInterceptors[i + 1];
-                
+            if (this.requestInterceptors.length === 1) requestInterceptorChain = new InterceptorChain(this.requestInterceptors[0].callback);
+            else for (let i = 0; i < this.requestInterceptors.length; i++) {
                 if (i === 0) {
-                    nextInterceptorChain = new InterceptorChain(nextInterceptor.callback, undefined);
+                    nextInterceptorChain = new InterceptorChain(this.requestInterceptors[i + 1].callback);
                     requestInterceptorChain = new InterceptorChain(this.requestInterceptors[i].callback, nextInterceptorChain);
                     continue;
                 }
-                
+
                 if (i === this.requestInterceptors.length - 1) continue;
-                
-                assert(nextInterceptorChain !== undefined);
-                nextInterceptorChain.next = new InterceptorChain(nextInterceptor.callback, undefined);
+
+                currentInterceptorChain = nextInterceptorChain;
+                nextInterceptorChain = new InterceptorChain(this.requestInterceptors[i + 1].callback);
+                currentInterceptorChain!.next = nextInterceptorChain;
             }
         }
 
-        nextInterceptor = undefined;
+        currentInterceptorChain = undefined;
         nextInterceptorChain = undefined;
         
         if (this.responseInterceptors) {
-            for (let i = 0; i < this.responseInterceptors.length; i++) {
-                nextInterceptor = this.responseInterceptors[i + 1];
-
+            if (this.responseInterceptors.length === 1) responseInterceptorChain = new InterceptorChain(this.responseInterceptors[0].callback);
+            else for (let i = 0; i < this.responseInterceptors.length; i++) {
                 if (i === 0) {
-                    nextInterceptorChain = new InterceptorChain(nextInterceptor.callback, undefined);
+                    nextInterceptorChain = new InterceptorChain(this.responseInterceptors[i + 1].callback);
                     responseInterceptorChain = new InterceptorChain(this.responseInterceptors[i].callback, nextInterceptorChain);
                     continue;
                 }
 
                 if (i === this.responseInterceptors.length - 1) continue;
 
-                assert(nextInterceptorChain !== undefined);
-                nextInterceptorChain.next = new InterceptorChain(nextInterceptor.callback, undefined);
+                currentInterceptorChain = nextInterceptorChain;
+                nextInterceptorChain = new InterceptorChain(this.responseInterceptors[i + 1].callback);
+                currentInterceptorChain!.next = nextInterceptorChain;
             }
         }
         

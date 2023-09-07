@@ -21,6 +21,9 @@ const viCommons: TTranslationMap = {
         'email-address': 'địa chỉ email',
         'phone-number': 'số điện thoại',
     },
+    messages: {
+        'error-network': 'Vui lòng kiểm tra kết nối mạng internet hoặc  thiết lập proxy.',
+    },
 };
 
 export default viCommons;

@@ -49,7 +49,7 @@ const Routers = () => {
     return (
         <Routes>
             { isDevEnvironment && <Route path='/showcases' element={<Showcases />} /> }
-            {routes.map((route) => <Route {...route} />)}
+            {routes.map((route) => <Route key={route.path!.slice(1)} {...route} />)}
         </Routes>
     );
 };

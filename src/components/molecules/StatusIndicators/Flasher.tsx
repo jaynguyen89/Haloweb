@@ -1,17 +1,21 @@
-import React from 'react';
-import { Alert, AlertProps, Collapse, CollapseProps, IconButton } from '@mui/material';
+import React, { useMemo } from 'react';
+import { Alert, AlertColor, AlertProps, Collapse, CollapseProps, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { useIsStageIncluded } from 'src/hooks/useStage';
+import { useTranslation } from 'react-i18next';
+import { useDispatch } from 'react-redux';
+import { AnyAction } from 'redux';
+import { useGetStageByName, useIsStageIncluded } from 'src/hooks/useStage';
+import Stages from 'src/models/enums/stage';
 import { removeStage } from 'src/redux/actions/stageActions';
 
 type TFlasher = CollapseProps & AlertProps & {
-    message: string,
     stage: string,
+    message?: string,
 };
 
 const Flasher = ({
-    message,
     stage,
+    message,
     orientation = 'vertical',
     severity = 'info',
     variant = 'standard',
@@ -19,7 +23,26 @@ const Flasher = ({
         mb: 2,
     },
 }: TFlasher) => {
+    const { t } = useTranslation();
+    const dispatch = useDispatch();
     const visible = stage === 'showcase' || useIsStageIncluded(stage);
+    const stageFromStore = useGetStageByName(stage);
+
+    message = useMemo(() => {
+        if (stage === Stages.SHOW_FLASHER_SERVER_ERROR && stageFromStore)
+            return stageFromStore.message;
+
+        return message;
+    }, [stage, stageFromStore]);
+
+    severity = useMemo(() => {
+        if (stage === Stages.SHOW_FLASHER_SERVER_ERROR && stageFromStore)
+            return stageFromStore.type as AlertColor;
+
+        return severity;
+    }, [stage, stageFromStore]);
+
+    const handleHideFlasher = () => dispatch(removeStage(stage) as unknown as AnyAction);
 
     return (
         <Collapse in={visible} orientation={orientation}>
@@ -29,7 +52,7 @@ const Flasher = ({
                         aria-label='close'
                         color='inherit'
                         size='small'
-                        onClick={() => stage !== 'showcase' && removeStage(stage)}
+                        onClick={() => stage !== 'showcase' && handleHideFlasher()}
                     >
                         <CloseIcon fontSize='inherit' />
                     </IconButton>
@@ -38,7 +61,7 @@ const Flasher = ({
                 severity={severity}
                 variant={variant}
             >
-                {message}
+                {t(message)}
             </Alert>
         </Collapse>
     );

@@ -1,5 +1,7 @@
 import React from 'react';
 import { Alert, AlertProps, IconButton, Snackbar, SnackbarOrigin, SnackbarProps } from '@mui/material';
+import { useDispatch } from 'react-redux';
+import { AnyAction } from 'redux';
 import { useIsStageIncluded } from 'src/hooks/useStage';
 import { removeStage } from 'src/redux/actions/stageActions';
 import CloseIcon from '@mui/icons-material/Close';
@@ -20,13 +22,16 @@ const Toast = ({
     position = { vertical: 'bottom', horizontal: 'right' },
     ...rest
 }: TToast) => {
+    const dispatch = useDispatch();
     const visible = stage === 'showcase' || useIsStageIncluded(stage);
+
+    const handleHideToast = () => dispatch(removeStage(stage) as unknown as AnyAction);
 
     return (
         <Snackbar
             open={visible}
             autoHideDuration={autoHideDuration}
-            onClose={autoHideDuration ? () => removeStage(stage) : undefined}
+            onClose={autoHideDuration ? () => handleHideToast() : undefined}
             anchorOrigin={position}
             {...rest}
         >
@@ -36,7 +41,7 @@ const Toast = ({
                         aria-label='close'
                         color='inherit'
                         size='small'
-                        onClick={() => stage !== 'showcase' && removeStage(stage)}
+                        onClick={() => stage !== 'showcase' && handleHideToast()}
                     >
                         <CloseIcon fontSize='inherit' />
                     </IconButton>

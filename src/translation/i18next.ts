@@ -38,9 +38,8 @@ i18n
     .use(initReactI18next)
     .init(
         i18nextOptions,
-        (error) => {
+        () => {
             console.error('Failed to detect user language, default English is used.');
-            console.error(error);
 
             const options = _cloneDeep(i18nextOptions);
             options.lng = 'en';

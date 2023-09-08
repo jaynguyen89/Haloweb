@@ -32,7 +32,8 @@ export interface IMenuItem {
 
 export interface IErrorCodeData {
     isHandled: boolean,
-    statusCodeName: string,
+    statusCodeName?: string,
+    StatusCodeName?: string,
     message?: string,
     value?: object,
 }

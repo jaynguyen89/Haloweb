@@ -1,14 +1,14 @@
+import { AlertColor } from '@mui/material';
 import { Dispatch } from 'redux';
-import { IErrorCodeData } from 'src/commons/interfaces';
 import * as stageConstants from 'src/redux/constants/stageConstants';
 import { IStage } from '../reducers/stageReducer';
 
-export const setStageByName = (stage: string, code?: string, message?: string) => {
+export const setStageByName = (stage: string, type?: AlertColor, message?: string) => {
     return (dispatch: Dispatch) => dispatch({
         type: stageConstants.SET_STAGE,
         payload: {
             name: stage,
-            code,
+            type,
             message,
             canClear: true,
         } as IStage,
@@ -58,5 +58,18 @@ export const setErrorData = (data: object) => {
 export const removeErrorData = () => {
     return (dispatch: Dispatch) => dispatch({
         type: stageConstants.REMOVE_ERROR_DATA,
+    });
+};
+
+export const setStatusCode = (statusCode: number) => {
+    return (dispatch: Dispatch) => dispatch({
+        type: stageConstants.SET_STATUS_CODE,
+        payload: statusCode,
+    });
+};
+
+export const removeStatusCode = () => {
+    return (dispatch: Dispatch) => dispatch({
+        type: stageConstants.REMOVE_STATUS_CODE,
     });
 };

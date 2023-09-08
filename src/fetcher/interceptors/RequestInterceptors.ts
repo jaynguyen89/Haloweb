@@ -4,7 +4,7 @@ import { Interceptor } from 'src/fetcher/Interceptor';
 
 const InitializingInterceptor = new Interceptor(
     InterceptorTarget.REQUEST,
-    (_: Dispatch) => console.log('request interceptor: awaiting implementation'),
+    (_: Dispatch) => 'request interceptor: awaiting implementation',
 );
 
 const requestInterceptors: Array<Interceptor> = [

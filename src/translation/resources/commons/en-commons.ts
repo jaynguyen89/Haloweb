@@ -22,7 +22,9 @@ const enCommons: TTranslationMap = {
         'phone-number': 'phone number',
     },
     messages: {
-        'error-network': 'Please check your internet connection or proxy configurations.',
+        'error-network': 'Network error: please check your internet connection or proxy configurations.',
+        'error-500': '500 - Internal Server Error: An unknown issue has happened in our side. Please try again later.',
+        'error-501': '501 - Not Implemented: The requested feature is unavailable.',
     },
 };
 

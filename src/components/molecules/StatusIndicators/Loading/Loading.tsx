@@ -28,13 +28,11 @@ const Loading = ({
     if (!visible) return null;
 
     return (
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <div data-title={variants[variant]}>
-                <div className='stage'>
-                    <div className={variants[variant]} />
-                </div>
+        <div data-title={variants[variant]}>
+            <div className='stage'>
+                <div className={variants[variant]} />
             </div>
-        </Box>
+        </div>
     );
 };
 

@@ -18,3 +18,9 @@ export type T_SET_ERROR_DATA = typeof SET_ERROR_DATA;
 
 export const REMOVE_ERROR_DATA = 'REMOVE_ERROR_DATA';
 export type T_REMOVE_ERROR_DATA = typeof REMOVE_ERROR_DATA;
+
+export const SET_STATUS_CODE = 'SET_STATUS_CODE';
+export type T_SET_STATUS_CODE = typeof SET_STATUS_CODE;
+
+export const REMOVE_STATUS_CODE = 'REMOVE_STATUS_CODE';
+export type T_REMOVE_STATUS_CODE = typeof REMOVE_STATUS_CODE;

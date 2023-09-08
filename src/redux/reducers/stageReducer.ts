@@ -1,3 +1,4 @@
+import { AlertColor } from '@mui/material';
 import produce from 'immer';
 import * as stageConstants from 'src/redux/constants/stageConstants';
 import { AnyAction } from 'redux';
@@ -5,14 +6,15 @@ import _remove from 'lodash/remove';
 
 export interface IStage {
     name: string,
-    code?: string,
+    type?: AlertColor,
     message?: string,
     canClear?: boolean,
 }
 
 export interface IStageStore {
     stages: Array<IStage>;
-    errorData: object | null,
+    statusCode?: number,
+    errorData: object | string | null,
 }
 
 const initialState: IStageStore = {
@@ -37,7 +39,7 @@ const reducer = produce((state: IStageStore, action: AnyAction) => {
             );
             return;
         case stageConstants.CLEAR_ALL_STAGE:
-            _remove(state.stages, (stage) => stage.canClear);
+            _remove(state.stages, { canClear: true });
             return;
         case stageConstants.DANGEROUSLY_CLEAR_ALL_STAGE:
             state.stages = new Array<IStage>();
@@ -47,6 +49,12 @@ const reducer = produce((state: IStageStore, action: AnyAction) => {
             return;
         case stageConstants.REMOVE_ERROR_DATA:
             state.errorData = null;
+            return;
+        case stageConstants.SET_STATUS_CODE:
+            state.statusCode = action.payload;
+            return;
+        case stageConstants.REMOVE_STATUS_CODE:
+            state.statusCode = undefined;
             return;
         default:
             return;

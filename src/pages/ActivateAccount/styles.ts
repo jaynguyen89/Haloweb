@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         margin: `${vars.tiny} auto ${vars.small} !important`,
     },
     secretCodeCaption: {
-        fontSize: `${vars.xxtiny} !important`,
+        fontSize: `${vars.xh10} !important`,
         lineHeight: `${vars.h9} !important`,
         margin: `0 0 ${vars.small}`,
     },

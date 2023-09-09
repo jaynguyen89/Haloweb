@@ -5,18 +5,32 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import CountryFlag from 'src/components/atoms/CountryFlag/CountryFlag';
 import FaIcon from 'src/components/atoms/FaIcon';
+import MessageCaption from 'src/components/atoms/MessageCaption';
 import Recaptcha from 'src/components/atoms/Recaptcha';
 import SocialIcons from 'src/components/atoms/SocialIcons/SocialIcons';
 import useStyles, { registrationBoxSx, registrationFormSx, helpBoxSx } from 'src/pages/AccountRegistration/styles';
+import { EmailValidator, InputData } from 'src/utilities/dataValidators';
+import {
+    initialRegistrationFormDataState,
+    RegistrationValidatorFieldNames,
+} from 'src/pages/AccountRegistration/utilities';
 
 const AccountRegistration = () => {
     const { t } = useTranslation();
     const styles = useStyles();
+    const [formData, setFormData] = useState(initialRegistrationFormDataState);
+
+    const validators = useMemo(() => ({
+        [RegistrationValidatorFieldNames.EmailAddress]: new EmailValidator(
+            new InputData<string>(formData[RegistrationValidatorFieldNames.EmailAddress].value, t),
+            {  },
+        ),
+    }), [formData]);
 
     return (
         <div className={styles.registrationWrapper}>
@@ -36,7 +50,9 @@ const AccountRegistration = () => {
                         <TextField
                             label={t('registration-page.email-address-label')}
                             style={{width: '100%'}}
+                            value={undefined}
                         />
+                        <MessageCaption statuses={['This is the first error.', 'This is the second error.']} />
                     </Grid>
                     <Grid item md={1} xs={12}>
                         <div className={styles.orLabel}>{t('labels.or')}</div>

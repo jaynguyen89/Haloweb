@@ -1,8 +1,11 @@
 import { TFunction } from 'i18next';
+import IPublicData from 'src/models/PublicData';
 
 export type TRangeOption = {
     // The key of an input field, is used to map the status messages to the input field
     captionKey: string,
+    // If true, treat the input value as number, otherwise, string by default
+    asNumber?: true,
     // If specified, validate data > `min`
     min?: number,
     // If specified, validate data < `max`
@@ -11,6 +14,9 @@ export type TRangeOption = {
     equal?: number | string,
     // If specified, ignore all other options, validate data occurs in an array
     among?: Array<number | string>,
+    length?: number,
+    numbersOnly?: true,
+    alphabetsOnly: true,
 };
 
 export type TDateOption = {
@@ -20,6 +26,7 @@ export type TDateOption = {
     beforeDate?: Date,
     // Iff Specified, data must be after (greater than) this date
     afterDate?: Date,
+    among?: Array<Date>,
 };
 
 export type TSpecialOption = {
@@ -68,7 +75,7 @@ export class InputData<T> {
     }
 }
 
-export class LengthValidator<T extends string> {
+export class RangeValidator<T extends string> {
     options: TRangeOption;
     data: InputData<T>;
 
@@ -82,11 +89,11 @@ export class LengthValidator<T extends string> {
     }
 }
 
-export class RangeValidator<T extends number | Date> {
-    options: TRangeOption | TDateOption;
+export class DateValidator<T extends Date> {
+    options: TDateOption;
     data: InputData<T>;
 
-    constructor(data: InputData<T>, options: TRangeOption | TDateOption) {
+    constructor(data: InputData<T>, options:  TDateOption) {
         this.data = data;
         this.options = options;
     }
@@ -96,12 +103,12 @@ export class RangeValidator<T extends number | Date> {
     }
 }
 
-export class SpecialValidator<T extends string> extends LengthValidator<T> {
+export class SpecialValidator<T extends string> extends RangeValidator<T> {
     specialOptions: TSpecialOption;
 
-    constructor(data: InputData<T>, options: TRangeOption, specialOptions: TSpecialOption) {
+    constructor(data: InputData<T>, options: TRangeOption & TSpecialOption) {
         super(data, options);
-        this.specialOptions = specialOptions;
+        this.specialOptions = options;
     }
 
     public validate(): boolean {
@@ -109,7 +116,7 @@ export class SpecialValidator<T extends string> extends LengthValidator<T> {
     }
 }
 
-export class EmailValidator<T extends string> extends LengthValidator<T> {
+export class EmailValidator<T extends string> extends RangeValidator<T> {
     constructor(data: InputData<T>, options: TRangeOption) {
         super(data, options);
     }
@@ -119,7 +126,7 @@ export class EmailValidator<T extends string> extends LengthValidator<T> {
     }
 }
 
-export class UrlValidator<T extends string> extends LengthValidator<T> {
+export class UrlValidator<T extends string> extends RangeValidator<T> {
     constructor(data: InputData<T>, options: TRangeOption) {
         super(data, options);
     }
@@ -156,3 +163,101 @@ export class FileListValidator<T extends FileList> {
         return true;
     }
 }
+
+export enum ValidatorNames {
+    LengthValidator = 'LengthValidator',
+    RangeValidator = 'RangeValidator',
+    SpecialValidator = 'SpecialValidator',
+    EmailValidator = 'EmailValidator',
+    UrlValidator = 'UrlValidator',
+    FileValidator = 'FileValidator',
+    FileListValidator = 'FileListValidator',
+}
+
+export type TValidatorOption<T> = {
+    [key in keyof T]: |
+        TRangeOption |
+        TRangeOption & TSpecialOption |
+        TSpecialOption |
+        (TRangeOption | TDateOption) |
+        TFileOption |
+        TFileListOption;
+}
+
+export type TValidatorOptionsMapFn<T> = (publicData: IPublicData) => TValidatorOption<T>;
+
+export type TFormDataState<T> = {
+    [key in keyof T]: {
+        value: string | Date | File | FileList | undefined;
+        caption?: string | undefined;
+    };
+};
+
+export const mapFieldsToValidators = <T>(
+    field: keyof T,
+    formData: TFormDataState<T>,
+    validatorName: string,
+    validatorOptionsMapFn: TValidatorOptionsMapFn<T>,
+    publicData: IPublicData,
+    t: TFunction,
+) => {
+    let validator;
+    switch (validatorName) {
+        case ValidatorNames.LengthValidator:
+            validator = new RangeValidator(
+                new InputData<string>(formData[field].value as string | undefined, t),
+                validatorOptionsMapFn(publicData)[field] as TRangeOption,
+            );
+            break;
+        case ValidatorNames.RangeValidator:
+            validator = new DateValidator(
+                new InputData<Date>(formData[field].value as Date | undefined, t),
+                validatorOptionsMapFn(publicData)[field] as TDateOption,
+            );
+            break;
+        case ValidatorNames.SpecialValidator:
+            validator = new SpecialValidator(
+                new InputData<string>(formData[field].value as string | undefined, t),
+                validatorOptionsMapFn(publicData)[field] as TRangeOption & TSpecialOption,
+            );
+            break;
+        case ValidatorNames.EmailValidator:
+            validator = new EmailValidator(
+                new InputData<string>(formData[field].value as string | undefined, t),
+                validatorOptionsMapFn(publicData)[field] as TRangeOption,
+            );
+            break;
+        case ValidatorNames.UrlValidator:
+            validator = new UrlValidator(
+                new InputData<string>(formData[field].value as string | undefined, t),
+                validatorOptionsMapFn(publicData)[field] as TRangeOption,
+            );
+            break;
+        case ValidatorNames.FileValidator:
+            validator = new FileValidator(
+                new InputData<File>(formData[field].value as File | undefined, t),
+                validatorOptionsMapFn(publicData)[field] as TFileOption,
+            );
+            break;
+        default: // ValidatorNames.FileListValidator
+            validator = new FileListValidator(
+                new InputData<FileList>(formData[field].value as FileList | undefined, t),
+                validatorOptionsMapFn(publicData)[field] as TFileListOption,
+            );
+            break;
+    }
+
+    return validator;
+};
+
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+export type TFieldValidatorMap<T> = {
+    [key in keyof T]: |
+        RangeValidator<any> |
+        DateValidator<any> |
+        SpecialValidator<any> |
+        EmailValidator<any> |
+        UrlValidator<any> |
+        FileValidator<any> |
+        FileListValidator<any>;
+};

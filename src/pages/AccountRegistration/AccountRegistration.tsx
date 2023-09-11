@@ -7,6 +7,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import React, { useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import CountryFlag from 'src/components/atoms/CountryFlag/CountryFlag';
 import FaIcon from 'src/components/atoms/FaIcon';
@@ -14,23 +15,51 @@ import MessageCaption from 'src/components/atoms/MessageCaption';
 import Recaptcha from 'src/components/atoms/Recaptcha';
 import SocialIcons from 'src/components/atoms/SocialIcons/SocialIcons';
 import useStyles, { registrationBoxSx, registrationFormSx, helpBoxSx } from 'src/pages/AccountRegistration/styles';
-import { EmailValidator, InputData } from 'src/utilities/dataValidators';
+import { TRootState } from 'src/redux/reducers';
 import {
+    EmailValidator,
+    InputData,
+    mapFieldsToValidators,
+    TFieldValidatorMap,
+    TFormDataState,
+} from 'src/utilities/dataValidators';
+import {
+    fieldValidatorNameMap,
     initialRegistrationFormDataState,
-    RegistrationValidatorFieldNames,
+    RegistrationValidatorFieldNames, TFieldKey,
+    validatorOptionsMapFn,
 } from 'src/pages/AccountRegistration/utilities';
 
-const AccountRegistration = () => {
+const mapStateToProps = (state: TRootState) => ({
+    publicData: state.publicDataStore.publicData,
+});
+
+type AccountRegistrationProps = ReturnType<typeof mapStateToProps>;
+
+const AccountRegistration = ({
+    publicData,
+}: AccountRegistrationProps) => {
     const { t } = useTranslation();
     const styles = useStyles();
-    const [formData, setFormData] = useState(initialRegistrationFormDataState);
+    const [formData, setFormData] = useState<TFormDataState<typeof RegistrationValidatorFieldNames>>(initialRegistrationFormDataState);
 
-    const validators = useMemo(() => ({
-        [RegistrationValidatorFieldNames.EmailAddress]: new EmailValidator(
-            new InputData<string>(formData[RegistrationValidatorFieldNames.EmailAddress].value, t),
-            {  },
-        ),
-    }), [formData]);
+    const validators: TFieldValidatorMap<TFieldKey> = useMemo(() => {
+        const tempValidators = {};
+        Object.values(RegistrationValidatorFieldNames)
+            .filter(value => value !== RegistrationValidatorFieldNames.PasswordConfirm)
+            .forEach(field => {
+                // @ts-ignore
+                tempValidators[field as keyof TFieldKey] = mapFieldsToValidators(
+                    field as keyof TFieldKey,
+                    formData,
+                    fieldValidatorNameMap[field as keyof TFieldKey],
+                    validatorOptionsMapFn,
+                    publicData,
+                    t,
+                );
+            });
+        return tempValidators as TFieldValidatorMap<TFieldKey>;
+    }, [formData]);
 
     return (
         <div className={styles.registrationWrapper}>
@@ -181,4 +210,4 @@ const AccountRegistration = () => {
     );
 };
 
-export default AccountRegistration;
+export default connect(mapStateToProps)(AccountRegistration);

@@ -1,4 +1,12 @@
-import { TRangeOption } from 'src/utilities/dataValidators';
+import IPublicData from 'src/models/PublicData';
+import {
+    TFormDataState,
+    TRangeOption,
+    TSpecialOption,
+    TValidatorOption,
+    TValidatorOptionsMapFn,
+    ValidatorNames,
+} from 'src/utilities/dataValidators';
 
 export enum RegistrationValidatorFieldNames {
     EmailAddress = 'EmailAddress',
@@ -14,7 +22,7 @@ export enum RegistrationValidatorFieldNames {
     FullName = 'FullName',
 }
 
-export const initialRegistrationFormDataState = {
+export const initialRegistrationFormDataState: TFormDataState<typeof RegistrationValidatorFieldNames> = {
     [RegistrationValidatorFieldNames.EmailAddress]: {
         value: undefined,
         caption: undefined,
@@ -38,7 +46,7 @@ export const initialRegistrationFormDataState = {
         caption: undefined,
     },
     [RegistrationValidatorFieldNames.Gender]: {
-        value: 4,
+        value: '4',
         caption: undefined,
     },
     [RegistrationValidatorFieldNames.GivenName]: {
@@ -59,35 +67,78 @@ export const initialRegistrationFormDataState = {
     },
 };
 
-export const validatorOptions = {
+export type TFieldKey = Omit<typeof RegistrationValidatorFieldNames, 'PasswordConfirm'>;
+
+export const fieldValidatorNameMap = {
+    [RegistrationValidatorFieldNames.EmailAddress]: ValidatorNames.EmailValidator,
+    [RegistrationValidatorFieldNames.AreaCode]: ValidatorNames.LengthValidator,
+    [RegistrationValidatorFieldNames.PhoneNumber]: ValidatorNames.LengthValidator,
+    [RegistrationValidatorFieldNames.Password]: ValidatorNames.SpecialValidator,
+    [RegistrationValidatorFieldNames.Username]: ValidatorNames.SpecialValidator,
+    [RegistrationValidatorFieldNames.Gender]: ValidatorNames.LengthValidator,
+    [RegistrationValidatorFieldNames.GivenName]: ValidatorNames.SpecialValidator,
+    [RegistrationValidatorFieldNames.MiddleName]: ValidatorNames.SpecialValidator,
+    [RegistrationValidatorFieldNames.FamilyName]: ValidatorNames.SpecialValidator,
+    [RegistrationValidatorFieldNames.FullName]: ValidatorNames.SpecialValidator,
+};
+
+export const validatorOptionsMapFn: TValidatorOptionsMapFn<TFieldKey> = (publicData: IPublicData): TValidatorOption<TFieldKey> => ({
     [RegistrationValidatorFieldNames.EmailAddress]: {
-
-    },
+        captionKey: RegistrationValidatorFieldNames.EmailAddress,
+        min: 6,
+        max: 100,
+    } as TRangeOption,
     [RegistrationValidatorFieldNames.AreaCode]: {
-
-    },
+        captionKey: RegistrationValidatorFieldNames.AreaCode,
+        among: publicData.countries.map(country => country.telephoneCode),
+    } as TRangeOption,
     [RegistrationValidatorFieldNames.PhoneNumber]: {
-
-    },
+        captionKey: RegistrationValidatorFieldNames.PhoneNumber,
+        length: 9,
+        numbersOnly: true,
+    } as TRangeOption,
     [RegistrationValidatorFieldNames.Password]: {
-
-    },
+        captionKey: RegistrationValidatorFieldNames.Password,
+        min: 8,
+        max: 24,
+        includeLowercaseChar: true,
+        includeUppercaseChar: true,
+        includeNumber: true,
+        includeSpecialChar: true,
+        specialCharsToInclude: '!@#$%^&*()_-+={[}]:;<,>.?|~`\\/\'"',
+    } as TRangeOption & TSpecialOption,
     [RegistrationValidatorFieldNames.Username]: {
-
-    },
+        captionKey: RegistrationValidatorFieldNames.Username,
+        min: 6,
+        max: 65,
+        specialCharsToInclude: '\'.-_!@#*=+[]():<>~',
+    } as TRangeOption & TSpecialOption,
     [RegistrationValidatorFieldNames.Gender]: {
-
-    },
+        captionKey: RegistrationValidatorFieldNames.Gender,
+        among: publicData.genders.map(gender => gender.index),
+    } as TRangeOption,
     [RegistrationValidatorFieldNames.GivenName]: {
-
-    },
+        captionKey: RegistrationValidatorFieldNames.GivenName,
+        min: 1,
+        max: 65,
+        specialCharsToInclude: '\'.-',
+    } as TRangeOption & TSpecialOption,
     [RegistrationValidatorFieldNames.MiddleName]: {
-
-    },
+        captionKey: RegistrationValidatorFieldNames.MiddleName,
+        min: 1,
+        max: 65,
+        specialCharsToInclude: '\'.-',
+    } as TRangeOption & TSpecialOption,
     [RegistrationValidatorFieldNames.FamilyName]: {
-
-    },
+        captionKey: RegistrationValidatorFieldNames.FullName,
+        min: 1,
+        max: 65,
+        specialCharsToInclude: '\'.-',
+    } as TRangeOption & TSpecialOption,
     [RegistrationValidatorFieldNames.FullName]: {
-
-    },
-};
+        captionKey: RegistrationValidatorFieldNames.FamilyName,
+        min: 1,
+        max: 65,
+        specialCharsToInclude: '\'.-',
+    } as TRangeOption & TSpecialOption,
+});

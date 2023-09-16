@@ -6,9 +6,9 @@ import {
     TValidatorOption,
     TValidatorOptionsMapFn,
     ValidatorNames,
-} from 'src/utilities/dataValidators';
+} from 'src/utilities/data-validators/dataValidators';
 
-export enum RegistrationValidatorFieldNames {
+export enum RegistrationFormFieldNames {
     EmailAddress = 'EmailAddress',
     AreaCode = 'AreaCode',
     PhoneNumber = 'PhoneNumber',
@@ -22,123 +22,118 @@ export enum RegistrationValidatorFieldNames {
     FullName = 'FullName',
 }
 
-export const initialRegistrationFormDataState: TFormDataState<typeof RegistrationValidatorFieldNames> = {
-    [RegistrationValidatorFieldNames.EmailAddress]: {
+export const initialRegistrationFormDataState: TFormDataState<typeof RegistrationFormFieldNames> = {
+    [RegistrationFormFieldNames.EmailAddress]: {
         value: undefined,
         caption: undefined,
     },
-    [RegistrationValidatorFieldNames.AreaCode]: {
+    [RegistrationFormFieldNames.AreaCode]: {
         value: undefined,
     },
-    [RegistrationValidatorFieldNames.PhoneNumber]: {
-        value: undefined,
-        caption: undefined,
-    },
-    [RegistrationValidatorFieldNames.Password]: {
+    [RegistrationFormFieldNames.PhoneNumber]: {
         value: undefined,
         caption: undefined,
     },
-    [RegistrationValidatorFieldNames.PasswordConfirm]: {
-        value: undefined,
-    },
-    [RegistrationValidatorFieldNames.Username]: {
+    [RegistrationFormFieldNames.Password]: {
         value: undefined,
         caption: undefined,
     },
-    [RegistrationValidatorFieldNames.Gender]: {
-        value: '4',
-        caption: undefined,
+    [RegistrationFormFieldNames.PasswordConfirm]: {
+        value: undefined,
     },
-    [RegistrationValidatorFieldNames.GivenName]: {
+    [RegistrationFormFieldNames.Username]: {
         value: undefined,
         caption: undefined,
     },
-    [RegistrationValidatorFieldNames.MiddleName]: {
+    [RegistrationFormFieldNames.Gender]: {
+        value: '0',
+        caption: undefined,
+    },
+    [RegistrationFormFieldNames.GivenName]: {
         value: undefined,
         caption: undefined,
     },
-    [RegistrationValidatorFieldNames.FamilyName]: {
+    [RegistrationFormFieldNames.MiddleName]: {
         value: undefined,
         caption: undefined,
     },
-    [RegistrationValidatorFieldNames.FullName]: {
+    [RegistrationFormFieldNames.FamilyName]: {
+        value: undefined,
+        caption: undefined,
+    },
+    [RegistrationFormFieldNames.FullName]: {
         value: undefined,
         caption: undefined,
     },
 };
 
-export type TFieldKey = Omit<typeof RegistrationValidatorFieldNames, 'PasswordConfirm'>;
+export type TFieldKey = Omit<typeof RegistrationFormFieldNames, 'PasswordConfirm'>;
 
 export const fieldValidatorNameMap = {
-    [RegistrationValidatorFieldNames.EmailAddress]: ValidatorNames.EmailValidator,
-    [RegistrationValidatorFieldNames.AreaCode]: ValidatorNames.LengthValidator,
-    [RegistrationValidatorFieldNames.PhoneNumber]: ValidatorNames.LengthValidator,
-    [RegistrationValidatorFieldNames.Password]: ValidatorNames.SpecialValidator,
-    [RegistrationValidatorFieldNames.Username]: ValidatorNames.SpecialValidator,
-    [RegistrationValidatorFieldNames.Gender]: ValidatorNames.LengthValidator,
-    [RegistrationValidatorFieldNames.GivenName]: ValidatorNames.SpecialValidator,
-    [RegistrationValidatorFieldNames.MiddleName]: ValidatorNames.SpecialValidator,
-    [RegistrationValidatorFieldNames.FamilyName]: ValidatorNames.SpecialValidator,
-    [RegistrationValidatorFieldNames.FullName]: ValidatorNames.SpecialValidator,
+    [RegistrationFormFieldNames.EmailAddress]: ValidatorNames.EmailValidator,
+    [RegistrationFormFieldNames.AreaCode]: ValidatorNames.LengthValidator,
+    [RegistrationFormFieldNames.PhoneNumber]: ValidatorNames.LengthValidator,
+    [RegistrationFormFieldNames.Password]: ValidatorNames.SpecialValidator,
+    [RegistrationFormFieldNames.Username]: ValidatorNames.SpecialValidator,
+    [RegistrationFormFieldNames.Gender]: ValidatorNames.LengthValidator,
+    [RegistrationFormFieldNames.GivenName]: ValidatorNames.SpecialValidator,
+    [RegistrationFormFieldNames.MiddleName]: ValidatorNames.SpecialValidator,
+    [RegistrationFormFieldNames.FamilyName]: ValidatorNames.SpecialValidator,
+    [RegistrationFormFieldNames.FullName]: ValidatorNames.SpecialValidator,
 };
 
-export const validatorOptionsMapFn: TValidatorOptionsMapFn<TFieldKey> = (publicData: IPublicData): TValidatorOption<TFieldKey> => ({
-    [RegistrationValidatorFieldNames.EmailAddress]: {
-        captionKey: RegistrationValidatorFieldNames.EmailAddress,
+export const validatorOptionsMapFn: TValidatorOptionsMapFn<TFieldKey> = (publicData?: IPublicData): TValidatorOption<TFieldKey> => ({
+    [RegistrationFormFieldNames.EmailAddress]: {
         min: 6,
         max: 100,
     } as TRangeOption,
-    [RegistrationValidatorFieldNames.AreaCode]: {
-        captionKey: RegistrationValidatorFieldNames.AreaCode,
-        among: publicData.countries.map(country => country.telephoneCode),
+    [RegistrationFormFieldNames.AreaCode]: {
+        among: publicData!.countries.map(country => country.telephoneCode),
     } as TRangeOption,
-    [RegistrationValidatorFieldNames.PhoneNumber]: {
-        captionKey: RegistrationValidatorFieldNames.PhoneNumber,
-        length: 9,
+    [RegistrationFormFieldNames.PhoneNumber]: {
+        equal: 9,
         numbersOnly: true,
     } as TRangeOption,
-    [RegistrationValidatorFieldNames.Password]: {
-        captionKey: RegistrationValidatorFieldNames.Password,
+    [RegistrationFormFieldNames.Password]: {
         min: 8,
         max: 24,
+        isPassword: true,
         includeLowercaseChar: true,
         includeUppercaseChar: true,
         includeNumber: true,
         includeSpecialChar: true,
         specialCharsToInclude: '!@#$%^&*()_-+={[}]:;<,>.?|~`\\/\'"',
     } as TRangeOption & TSpecialOption,
-    [RegistrationValidatorFieldNames.Username]: {
-        captionKey: RegistrationValidatorFieldNames.Username,
+    [RegistrationFormFieldNames.Username]: {
         min: 6,
         max: 65,
-        specialCharsToInclude: '\'.-_!@#*=+[]():<>~',
+        specialCharsToInclude: '\'.-_!@#*=+:<>~',
     } as TRangeOption & TSpecialOption,
-    [RegistrationValidatorFieldNames.Gender]: {
-        captionKey: RegistrationValidatorFieldNames.Gender,
-        among: publicData.genders.map(gender => gender.index),
+    [RegistrationFormFieldNames.Gender]: {
+        among: publicData!.genders.map(gender => `${gender.index}`),
     } as TRangeOption,
-    [RegistrationValidatorFieldNames.GivenName]: {
-        captionKey: RegistrationValidatorFieldNames.GivenName,
+    [RegistrationFormFieldNames.GivenName]: {
         min: 1,
         max: 65,
         specialCharsToInclude: '\'.-',
+        allowSpace: true,
     } as TRangeOption & TSpecialOption,
-    [RegistrationValidatorFieldNames.MiddleName]: {
-        captionKey: RegistrationValidatorFieldNames.MiddleName,
+    [RegistrationFormFieldNames.MiddleName]: {
         min: 1,
         max: 65,
         specialCharsToInclude: '\'.-',
+        allowSpace: true,
     } as TRangeOption & TSpecialOption,
-    [RegistrationValidatorFieldNames.FamilyName]: {
-        captionKey: RegistrationValidatorFieldNames.FullName,
+    [RegistrationFormFieldNames.FamilyName]: {
         min: 1,
         max: 65,
         specialCharsToInclude: '\'.-',
+        allowSpace: true,
     } as TRangeOption & TSpecialOption,
-    [RegistrationValidatorFieldNames.FullName]: {
-        captionKey: RegistrationValidatorFieldNames.FamilyName,
+    [RegistrationFormFieldNames.FullName]: {
         min: 1,
         max: 65,
         specialCharsToInclude: '\'.-',
+        allowSpace: true,
     } as TRangeOption & TSpecialOption,
 });

@@ -1,7 +1,9 @@
 import { AlertColor, Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import clsx from 'clsx';
-import React, { FunctionComponent, useMemo } from 'react';
+import { isArray } from 'lodash';
+import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import vars from 'src/commons/variables/cssVariables.scss';
 
 interface IMessage {
@@ -10,7 +12,7 @@ interface IMessage {
 }
 
 interface IStatus {
-    statuses: Array<string>,
+    statuses: Array<string> | Map<string, object | undefined>,
     type?: AlertColor,
 }
 
@@ -37,6 +39,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const MessageCaption = (props: IMessage | IStatus) => {
+    const { t } = useTranslation();
     const styles = useStyles();
 
     const color = useMemo(
@@ -53,13 +56,26 @@ const MessageCaption = (props: IMessage | IStatus) => {
     );
 
     if (props.hasOwnProperty('message'))
-        return (<p className={clsx(styles.messageCaption, color)}>{(props as IMessage).message}</p>);
+        return (<p className={clsx(styles.messageCaption, color)}>{t((props as IMessage).message)}</p>);
+
+    const statuses = (props as IStatus).statuses;
+    if (isArray(statuses))
+        return (
+            <>
+                {(statuses as Array<string>).map((status, i) => (
+                    <p key={i} className={clsx(styles.messageCaption, color)}>{t(status)}</p>
+                ))}
+            </>
+        );
 
     return (
         <>
-            {(props as IStatus).statuses.map(status => (
-                <p className={clsx(styles.messageCaption, color)}>{status}</p>
-            ))}
+            {Array.from((statuses as Map<string, object | undefined>).entries()).map((entry, i) => {
+                const [status, options] = entry;
+                return (
+                    <p key={i} className={clsx(styles.messageCaption, color)}>{t(status, options)}</p>
+                );
+            })}
         </>
     );
 };

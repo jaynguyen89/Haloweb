@@ -26,6 +26,12 @@ const configs = {
     requestRetryThreshold: process.env.REACT_APP_REQUEST_RETRY_THRESHOLD === undefined
         ? 3
         : +process.env.REACT_APP_REQUEST_RETRY_THRESHOLD,
+    debounceWaitDuration: process.env.REACT_APP_DEBOUNCE_WAIT_DURATION === undefined
+        ? 1000
+        : +process.env.REACT_APP_DEBOUNCE_WAIT_DURATION,
+    throttleWaitDuration: process.env.REACT_APP_THROTTLE_WAIT_DURATION === undefined
+        ? 500
+        : +process.env.REACT_APP_THROTTLE_WAIT_DURATION,
 };
 
 export default configs;

@@ -23,7 +23,7 @@ const CountryFlag = ({
 
     return (
         <span
-            className={`fi fi-${isoCountryCode} ${variant === 'square' ? 'fis' : ''} ${center ? styles.center : undefined} ${extraClasses}`}
+            className={`fi fi-${isoCountryCode.toLowerCase()} ${variant === 'square' ? 'fis' : ''} ${center ? styles.center : undefined} ${extraClasses}`}
             style={extraStyles}
         />
     );

@@ -48,7 +48,7 @@ module.exports = {
             ignoreTemplateLiterals: true,
             ignoreRegExpLiterals: true,
         }],
-        'max-params': ['error', 7],
+        'max-params': ['error', 5],
         'no-await-in-loop': 'error',
         'no-class-assign': 'error',
         'no-compare-neg-zero': 'error',
@@ -74,7 +74,10 @@ module.exports = {
         }],
         'no-trailing-spaces': ['error', { 'skipBlankLines': true }],
         'no-var': 'error',
-        'prefer-const': 'error',
+        'prefer-const': ['error', {
+            'destructuring': 'all',
+            'ignoreReadBeforeAssign': false
+        }],
         'quotes': ['error', 'single', {
             avoidEscape: true,
             allowTemplateLiterals: true,

@@ -16,7 +16,7 @@ const Recaptcha: FunctionComponent<{
     return (
         <>
             <ReCAPTCHA
-                ref={recaptchaRef}
+                ref={configs.recaptchaVisible ? undefined : recaptchaRef}
                 sitekey={'something'}
                 size={configs.recaptchaVisible ? 'normal' : 'invisible'}
                 onChange={configs.recaptchaVisible ? onChange : undefined}

@@ -7,4 +7,5 @@ export enum StorageKeys {
     USER_ROLES = 'userRoles',
     DEFAULT_THEME = 'defaultTheme',
     DEFAULT_SITE_LANGUAGE = 'defaultSiteLanguage',
+    PUBLIC_DATA = 'sitePublicData',
 }

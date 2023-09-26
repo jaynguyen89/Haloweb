@@ -8,7 +8,7 @@ class RequestOption {
     cookiesToIncludeByKeys?: Array<string>;
 
     constructor(
-        shouldIncludeCookies: boolean,
+        shouldIncludeCookies?: boolean,
         shouldRetryOnFailure?: boolean,
         retryInterval?: number,
         retryThreshold?: number,
@@ -17,7 +17,7 @@ class RequestOption {
         if (shouldRetryOnFailure && (!retryInterval || !retryThreshold))
             throw new Error('Please specify \'retryInterval\' and \'retryThreshold\' when enabling \'shouldRetryOnFailure\'.');
 
-        this.shouldIncludeCookies = shouldIncludeCookies;
+        this.shouldIncludeCookies = shouldIncludeCookies ?? configs.requestWithCredentials;
         this.shouldRetryOnFailure = shouldRetryOnFailure ?? configs.requestShouldRetryOnFailure;
         this.retryInterval = retryInterval ?? configs.requestRetryInterval;
         this.retryThreshold = retryThreshold ?? configs.requestRetryThreshold;

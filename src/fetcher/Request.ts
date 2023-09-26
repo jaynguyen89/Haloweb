@@ -47,7 +47,7 @@ class Request<T> {
         if (this.options?.shouldIncludeCookies) axios.defaults.withCredentials = true; // include cookies
 
         const requestOptions = {
-            timeout: +configs.requestTimeout,
+            timeout: configs.requestTimeout,
             method: this.method,
             url: this.endpointUrl,
             headers: this.headers as Record<string, string>,

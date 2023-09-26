@@ -6,7 +6,12 @@ const configs = {
     testBaseUrl: process.env.REACT_APP_TEST_BASE_URL ?? '',
     uatBaseUrl: process.env.REACT_APP_UAT_BASE_URL ?? '',
     prodBaseUrl: process.env.REACT_APP_PROD_BASE_URL ?? '',
-    requestTimeout: process.env.REACT_APP_REQUEST_TIMEOUT ?? '180000',
+    requestTimeout: process.env.REACT_APP_REQUEST_TIMEOUT === undefined
+        ? 180000
+        : +process.env.REACT_APP_REQUEST_TIMEOUT,
+    requestWithCredentials: process.env.REACT_APP_REQUEST_WITH_CREDENTIALS === undefined
+        ? true
+        : process.env.REACT_APP_REQUEST_WITH_CREDENTIALS === 'true',
     statusIndicatorsTimeout: process.env.REACT_APP_STATUS_INDICATORS_TIMEOUT === undefined
         ? null
         : +process.env.REACT_APP_STATUS_INDICATORS_TIMEOUT,
@@ -32,6 +37,21 @@ const configs = {
     throttleWaitDuration: process.env.REACT_APP_THROTTLE_WAIT_DURATION === undefined
         ? 500
         : +process.env.REACT_APP_THROTTLE_WAIT_DURATION,
+    cookieExpiryTime: process.env.REACT_APP_COOKIE_EXPIRY_TIME === undefined
+        ? 30
+        : +process.env.REACT_APP_COOKIE_EXPIRY_TIME,
+    cookieMaxAge: process.env.REACT_APP_COOKIE_MAX_AGE === undefined
+        ? 30
+        : +process.env.REACT_APP_COOKIE_MAX_AGE,
+    cookieDomain: process.env.REACT_APP_COOKIE_DOMAIN ?? 'Halogen',
+    cookieSecure: process.env.REACT_APP_COOKIE_SECURE === undefined
+        ? true
+        : process.env.REACT_APP_COOKIE_SECURE === 'true',
+    cookieHttpOnly: process.env.REACT_APP_COOKIE_HTTP_ONLY === undefined
+        ? false
+        : process.env.REACT_APP_COOKIE_HTTP_ONLY === 'true',
+    cookieSamesite: process.env.REACT_APP_COOKIE_SAMESITE ?? 'none',
+
 };
 
 export default configs;

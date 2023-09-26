@@ -72,6 +72,7 @@ const english: ITranslation = {
                 vi: 'Vietnamese',
                 en: 'English',
             },
+            'theme-label': 'Site theme',
         },
         'login-page': {
             title: 'Sign in',

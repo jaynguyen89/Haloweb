@@ -219,7 +219,7 @@ export class SpecialValidator<T extends string> extends RangeValidator<T> {
         let specialCharsToIncludeValidity = true;
         if (this.specialOptions.specialCharsToInclude) {
             if (this.specialOptions.includeSpecialChar === undefined) {
-                const pattern = `^[a-zA-Z ${this.specialOptions.specialCharsToInclude}]+$`;
+                const pattern = `^[a-zA-Z0-9 ${this.specialOptions.specialCharsToInclude}]+$`;
                 const regex = new RegExp(pattern, 'i');
                 specialCharsToIncludeValidity = regex.test(data);
             }

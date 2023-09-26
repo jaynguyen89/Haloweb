@@ -17,6 +17,9 @@ const reducer = produce((state: IThemeStore, action: AnyAction) => {
         case themeConstants.LOAD_DEFAULT_THEME:
             state.defaultTheme = action.payload;
             return;
+        case themeConstants.SET_DEFAULT_THEME:
+            state.defaultTheme = action.payload;
+            return;
         default:
             return;
     }

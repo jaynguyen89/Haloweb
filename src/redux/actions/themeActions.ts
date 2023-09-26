@@ -13,3 +13,14 @@ export const prefetchDefaultTheme = () => {
     payload: defaultTheme,
   });
 };
+
+export const setDefaultTheme = (index: number) => {
+  const themeKey = Object.keys(themes)[index];
+  const selectedTheme = themes[themeKey as keyof typeof themes];
+
+  localStorage.setItem(StorageKeys.DEFAULT_THEME, JSON.stringify(selectedTheme));
+  return (dispatch: Dispatch) => dispatch({
+    type: themeConstants.SET_DEFAULT_THEME,
+    payload: selectedTheme,
+  });
+};

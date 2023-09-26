@@ -15,6 +15,7 @@ import { languageResourceKeys } from 'src/translation/i18next';
 
 const mapStateToProps = (state: TRootState) => ({
     siteLanguage: state.languageStore.siteLanguage,
+    themes: state.publicDataStore.publicData.themes,
 });
 
 const Footer = ({
@@ -22,6 +23,7 @@ const Footer = ({
         selected: selectedLanguage,
         detected: detectedLanguage,
     },
+    themes,
 }: ReturnType<typeof mapStateToProps>) => {
     const dispatch = useDispatch();
     const { t, i18n } = useTranslation();
@@ -41,7 +43,7 @@ const Footer = ({
         <Box sx={{ ...footerSx }}>
             <Container maxWidth='xl'>
                 <Grid container spacing={2}>
-                    <Grid item md={10} sm={6} xs={12}>
+                    <Grid item md={8} sm={4} xs={12}>
                         <Typography variant='h5' className={styles.brand}>
                             Halo Marketplace
                         </Typography>
@@ -49,7 +51,7 @@ const Footer = ({
                             {t('footer.project-intro', {whom: 'Jay Nguyen'})}
                         </Typography>
                     </Grid>
-                    <Grid item md={2} sm={6} xs={12} sx={{alignSelf: 'center'}}>
+                    <Grid item md={2} sm={4} xs={6} sx={{alignSelf: 'center'}}>
                         <FormControl size='small' fullWidth>
                             <InputLabel id='language-select-label'>
                                 {t('footer.language-select.label')}
@@ -66,6 +68,25 @@ const Footer = ({
                                 <MenuItem value='en'>
                                     <Typography variant='subtitle2'>{t('footer.language-select.en')}</Typography>
                                 </MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item md={2} sm={4} xs={6} sx={{alignSelf: 'center'}}>
+                        <FormControl size='small' fullWidth>
+                            <InputLabel id='theme-select-label'>
+                                {t('footer.theme-label')}
+                            </InputLabel>
+                            <Select
+                                labelId='theme-select-label'
+                                label={t('footer.theme-label')}
+                                value={selectedLanguage ?? detectedLanguage}
+                                onChange={(e) => console.log(e.target.value)}
+                            >
+                                {themes.map((theme, i) => (
+                                    <MenuItem key={i} value='vi'>
+                                        <Typography variant='subtitle2'>{theme.display}</Typography>
+                                    </MenuItem>
+                                ))}
                             </Select>
                         </FormControl>
                     </Grid>

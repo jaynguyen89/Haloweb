@@ -5,7 +5,7 @@ export enum StorageKeys {
     USERNAME = 'username',
     USER_UNIQUE_ID = 'userUniqueId',
     USER_ROLES = 'userRoles',
-    DEFAULT_THEME = 'defaultTheme',
+    DEFAULT_THEME_INDEX = 'defaultTheme',
     DEFAULT_SITE_LANGUAGE = 'defaultSiteLanguage',
     PUBLIC_DATA = 'sitePublicData',
 }

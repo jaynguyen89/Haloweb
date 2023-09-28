@@ -1,6 +1,6 @@
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
-import React from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { FormControl, InputLabel, Select, SelectChangeEvent } from '@mui/material';
@@ -10,6 +10,7 @@ import { connect, useDispatch } from 'react-redux';
 import { AnyAction } from 'redux';
 import useStyles, { footerSx } from 'src/components/compounds/Footer/styles';
 import { changeSiteLanguage } from 'src/redux/actions/languageActions';
+import { setDefaultTheme } from 'src/redux/actions/themeActions';
 import { TRootState } from 'src/redux/reducers';
 import { languageResourceKeys } from 'src/translation/i18next';
 
@@ -28,6 +29,7 @@ const Footer = ({
     const dispatch = useDispatch();
     const { t, i18n } = useTranslation();
     const styles = useStyles();
+    const [selectedTheme, setSelectedTheme] = useState(0);
 
     const handleSelectSiteLanguage = (event: SelectChangeEvent) => {
         const value = event.target.value;
@@ -37,6 +39,12 @@ const Footer = ({
         }
 
         console.error(`Language not supported: ${value}`);
+    };
+
+    const handleSelectSiteTheme = (event: SelectChangeEvent) => {
+        const themeIndex = +event.target.value;
+        setSelectedTheme(themeIndex);
+        dispatch(setDefaultTheme(themeIndex) as unknown as AnyAction);
     };
 
     return (
@@ -79,11 +87,11 @@ const Footer = ({
                             <Select
                                 labelId='theme-select-label'
                                 label={t('footer.theme-label')}
-                                value={selectedLanguage ?? detectedLanguage}
-                                onChange={(e) => console.log(e.target.value)}
+                                value={`${selectedTheme}`}
+                                onChange={handleSelectSiteTheme}
                             >
                                 {themes.map((theme, i) => (
-                                    <MenuItem key={i} value='vi'>
+                                    <MenuItem key={i} value={theme.index}>
                                         <Typography variant='subtitle2'>{theme.display}</Typography>
                                     </MenuItem>
                                 ))}

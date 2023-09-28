@@ -10,8 +10,8 @@ import { ThemeSunflower } from './sunflower';
 import { ThemeTangerine } from './tangerine';
 
 export default {
-    ThemeNight,
     ThemeDay,
+    ThemeNight,
     ThemeOcean,
     ThemeDream,
     ThemeSky,

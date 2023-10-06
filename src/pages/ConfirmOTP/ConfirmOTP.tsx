@@ -16,12 +16,18 @@ const ConfirmOTP = () => {
     const { what, which } = useMemo(
         () => ({
             what: isOTPConfirmation ? 'OTP' : 'PIN',
-            which: isRegisteredByEmail ? t('texts.email-address') : t('texts.phone-number'),
+            which: isRegisteredByEmail ? 'email-address' : 'phone-number',
             }),
         [
             isOTPConfirmation,
             isRegisteredByEmail,
-        ]);
+        ],
+    );
+
+    const otpSubtitleTranslationKey = useMemo(
+        () => `otp-page.subtitle-by-${isRegisteredByEmail ? 'email-address' : 'phone-number'}`,
+        [isRegisteredByEmail],
+    );
 
     return (
         <div className={styles.otpWrapper}>
@@ -35,11 +41,10 @@ const ConfirmOTP = () => {
 
                 <div className={styles.subtitle}>
                     <Trans
-                        i18nKey='otp-page.subtitle'
+                        i18nKey={otpSubtitleTranslationKey}
                         what={what}
-                        which={which}
                     >
-                        Don't get your {{what}}? <a onClick={() => console.log('forward token')}>Send it to your {{which}}</a>.
+                        Don't get your {{what}}? <a onClick={() => console.log('forward token')}>Send it to your {which}</a>.
                     </Trans>
                 </div>
             </Box>

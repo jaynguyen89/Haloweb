@@ -17,10 +17,6 @@ const enCommons: TTranslationMap = {
         'or': 'Or',
         'and': 'And',
     },
-    texts: {
-        'email-address': 'email address',
-        'phone-number': 'phone number',
-    },
     messages: {
         'error-network': 'Network error: please check your internet connection or proxy configurations.',
         'error-500': '500 - Internal Server Error: An unknown issue has happened in our side. Please try again later.',

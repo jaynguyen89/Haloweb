@@ -120,7 +120,8 @@ const english: ITranslation = {
         'otp-page': {
             'otp-title': 'One-Time Password',
             'tfa-title': 'Two-Factor PIN',
-            subtitle: 'Don\'t get your {{what}}? <1>Send it to your {{which}}</1>.',
+            'subtitle-by-email-address': 'Don\'t get your {{what}}? <1>Send it to your email address</1>.',
+            'subtitle-by-phone-number': 'Don\'t get your {{what}}? <1>Send it to your phone number</1>.',
         },
         'activate-account-page': {
             title: 'Activate account',
@@ -128,7 +129,8 @@ const english: ITranslation = {
             'phone-number-label': 'Phone number',
             'username-label': 'Username',
             'secret-code-title': 'Please enter the secret code',
-            'secret-code-caption': 'The secret code has been sent to your {{which}} just now, please check your {{which}}.',
+            'secret-code-caption-by-email-address': 'The secret code has been sent to your email address just now, please check your email address.',
+            'secret-code-caption-by-phone-number': 'The secret code has been sent to your phone number just now, please check your phone number.',
         },
     },
 };

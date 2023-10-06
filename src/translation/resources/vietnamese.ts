@@ -119,7 +119,8 @@ const vietnamese: ITranslation = {
         'otp-page': {
             'otp-title': 'Xác thực OTP',
             'tfa-title': 'Xác thực 2 bước (PIN)',
-            subtitle: 'Không nhận được {{what}} của bạn? <1>Gửi nó đến {{which}}</1>.',
+            'subtitle-by-email-address': 'Không nhận được {{what}} của bạn? <1>Gửi nó đến địa chỉ email</1>.',
+            'subtitle-by-phone-number': 'Không nhận được {{what}} của bạn? <1>Gửi nó đến số điện thoại</1>.',
         },
         'activate-account-page': {
             title: 'Kích hoạt tài khoản',
@@ -127,7 +128,8 @@ const vietnamese: ITranslation = {
             'phone-number-label': 'Số điện thoại',
             'username-label': 'Username',
             'secret-code-title': 'Vui lòng nhập mã bảo mật',
-            'secret-code-caption': 'Mã bảo mật vừa được gửi đến {{which}} của bạn, kiểm tra {{which}} nhé!',
+            'secret-code-caption-by-email-address': 'Mã bảo mật vừa được gửi đến địa chỉ email của bạn, kiểm tra địa chỉ email nhé!',
+            'secret-code-caption-by-phone-number': 'Mã bảo mật vừa được gửi đến số điện thoại của bạn, kiểm tra số điện thoại nhé!',
         },
     },
 };

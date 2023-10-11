@@ -1,7 +1,7 @@
 import { Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import React from 'react';
-import NumberCell from 'src/components/atoms/NumberCell/NumberCell';
+import PinCell from 'src/components/atoms/PinCell/PinCell';
 
 const NumberCellShowcase = () => {
 
@@ -12,19 +12,19 @@ const NumberCellShowcase = () => {
             </Grid>
             <Grid item sm={6} xs={12}>
                 <Typography variant='body1'>Default 6 cells</Typography>
-                <NumberCell />
+                <PinCell />
             </Grid>
             <Grid item sm={6} xs={12}>
                 <Typography variant='body1'>Specify the number of cells</Typography>
-                <NumberCell numOfCells={10} />
+                <PinCell numOfCells={10} />
             </Grid>
             <Grid item sm={6} xs={12}>
                 <Typography variant='body1'>Left align</Typography>
-                <NumberCell numOfCells={4} align='left' />
+                <PinCell numOfCells={4} align='left' />
             </Grid>
             <Grid item sm={6} xs={12}>
                 <Typography variant='body1'>Right align</Typography>
-                <NumberCell numOfCells={4} align='right' />
+                <PinCell numOfCells={4} align='right' />
             </Grid>
         </Grid>
     );

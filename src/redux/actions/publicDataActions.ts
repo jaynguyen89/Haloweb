@@ -1,10 +1,7 @@
 import { AnyAction, Dispatch } from 'redux';
 import configs from 'src/commons/configs';
 import { ControllerEndpoints, RequestMethods } from 'src/commons/enums';
-import requestInterceptors from 'src/fetcher/interceptors/RequestInterceptors';
-import responseInterceptors from 'src/fetcher/interceptors/ResponseInterceptors';
 import RequestBuilder from 'src/fetcher/RequestBuilder';
-import RequestOption from 'src/fetcher/RequestOption';
 import { StorageKeys } from 'src/models/enums/account';
 import Stages from 'src/models/enums/stage';
 import IPublicData from 'src/models/PublicData';
@@ -21,12 +18,10 @@ export const prefetchPublicDataOnLaunch = () => {
             const request = new RequestBuilder<IPublicData>()
                 .withMethod(RequestMethods.GET)
                 .withEndpoint(`${ControllerEndpoints.PUBLIC_DATA}/enums`)
-                .withRequestInterceptors(requestInterceptors)
-                .withResponseInterceptors(responseInterceptors)
-                .withOptions(new RequestOption())
                 .build();
 
-            publicData = await request.send(dispatch, configs.requestShouldRetryOnFailure ? capturePublicDataResponseOnRetry : undefined);
+            const result = await request.send(dispatch, configs.requestShouldRetryOnFailure ? capturePublicDataResponseOnRetry : undefined);
+            publicData = result as IPublicData | undefined;
         }
 
         if (publicData) dispatchPublicDataAndSetStorage(dispatch, publicData, publicDataInStorage === null);

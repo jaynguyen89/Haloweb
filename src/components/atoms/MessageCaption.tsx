@@ -8,6 +8,7 @@ import vars from 'src/commons/variables/cssVariables.scss';
 
 interface IMessage {
     message: string,
+    options?: Record<string, string>,
     type?: AlertColor,
 }
 
@@ -56,7 +57,11 @@ const MessageCaption = (props: IMessage | IStatus) => {
     );
 
     if (props.hasOwnProperty('message'))
-        return (<p className={clsx(styles.messageCaption, color)}>{t((props as IMessage).message)}</p>);
+        return (
+            <p className={clsx(styles.messageCaption, color)}>
+                {t((props as IMessage).message, (props as IMessage).options)}
+            </p>
+        );
 
     const statuses = (props as IStatus).statuses;
     if (isArray(statuses))

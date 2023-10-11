@@ -131,6 +131,7 @@ const english: ITranslation = {
             'secret-code-title': 'Please enter the secret code',
             'secret-code-caption-by-email-address': 'The secret code has been sent to your email address just now, please check your email address.',
             'secret-code-caption-by-phone-number': 'The secret code has been sent to your phone number just now, please check your phone number.',
+            'request-to-get-secret-code-invalid-destination': 'Invalid data `{{destination}}`: no account with such data existed.',
         },
     },
 };

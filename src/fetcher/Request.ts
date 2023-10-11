@@ -9,6 +9,7 @@ import { InterceptorChain } from 'src/fetcher/Interceptor';
 import RequestOption from 'src/fetcher/RequestOption';
 import configs from 'src/commons/configs';
 import { delay } from 'src/utilities/timeUtilities';
+import { IErrorCodeData } from 'src/commons/interfaces';
 
 class Request<T> {
     endpointUrl: string;
@@ -41,7 +42,7 @@ class Request<T> {
         this.downloadResponse = downloadResponse;
     }
 
-    public async send(dispatch: Dispatch, callback?: Function, retryIteration: number = 1): Promise<T | undefined> {
+    public async send(dispatch: Dispatch, callback?: Function, retryIteration: number = 1): Promise<T | IErrorCodeData | undefined> {
         this.requestInterceptorChain?.runRequestInterceptors(dispatch);
 
         if (this.options?.shouldIncludeCookies) axios.defaults.withCredentials = true; // include cookies
@@ -61,15 +62,15 @@ class Request<T> {
             result = await axios(requestOptions);
         } catch (e) {
             this.responseInterceptorChain?.runResponseInterceptors(dispatch, e);
+            return (e as AxiosError<unknown, any>).response?.data as IErrorCodeData;
         }
 
-        if (!result) return undefined;
-        this.responseInterceptorChain?.runResponseInterceptors(dispatch, result);
-
-        if (result.status === 200) {
+        if (result) {
+            this.responseInterceptorChain?.runResponseInterceptors(dispatch, result);
             const data = (result as AxiosResponse<any, any>).data;
-            callback && callback(dispatch, data);
-            return data;
+
+            callback && callback(dispatch, Boolean(data) ? data : result.status);
+            return Boolean(data) ? data : result.status;
         }
 
         if (

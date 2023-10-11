@@ -36,7 +36,7 @@ const App = () => {
             <BrowserRouter>
                 <div className='body'>
                     <Toast
-                        stage={Stages.SHOW_TOAST_ERROR_NETWORK}
+                        stage={Stages.SHOW_TOAST_CLIENT_ERROR_NETWORK}
                         severity='error'
                         message={t('messages.error-network')}
                     />

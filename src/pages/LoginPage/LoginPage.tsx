@@ -16,8 +16,16 @@ import useStyles, { helpBoxSx, loginBoxSx, loginFormSx } from 'src/pages/LoginPa
 import { faFingerprint } from '@fortawesome/free-solid-svg-icons/faFingerprint';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons/faPaperPlane';
 import vars from 'src/commons/variables/cssVariables.scss';
+import { TRootState } from '../../redux/reducers';
+import { connect } from 'react-redux';
 
-const LoginPage = () => {
+const mapStateToProps = (state: TRootState) => ({
+    countries: state.publicDataStore.publicData.countries,
+});
+
+const LoginPage = ({
+    countries,
+}: ReturnType<typeof mapStateToProps>) => {
     const { t } = useTranslation();
     const styles = useStyles();
 
@@ -55,14 +63,12 @@ const LoginPage = () => {
                                         labelId='area-code-select-label'
                                         label={t('login-page.area-code-label')}
                                     >
-                                        <MenuItem value={10}>
-                                            84 - VNM
-                                            <CountryFlag isoCountryCode='vn' className={styles.flagIcon}/>
-                                        </MenuItem>
-                                        <MenuItem value={20}>
-                                            61 - AUS
-                                            <CountryFlag isoCountryCode='au' className={styles.flagIcon}/>
-                                        </MenuItem>
+                                        {countries.map(country => (
+                                            <MenuItem key={country.telephoneCode} value={country.telephoneCode}>
+                                                {`${country.telephoneCode} - ${country.isoCode3Char}`}
+                                                <CountryFlag isoCountryCode={country.isoCode2Char} className={styles.flagIcon} />
+                                            </MenuItem>
+                                        ))}
                                     </Select>
                                 </FormControl>
                             </Grid>
@@ -132,4 +138,4 @@ const LoginPage = () => {
     );
 };
 
-export default LoginPage;
+export default connect(mapStateToProps)(LoginPage);

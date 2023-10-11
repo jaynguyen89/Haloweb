@@ -1,14 +1,18 @@
 import Box from '@mui/material/Box';
 import React, { FunctionComponent } from 'react';
-import useStyles, { pinWrapperSx } from 'src/components/atoms/NumberCell/styles';
-import 'src/components/atoms/NumberCell/styles.scss';
+import useStyles, { pinWrapperSx } from 'src/components/atoms/PinCell/styles';
+import 'src/components/atoms/PinCell/styles.scss';
 
-const NumberCell: FunctionComponent<{
+const PinCell: FunctionComponent<{
     numOfCells?: number,
     align?: 'left' | 'center' | 'right',
+    disabled?: boolean,
+    type?: 'number' | 'text',
 }> = ({
     numOfCells = 6,
     align = 'center',
+    disabled = false,
+    type = 'number',
 }) => {
     const styles = useStyles();
 
@@ -16,10 +20,11 @@ const NumberCell: FunctionComponent<{
         <Box sx={{...pinWrapperSx, textAlign: align}}>
             {[...Array(numOfCells)].map((_, i) => (
                 <input
+                    disabled={disabled}
                     key={i}
                     id={`number-cell-${i}`}
                     className={styles.cell}
-                    type='number'
+                    type={type}
                     maxLength={1}
                     inputMode='numeric'
                     onInput={(e) => {
@@ -32,4 +37,4 @@ const NumberCell: FunctionComponent<{
     );
 };
 
-export default NumberCell;
+export default PinCell;

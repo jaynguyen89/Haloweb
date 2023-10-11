@@ -37,11 +37,9 @@ const mapStateToProps = (state: TRootState) => ({
     publicData: state.publicDataStore.publicData,
 });
 
-type AccountRegistrationProps = ReturnType<typeof mapStateToProps>;
-
 const AccountRegistration = ({
     publicData,
-}: AccountRegistrationProps) => {
+}: ReturnType<typeof mapStateToProps>) => {
     const { t } = useTranslation();
     const styles = useStyles();
 

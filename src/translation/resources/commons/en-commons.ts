@@ -19,8 +19,8 @@ const enCommons: TTranslationMap = {
     },
     messages: {
         'error-network': 'Network error: please check your internet connection or proxy configurations.',
-        'error-500': '500 - Internal Server Error: An unknown issue has happened in our side. Please try again later.',
-        'error-501': '501 - Not Implemented: The requested feature is unavailable.',
+        'error-500': '500 - An unknown issue has happened in our side. Please try again later.',
+        'error-501': '501 - The requested feature is unavailable in our side.',
         'input-is-nan': 'Your input is not a number. Please enter a number.',
         'input-min-as-number': 'Input should be higher than the smallest accepted value ({{min}}).',
         'input-min-as-string': 'Input length should be longer than {{min}}.',

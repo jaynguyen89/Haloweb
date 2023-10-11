@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import React, { useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import FaIcon from 'src/components/atoms/FaIcon';
-import NumberCell from 'src/components/atoms/NumberCell/NumberCell';
+import PinCell from 'src/components/atoms/PinCell/PinCell';
 import useStyles, { otpBoxSx } from 'src/pages/ConfirmOTP/styles';
 
 const ConfirmOTP = () => {
@@ -37,7 +37,7 @@ const ConfirmOTP = () => {
                     <FaIcon wrapper='fa' t='obj' ic={faShieldHalved} />
                 </Typography>
 
-                <NumberCell />
+                <PinCell />
 
                 <div className={styles.subtitle}>
                     <Trans

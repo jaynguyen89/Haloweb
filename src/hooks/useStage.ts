@@ -17,8 +17,3 @@ export const useIsStageIncluded = (stage: string) => {
     const stages = useStage();
     return stages.some(member => member.name === stage);
 };
-
-export const useErrorDataStage = () => {
-    const stageStore: IStageStore = useSelector((state: TRootState) => state.stageStore);
-    return stageStore.errorData;
-};

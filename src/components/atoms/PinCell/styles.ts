@@ -18,6 +18,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         width: vars.xxsmall,
         height: vars.xmedium,
         margin: `0 ${vars.xmicro}`,
+        padding: `${vars.micro}`,
         textAlign: 'center',
         lineHeight: vars.xmedium,
         fontSize: vars.xsmall,

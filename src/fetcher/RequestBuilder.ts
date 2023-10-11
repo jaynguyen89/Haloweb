@@ -4,6 +4,8 @@ import RequestOption from 'src/fetcher/RequestOption';
 import configs from 'src/commons/configs';
 import Request from 'src/fetcher/Request';
 import IAuthenticatedUser from 'src/models/AuthenticatedUser';
+import requestInterceptors from 'src/fetcher/interceptors/RequestInterceptors';
+import responseInterceptors from 'src/fetcher/interceptors/ResponseInterceptors';
 
 class RequestBuilder<T> {
     baseUrl: string;
@@ -19,6 +21,10 @@ class RequestBuilder<T> {
     downloadResponse?: boolean;
 
     constructor(baseUrl?: string) {
+        this.requestInterceptors = requestInterceptors;
+        this.responseInterceptors = responseInterceptors;
+        this.options = new RequestOption();
+
         if (baseUrl)
             this.baseUrl = baseUrl;
         else {

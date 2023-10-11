@@ -8,9 +8,10 @@ import { useGetStageByName, useIsStageIncluded } from 'src/hooks/useStage';
 import Stages from 'src/models/enums/stage';
 import { removeStage } from 'src/redux/actions/stageActions';
 
-type TFlasher = CollapseProps & AlertProps & {
+export type TFlasher = CollapseProps & AlertProps & {
     stage: string,
     message?: string,
+    onClose?: () => void,
 };
 
 const Flasher = ({
@@ -22,6 +23,7 @@ const Flasher = ({
     sx = {
         mb: 2,
     },
+    onClose,
 }: TFlasher) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
@@ -42,7 +44,7 @@ const Flasher = ({
         return severity;
     }, [stage, stageFromStore]);
 
-    const handleHideFlasher = () => dispatch(removeStage(stage) as unknown as AnyAction);
+    const handleHideFlasher = () => onClose ? onClose() : dispatch(removeStage(stage) as unknown as AnyAction);
 
     return (
         <Collapse in={visible} orientation={orientation}>

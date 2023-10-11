@@ -3,14 +3,15 @@ import { Dispatch } from 'redux';
 import * as stageConstants from 'src/redux/constants/stageConstants';
 import { IStage } from '../reducers/stageReducer';
 
-export const setStageByName = (stage: string, type?: AlertColor, message?: string) => {
+export const setStageByName = (stage: string, type?: AlertColor, message?: string, messageParams?: Record<string, string>, canClear?: boolean) => {
     return (dispatch: Dispatch) => dispatch({
         type: stageConstants.SET_STAGE,
         payload: {
             name: stage,
             type,
             message,
-            canClear: true,
+            messageParams,
+            canClear: canClear === undefined ? true : canClear,
         } as IStage,
     });
 };
@@ -45,31 +46,5 @@ export const clearStage = () => {
 export const dangerouslyClearStage = () => {
     return (dispatch: Dispatch) => dispatch({
         type: stageConstants.DANGEROUSLY_CLEAR_ALL_STAGE,
-    });
-};
-
-export const setErrorData = (data: object) => {
-    return (dispatch: Dispatch) => dispatch({
-        type: stageConstants.SET_ERROR_DATA,
-        payload: data,
-    });
-};
-
-export const removeErrorData = () => {
-    return (dispatch: Dispatch) => dispatch({
-        type: stageConstants.REMOVE_ERROR_DATA,
-    });
-};
-
-export const setStatusCode = (statusCode: number) => {
-    return (dispatch: Dispatch) => dispatch({
-        type: stageConstants.SET_STATUS_CODE,
-        payload: statusCode,
-    });
-};
-
-export const removeStatusCode = () => {
-    return (dispatch: Dispatch) => dispatch({
-        type: stageConstants.REMOVE_STATUS_CODE,
     });
 };

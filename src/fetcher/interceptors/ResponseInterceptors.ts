@@ -2,25 +2,20 @@ import { AxiosError, AxiosResponse } from 'axios';
 import { batch } from 'react-redux';
 import { AnyAction, Dispatch } from 'redux';
 import { InterceptorTarget } from 'src/commons/enums';
-import { IErrorCodeData } from 'src/commons/interfaces';
 import { Interceptor, InterceptorDataType } from 'src/fetcher/Interceptor';
 import Stages from 'src/models/enums/stage';
-import { clearStage, setErrorData, setStageByName, setStatusCode } from 'src/redux/actions/stageActions';
+import { clearStage, setStageByName } from 'src/redux/actions/stageActions';
+import { isClientErrorStatusCode, isServerErrorStatusCode, isSuccessStatusCode } from 'src/utilities/otherUtilities';
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 const SuccessInterceptor = new Interceptor(
     InterceptorTarget.RESPONSE,
     (dispatch: Dispatch, data: InterceptorDataType) => {
         const response = (data as AxiosResponse<any, any>);
-        if (response.status > 199 && response.status < 300)
-            batch(() => {
-                dispatch(clearStage() as unknown as AnyAction);
-                dispatch(setStatusCode(response?.status) as unknown as AnyAction);
-            });
+        if (isSuccessStatusCode(response.status)) dispatch(clearStage() as unknown as AnyAction);
     },
 );
 
-/* eslint-disable  @typescript-eslint/no-explicit-any */
 const AxiosErrorInterceptor = new Interceptor(
     InterceptorTarget.RESPONSE,
     (dispatch: Dispatch, e: InterceptorDataType) => {
@@ -29,24 +24,7 @@ const AxiosErrorInterceptor = new Interceptor(
         if (axiosError.code === 'ERR_NETWORK')
             batch(() => {
                 dispatch(clearStage() as unknown as AnyAction);
-                dispatch(setStageByName(Stages.SHOW_TOAST_ERROR_NETWORK) as unknown as AnyAction);
-            });
-    },
-);
-
-const Error400Interceptor = new Interceptor(
-    InterceptorTarget.RESPONSE,
-    (dispatch: Dispatch, e: InterceptorDataType) => {
-        const { response } = (e as AxiosError<unknown, any>);
-
-        if (response && response?.status > 399 && response?.status < 500)
-            batch(() => {
-                dispatch(clearStage() as unknown as AnyAction);
-                dispatch(setStageByName(Stages.SHOW_TOAST_CLIENT_ERROR, 'error') as unknown as AnyAction);
-                dispatch(setStatusCode(response?.status) as unknown as AnyAction);
-
-                if (response.data?.hasOwnProperty('value'))
-                    dispatch(setErrorData((response.data as IErrorCodeData).value!) as unknown as AnyAction);
+                dispatch(setStageByName(Stages.SHOW_TOAST_CLIENT_ERROR_NETWORK) as unknown as AnyAction);
             });
     },
 );
@@ -56,7 +34,7 @@ const Error500Interceptor = new Interceptor(
     (dispatch: Dispatch, e: InterceptorDataType) => {
         const { response } = (e as AxiosError<unknown, any>);
 
-        if (response && response?.status > 499) {
+        if (response && isServerErrorStatusCode(response.status)) {
             const message = `messages.error-${response?.status}`;
             batch(() => {
                 dispatch(clearStage() as unknown as AnyAction);
@@ -66,10 +44,38 @@ const Error500Interceptor = new Interceptor(
     },
 );
 
+export class Error400Interceptor {
+    stage: Stages;
+    messageKey?: string;
+    messageParams?: Record<string, string>;
+    canClear: boolean;
+
+    constructor(stage: Stages, messageKey?: string, messageParams?: Record<string, string>, canClear?: false) {
+        this.stage = stage;
+        this.messageKey = messageKey;
+        this.messageParams = messageParams;
+        this.canClear = canClear === undefined ? true : canClear;
+    }
+
+    public get(): Interceptor {
+        return new Interceptor(
+            InterceptorTarget.RESPONSE,
+            (dispatch: Dispatch, e: InterceptorDataType) => {
+                const { response } = (e as AxiosError<unknown, any>);
+
+                if (response && isClientErrorStatusCode(response.status))
+                    batch(() => {
+                        dispatch(clearStage() as unknown as AnyAction);
+                        dispatch(setStageByName(this.stage, 'error', this.messageKey, this.messageParams, this.canClear) as unknown as AnyAction);
+                    });
+            },
+        );
+    }
+}
+
 const responseInterceptors: Array<Interceptor> = [
     SuccessInterceptor,
     AxiosErrorInterceptor,
-    Error400Interceptor,
     Error500Interceptor,
 ];
 

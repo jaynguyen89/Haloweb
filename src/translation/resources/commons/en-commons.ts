@@ -50,7 +50,7 @@ const enCommons: TTranslationMap = {
         'input-files-accepted-formats': 'File `{{name}}` is not allowed. Please select files with these formats: {{formats}}.',
         'input-files-min-count': 'Not enough files selected, min {{count}} files.',
         'input-files-max-count': 'Too many files selected, max {{count}} files.',
-        'input-one-of-fields': 'Only 1 of these fields should contain input, the others must be empty: {{fields}}.',
+        'input-one-of-fields': 'Only 1 of these fields should contain valid input, the others must be empty: {{fields}}.',
     },
 };
 

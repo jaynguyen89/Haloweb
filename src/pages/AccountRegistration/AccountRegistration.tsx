@@ -98,6 +98,32 @@ const AccountRegistration = ({
         value: string | undefined,
     ) => {
         const formDataClone = _cloneDeep(formData);
+
+        if ([
+            RegistrationFormFieldNames.GivenName,
+            RegistrationFormFieldNames.MiddleName,
+            RegistrationFormFieldNames.FamilyName,
+        ].includes(fieldName as RegistrationFormFieldNames)) {
+            let fullName = formDataClone[RegistrationFormFieldNames.FullName].value as string | undefined;
+
+            if (fullName === undefined) fullName = value;
+            else {
+                const prevValues = {
+                    givenName: formDataClone[RegistrationFormFieldNames.GivenName].value,
+                    middleName: formDataClone[RegistrationFormFieldNames.MiddleName].value,
+                    familyName: formDataClone[RegistrationFormFieldNames.FamilyName].value,
+                };
+
+                if (fieldName === RegistrationFormFieldNames.GivenName) prevValues.givenName = value;
+                if (fieldName === RegistrationFormFieldNames.MiddleName) prevValues.middleName = value;
+                if (fieldName === RegistrationFormFieldNames.FamilyName) prevValues.familyName = value;
+
+                fullName = `${prevValues.givenName} ${prevValues.middleName ?? ''} ${prevValues.familyName ?? ''}`.trim().replaceAll('  ', ' ');
+            }
+
+            formDataClone[RegistrationFormFieldNames.FullName].value = fullName;
+        }
+
         formDataClone[fieldName].value = value;
         setFormData(formDataClone);
 

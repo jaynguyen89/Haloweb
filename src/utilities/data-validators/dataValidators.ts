@@ -1,5 +1,5 @@
 import IPublicData from 'src/models/PublicData';
-import { TResult } from 'src/utilities/data-validators/fieldsMediator';
+import { TFieldResult } from 'src/utilities/data-validators/fieldsMediator';
 
 export type TRangeOption = {
     // If true, treat the input value as number, otherwise, string by default
@@ -72,7 +72,7 @@ export class RangeValidator<T extends string> {
         this.options = options;
     }
 
-    public validate(): TResult {
+    public validate(): TFieldResult {
         let messages: Map<string, object | undefined> | undefined = new Map<string, object | undefined>();
 
         let data: string | number = this.input.data as string;
@@ -83,7 +83,7 @@ export class RangeValidator<T extends string> {
             data = +data;
             if (isNaN(data)) {
                 messages.set('messages.input-is-nan', undefined);
-                return { isValid: false, messages } as TResult;
+                return { isValid: false, messages } as TFieldResult;
             }
         }
 
@@ -94,16 +94,16 @@ export class RangeValidator<T extends string> {
 
         let minValidity = true;
         if (this.options.min) {
-            if (this.options.asNumber) minValidity = data > this.options.min;
-            else minValidity = (data as string).length > this.options.min;
+            if (this.options.asNumber) minValidity = data >= this.options.min;
+            else minValidity = (data as string).length >= this.options.min;
 
             if (!minValidity) messages.set(`messages.input-min-${this.options.asNumber ? 'as-number' : 'as-string'}`, { min: this.options.min });
         }
 
         let maxValidity = true;
         if (this.options.max) {
-            if (this.options.asNumber) maxValidity = data < this.options.max;
-            else maxValidity = (data as string).length < this.options.max;
+            if (this.options.asNumber) maxValidity = data <= this.options.max;
+            else maxValidity = (data as string).length <= this.options.max;
 
             if (!maxValidity) messages.set(`messages.input-max-${this.options.asNumber ? 'as-number' : 'as-string'}`, { max: this.options.max });
         }
@@ -133,7 +133,7 @@ export class RangeValidator<T extends string> {
         const isValid = minValidity && maxValidity && equalValidity && amongValidity && numbersOnlyValidity && alphabetsOnlyValidity;
 
         if (isValid) messages = undefined;
-        return { isValid, messages } as TResult;
+        return { isValid, messages } as TFieldResult;
     }
 }
 
@@ -146,7 +146,7 @@ export class DateValidator<T extends Date> {
         this.options = options;
     }
 
-    public validate(): TResult {
+    public validate(): TFieldResult {
         let messages: Map<string, object | undefined> | undefined = new Map<string, object | undefined>();
         const data = this.input.data as Date;
 
@@ -179,7 +179,7 @@ export class DateValidator<T extends Date> {
         const isValid = afterDateValidity && beforeDateValidity && amongValidity;
 
         if (isValid) messages = undefined;
-        return { isValid, messages } as TResult;
+        return { isValid, messages } as TFieldResult;
     }
 }
 
@@ -191,7 +191,7 @@ export class SpecialValidator<T extends string> extends RangeValidator<T> {
         this.specialOptions = options;
     }
 
-    public validate(): TResult {
+    public validate(): TFieldResult {
         let {
             isValid = true,
             messages = new Map<string, object | undefined>(),
@@ -270,7 +270,7 @@ export class EmailValidator<T extends string> extends RangeValidator<T> {
         super(input, options);
     }
 
-    public validate(): TResult {
+    public validate(): TFieldResult {
         let {
             isValid = true,
             messages = new Map<string, object | undefined>(),
@@ -295,7 +295,7 @@ export class UrlValidator<T extends string> extends RangeValidator<T> {
         super(input, options);
     }
 
-    public validate(): TResult {
+    public validate(): TFieldResult {
         let {
             isValid = true,
             messages = new Map<string, object | undefined>(),
@@ -323,7 +323,7 @@ export class FileValidator<T extends File> {
         this.options = options;
     }
 
-    public validate(): TResult {
+    public validate(): TFieldResult {
         let messages: Map<string, object | undefined> | undefined = new Map<string, object | undefined>();
         const data = this.input.data as File;
 
@@ -354,7 +354,7 @@ export class FileListValidator<T extends FileList> {
         this.options = options;
     }
 
-    public validate(): TResult {
+    public validate(): TFieldResult {
         let isValid = true;
         let messages: Map<string, object | undefined> | undefined = new Map<string, object>();
         const data = this.input.data as FileList;

@@ -31,7 +31,11 @@ import {
     validatorOptionsMapFn,
 } from 'src/pages/AccountRegistration/utilities';
 import _cloneDeep from 'lodash/cloneDeep';
-import FieldsMediator, { isFormDataValid, ValidationResult } from 'src/utilities/data-validators/fieldsMediator';
+import FieldsMediator, {
+    TFormResult,
+    TValidationOptions,
+    TValidationResult,
+} from 'src/utilities/data-validators/fieldsMediator';
 
 const mapStateToProps = (state: TRootState) => ({
     publicData: state.publicDataStore.publicData,
@@ -44,8 +48,8 @@ const AccountRegistration = ({
     const styles = useStyles();
 
     const [formData, setFormData] = useState<TFormDataState<typeof RegistrationFormFieldNames>>(initialRegistrationFormDataState);
-    const [formValidation, setFormValidation] = useState<ValidationResult<TFieldKey>>();
-    const [isFormValid, setIsFormValid] = useState(false);
+    const [fieldValidation, setFieldValidation] = useState<TValidationResult<TFieldKey>>();
+    const [formValidation, setFormValidation] = useState<TFormResult>({ isValid: false });
 
     const recaptchaRef = React.createRef<LegacyRef<ReCAPTCHA> | undefined>();
     const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
@@ -68,10 +72,25 @@ const AccountRegistration = ({
     }, [formData]);
 
     const validateFormDataWithDebounce = useDebounce(() => {
-        const fieldsMediator = new FieldsMediator(validators);
+        const options: TValidationOptions<TFieldKey> = {
+            oneOfFields: [
+                RegistrationFormFieldNames.EmailAddress,
+                RegistrationFormFieldNames.PhoneNumber,
+            ],
+            optionalFields: [
+                RegistrationFormFieldNames.Gender,
+                RegistrationFormFieldNames.GivenName,
+                RegistrationFormFieldNames.MiddleName,
+                RegistrationFormFieldNames.FamilyName,
+                RegistrationFormFieldNames.FullName,
+            ],
+        };
+
+        const fieldsMediator = new FieldsMediator(validators, options);
         const validationResults = fieldsMediator.notifyValidationResult();
-        setFormValidation(validationResults);
-        setIsFormValid(isFormDataValid(validationResults));
+
+        setFieldValidation(validationResults);
+        setFormValidation(fieldsMediator.validateForm());
     }, 2000);
 
     const handleFieldValueChange = (
@@ -86,8 +105,8 @@ const AccountRegistration = ({
     };
 
     const shouldAllowSubmit = useMemo(
-        () => isFormValid ? !configs.recaptchaEnabled || Boolean(recaptchaToken) : false,
-        [isFormValid, recaptchaToken],
+        () => formValidation.isValid ? !configs.recaptchaEnabled || Boolean(recaptchaToken) : false,
+        [formValidation, recaptchaToken],
     );
 
     useEffect(() => {
@@ -109,6 +128,11 @@ const AccountRegistration = ({
                 </Typography>
 
                 <Grid container spacing={2} sx={registrationFormSx}>
+                    {!formValidation.isValid && formValidation.messages && (
+                        <Grid item xs={12} sx={{pb: '1rem'}}>
+                            <MessageCaption statuses={formValidation.messages as Map<string, object | undefined>} />
+                        </Grid>
+                    )}
                     <Grid item md={5} xs={12}>
                         <TextField
                             label={t('registration-page.email-address-label')}
@@ -117,10 +141,10 @@ const AccountRegistration = ({
                             onChange={(e) => handleFieldValueChange(RegistrationFormFieldNames.EmailAddress, e.target.value)}
                         />
                         {
-                            formValidation && formValidation[RegistrationFormFieldNames.EmailAddress].isValid !== undefined &&
-                            !formValidation[RegistrationFormFieldNames.EmailAddress].isValid && (
+                            fieldValidation && fieldValidation[RegistrationFormFieldNames.EmailAddress].isValid !== undefined &&
+                            !fieldValidation[RegistrationFormFieldNames.EmailAddress].isValid && (
                             <MessageCaption
-                                statuses={formValidation[RegistrationFormFieldNames.EmailAddress].messages as Map<string, object | undefined>}
+                                statuses={fieldValidation[RegistrationFormFieldNames.EmailAddress].messages as Map<string, object | undefined>}
                             />
                         )}
                     </Grid>
@@ -156,10 +180,10 @@ const AccountRegistration = ({
                                 />
                             </Grid>
                             {
-                                formValidation && formValidation[RegistrationFormFieldNames.PhoneNumber].isValid !== undefined &&
-                                !formValidation[RegistrationFormFieldNames.PhoneNumber].isValid && (
+                                fieldValidation && fieldValidation[RegistrationFormFieldNames.PhoneNumber].isValid !== undefined &&
+                                !fieldValidation[RegistrationFormFieldNames.PhoneNumber].isValid && (
                                 <MessageCaption
-                                    statuses={formValidation[RegistrationFormFieldNames.PhoneNumber].messages as Map<string, object | undefined>}
+                                    statuses={fieldValidation[RegistrationFormFieldNames.PhoneNumber].messages as Map<string, object | undefined>}
                                 />
                             )}
                         </Grid>
@@ -172,10 +196,10 @@ const AccountRegistration = ({
                             onChange={(e) => handleFieldValueChange(RegistrationFormFieldNames.Password, e.target.value)}
                         />
                         {
-                            formValidation && formValidation[RegistrationFormFieldNames.Password].isValid !== undefined &&
-                            !formValidation[RegistrationFormFieldNames.Password].isValid && (
+                            fieldValidation && fieldValidation[RegistrationFormFieldNames.Password].isValid !== undefined &&
+                            !fieldValidation[RegistrationFormFieldNames.Password].isValid && (
                             <MessageCaption
-                                statuses={formValidation[RegistrationFormFieldNames.Password].messages as Map<string, object | undefined>}
+                                statuses={fieldValidation[RegistrationFormFieldNames.Password].messages as Map<string, object | undefined>}
                             />
                         )}
                     </Grid>
@@ -195,10 +219,10 @@ const AccountRegistration = ({
                             onChange={(e) => handleFieldValueChange(RegistrationFormFieldNames.Username, e.target.value)}
                         />
                         {
-                            formValidation && formValidation[RegistrationFormFieldNames.Username].isValid !== undefined &&
-                            !formValidation[RegistrationFormFieldNames.Username].isValid && (
+                            fieldValidation && fieldValidation[RegistrationFormFieldNames.Username].isValid !== undefined &&
+                            !fieldValidation[RegistrationFormFieldNames.Username].isValid && (
                             <MessageCaption
-                                statuses={formValidation[RegistrationFormFieldNames.Username].messages as Map<string, object | undefined>}
+                                statuses={fieldValidation[RegistrationFormFieldNames.Username].messages as Map<string, object | undefined>}
                             />
                         )}
                     </Grid>
@@ -226,10 +250,10 @@ const AccountRegistration = ({
                             onChange={(e) => handleFieldValueChange(RegistrationFormFieldNames.GivenName, e.target.value)}
                         />
                         {
-                            formValidation && formValidation[RegistrationFormFieldNames.GivenName].isValid !== undefined &&
-                            !formValidation[RegistrationFormFieldNames.GivenName].isValid && (
+                            fieldValidation && fieldValidation[RegistrationFormFieldNames.GivenName].isValid !== undefined &&
+                            !fieldValidation[RegistrationFormFieldNames.GivenName].isValid && (
                             <MessageCaption
-                                statuses={formValidation[RegistrationFormFieldNames.GivenName].messages as Map<string, object | undefined>}
+                                statuses={fieldValidation[RegistrationFormFieldNames.GivenName].messages as Map<string, object | undefined>}
                             />
                         )}
                     </Grid>
@@ -241,10 +265,10 @@ const AccountRegistration = ({
                             onChange={(e) => handleFieldValueChange(RegistrationFormFieldNames.MiddleName, e.target.value)}
                         />
                         {
-                            formValidation && formValidation[RegistrationFormFieldNames.MiddleName].isValid !== undefined &&
-                            !formValidation[RegistrationFormFieldNames.MiddleName].isValid && (
+                            fieldValidation && fieldValidation[RegistrationFormFieldNames.MiddleName].isValid !== undefined &&
+                            !fieldValidation[RegistrationFormFieldNames.MiddleName].isValid && (
                             <MessageCaption
-                                statuses={formValidation[RegistrationFormFieldNames.MiddleName].messages as Map<string, object | undefined>}
+                                statuses={fieldValidation[RegistrationFormFieldNames.MiddleName].messages as Map<string, object | undefined>}
                             />
                         )}
                     </Grid>
@@ -256,10 +280,10 @@ const AccountRegistration = ({
                             onChange={(e) => handleFieldValueChange(RegistrationFormFieldNames.FamilyName, e.target.value)}
                         />
                         {
-                            formValidation && formValidation[RegistrationFormFieldNames.FamilyName].isValid !== undefined &&
-                            !formValidation[RegistrationFormFieldNames.FamilyName].isValid && (
+                            fieldValidation && fieldValidation[RegistrationFormFieldNames.FamilyName].isValid !== undefined &&
+                            !fieldValidation[RegistrationFormFieldNames.FamilyName].isValid && (
                             <MessageCaption
-                                statuses={formValidation[RegistrationFormFieldNames.FamilyName].messages as Map<string, object | undefined>}
+                                statuses={fieldValidation[RegistrationFormFieldNames.FamilyName].messages as Map<string, object | undefined>}
                             />
                         )}
                     </Grid>
@@ -271,10 +295,10 @@ const AccountRegistration = ({
                             onChange={(e) => handleFieldValueChange(RegistrationFormFieldNames.FullName, e.target.value)}
                         />
                         {
-                            formValidation && formValidation[RegistrationFormFieldNames.FullName].isValid !== undefined &&
-                            !formValidation[RegistrationFormFieldNames.FullName].isValid && (
+                            fieldValidation && fieldValidation[RegistrationFormFieldNames.FullName].isValid !== undefined &&
+                            !fieldValidation[RegistrationFormFieldNames.FullName].isValid && (
                             <MessageCaption
-                                statuses={formValidation[RegistrationFormFieldNames.FullName].messages as Map<string, object | undefined>}
+                                statuses={fieldValidation[RegistrationFormFieldNames.FullName].messages as Map<string, object | undefined>}
                             />
                         )}
                     </Grid>

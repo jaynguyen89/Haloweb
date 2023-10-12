@@ -50,6 +50,7 @@ const viCommons: TTranslationMap = {
         'input-files-accepted-formats': 'Tệp `{{name}}` không hợp lệ. Các định dạng hợp lệ: {{formats}}.',
         'input-files-min-count': 'Quá ít tệp được chọn, ít nhất {{count}} tệp.',
         'input-files-max-count': 'Quá nhiều tệp được chọn, nhiều nhất {{count}} tệp.',
+        'input-one-of-fields': 'Chỉ 1 trong các mục sau đây cần được nhập dữ liệu, các mục còn lại để trống: {{fields}}',
     },
 };
 

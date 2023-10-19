@@ -3,7 +3,6 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BrowserRouter } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { AnyAction } from 'redux';
 import DimOverlay from 'src/components/atoms/DimOverlay';
 import Flasher from 'src/components/molecules/StatusIndicators/Flasher';
 import Loading from 'src/components/molecules/StatusIndicators/Loading/Loading';
@@ -18,6 +17,7 @@ import Header from 'src/components/compounds/Header/Header';
 import 'src/foundation/app.scss';
 import { useIsStageIncluded } from 'src/hooks/useStage';
 import Stages from 'src/models/enums/stage';
+import { surrogate } from 'src/utilities/otherUtilities';
 
 const App = () => {
     const { t, i18n } = useTranslation();
@@ -28,7 +28,7 @@ const App = () => {
     const shouldShowLoading = useIsStageIncluded(Stages.PREFETCH_SITE_PUBLIC_DATA_ONGOING);
 
     useEffect(() => {
-        dispatch(prefetchLanguageOnLaunch(i18n) as unknown as AnyAction);
+        surrogate(dispatch, prefetchLanguageOnLaunch(i18n));
     }, []);
 
     return (

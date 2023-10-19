@@ -1,8 +1,9 @@
 import { i18n } from 'i18next';
 import { Dispatch } from 'redux';
-import { StorageKeys } from 'src/models/enums/account';
 import * as languageConstants from 'src/redux/constants/languageConstants';
 import { changeLanguageErrorHandler, languageResourceKeys } from 'src/translation/i18next';
+import { surrogate } from 'src/utilities/otherUtilities';
+import { StorageKeys } from 'src/commons/enums';
 
 export const prefetchLanguageOnLaunch = (i18next: i18n) => {
     const i18DetectedLanguage = i18next.language;
@@ -13,7 +14,7 @@ export const prefetchLanguageOnLaunch = (i18next: i18n) => {
             .changeLanguage(languageFromCookie, changeLanguageErrorHandler)
             .then();
 
-    return (dispatch: Dispatch) => dispatch({
+    return (dispatch: Dispatch) => surrogate(dispatch, {
         type: languageConstants.PREFETCH_LANGUAGE_ON_LAUNCH,
         payload: {
             detected: i18DetectedLanguage,
@@ -31,7 +32,7 @@ export const changeSiteLanguage = (
         .changeLanguage(language, changeLanguageErrorHandler)
         .then();
 
-    return (dispatch: Dispatch) => dispatch({
+    return (dispatch: Dispatch) => surrogate(dispatch, {
         type: languageConstants.CHANGE_SITE_LANGUAGE,
         payload: language,
     });

@@ -37,7 +37,7 @@ const ConfirmOTP = () => {
                     <FaIcon wrapper='fa' t='obj' ic={faShieldHalved} />
                 </Typography>
 
-                <PinCell />
+                <PinCell onChange={(pin) => console.log(pin)} />
 
                 <div className={styles.subtitle}>
                     <Trans

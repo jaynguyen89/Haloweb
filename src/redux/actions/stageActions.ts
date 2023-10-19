@@ -2,9 +2,11 @@ import { AlertColor } from '@mui/material';
 import { Dispatch } from 'redux';
 import * as stageConstants from 'src/redux/constants/stageConstants';
 import { IStage } from '../reducers/stageReducer';
+import { readStorageMessage, setStorageMessage, surrogate } from 'src/utilities/otherUtilities';
+import { IStorageMessage } from 'src/commons/interfaces';
 
 export const setStageByName = (stage: string, type?: AlertColor, message?: string, messageParams?: Record<string, string>, canClear?: boolean) => {
-    return (dispatch: Dispatch) => dispatch({
+    return (dispatch: Dispatch) => surrogate(dispatch, {
         type: stageConstants.SET_STAGE,
         payload: {
             name: stage,
@@ -17,34 +19,49 @@ export const setStageByName = (stage: string, type?: AlertColor, message?: strin
 };
 
 export const setStage = (stage: IStage) => {
-    return (dispatch: Dispatch) => dispatch({
+    return (dispatch: Dispatch) => surrogate(dispatch, {
         type: stageConstants.SET_STAGE,
         payload: stage,
     });
 };
 
 export const removeStage = (stage: string) => {
-    return (dispatch: Dispatch) => dispatch({
+    return (dispatch: Dispatch) => surrogate(dispatch, {
         type: stageConstants.REMOVE_STAGE,
         payload: { name: stage },
     });
 };
 
 export const removeStagesMany = (stages: Array<string>) => {
-    return (dispatch: Dispatch) => dispatch({
+    return (dispatch: Dispatch) => surrogate(dispatch, {
         type: stageConstants.REMOVE_STAGES_MANY,
         payload: stages,
     });
 };
 
 export const clearStage = () => {
-    return (dispatch: Dispatch) => dispatch({
+    return (dispatch: Dispatch) => surrogate(dispatch, {
         type: stageConstants.CLEAR_ALL_STAGE,
     });
 };
 
 export const dangerouslyClearStage = () => {
-    return (dispatch: Dispatch) => dispatch({
+    return (dispatch: Dispatch) => surrogate(dispatch, {
         type: stageConstants.DANGEROUSLY_CLEAR_ALL_STAGE,
+    });
+};
+
+export const setStorageMessageKey = (key: string) => {
+    return (dispatch: Dispatch) => surrogate(dispatch, {
+        type: stageConstants.SET_STORAGE_MESSAGE_KEY,
+        payload: key,
+    });
+};
+
+// Get message from LocalStorage and also remove it
+export const removeStorageMessageKey = (key: string) => {
+    return (dispatch: Dispatch) => surrogate(dispatch, {
+        type: stageConstants.REMOVE_STORAGE_MESSAGE_KEY,
+        payload: key,
     });
 };

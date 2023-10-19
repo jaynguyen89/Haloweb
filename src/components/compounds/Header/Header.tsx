@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import { useDispatch } from 'react-redux';
-import { AnyAction } from 'redux';
 import { OnlineShoppingImg, ShoppingBagsImg, ShoppingJoyImg, ShoppingMallsImg } from 'src/assets/images';
 import { headerSx } from 'src/components/compounds/Header/styles';
 import { useTheme } from '@mui/material/styles';
@@ -16,6 +15,7 @@ import SwipeableViews from 'react-swipeable-views';
 import { autoPlay } from 'react-swipeable-views-utils';
 import Stages from 'src/models/enums/stage';
 import { setStage } from 'src/redux/actions/stageActions';
+import { surrogate } from 'src/utilities/otherUtilities';
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
@@ -46,10 +46,10 @@ const Header = () => {
 
     useEffect(() => {
         if (window.location.pathname !== '/')
-            dispatch(setStage({
+            surrogate(dispatch, setStage({
                 name: Stages.HIDE_SITE_HEADER,
                 canClear: false,
-            }) as unknown as AnyAction);
+            }));
     }, [window.location.pathname]);
 
     const handleNext = () => {

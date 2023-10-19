@@ -35,7 +35,7 @@ const SpinnerShowcase = lazy(() => import('src/components/showcases/components/S
 const ToastShowcase = lazy(() => import('src/components/showcases/components/ToastShowcase'));
 const CountryFlagsShowcase = lazy(() => import('src/components/showcases/components/CountryFlagsShowcase'));
 const SocialIconsShowcase = lazy(() => import('src/components/showcases/components/SocialIconsShowcase'));
-const NumberCellShowcase = lazy(() => import('src/components/showcases/components/NumberCellShowcase'));
+const NumberCellShowcase = lazy(() => import('src/components/showcases/components/PinCellShowcase'));
 
 const components = [
     {

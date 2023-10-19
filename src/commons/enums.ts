@@ -32,3 +32,31 @@ export enum ControllerEndpoints {
     PROFILE = 'profile',
     PUBLIC_DATA = 'public-data',
 }
+
+export enum HttpHeaderKeys {
+    RECAPTCHA_TOKEN = 'RecaptchaToken',
+    TWO_FACTOR_TOKEN = 'TwoFactorToken',
+    ACCOUNT_ID = 'AccountId',
+    AUTHORIZATION_TOKEN = 'AuthorizationToken',
+    AUTHORIZATION = 'Authorization',
+}
+
+export enum TokenType {
+    EMAIL_REGISTRATION,
+    PHONE_REGISTRATION,
+    ONE_TIME_PASSWORD,
+    ACCOUNT_RECOVERY,
+}
+
+export enum StorageKeys {
+    AUTH_USER = 'authUser',
+    AUTH_TOKEN = 'authToken',
+    USER_ID = 'userId',
+    USERNAME = 'username',
+    USER_UNIQUE_ID = 'userUniqueId',
+    USER_ROLES = 'userRoles',
+    DEFAULT_THEME_INDEX = 'defaultTheme',
+    DEFAULT_SITE_LANGUAGE = 'defaultSiteLanguage',
+    PUBLIC_DATA = 'sitePublicData',
+    ACCOUNT_ACTIVATION_SUCCESS_STORAGE_KEY = 'accountActivationSuccessMessage',
+}

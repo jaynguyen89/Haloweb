@@ -3,9 +3,9 @@ import { Interceptor, InterceptorChain } from 'src/fetcher/Interceptor';
 import RequestOption from 'src/fetcher/RequestOption';
 import configs from 'src/commons/configs';
 import Request from 'src/fetcher/Request';
-import IAuthenticatedUser from 'src/models/AuthenticatedUser';
 import requestInterceptors from 'src/fetcher/interceptors/RequestInterceptors';
 import responseInterceptors from 'src/fetcher/interceptors/ResponseInterceptors';
+import { IAuthenticatedUser } from 'src/models/Authentication';
 
 class RequestBuilder<T> {
     baseUrl: string;
@@ -15,8 +15,8 @@ class RequestBuilder<T> {
     queries?: Map<string, string>;
     body?: Record<string, unknown>;
     form?: Map<string, File | FileList>;
-    requestInterceptors?: Array<Interceptor>;
-    responseInterceptors?: Array<Interceptor>;
+    requestInterceptors: Array<Interceptor>;
+    responseInterceptors: Array<Interceptor>;
     options?: RequestOption;
     downloadResponse?: boolean;
 
@@ -104,7 +104,7 @@ class RequestBuilder<T> {
         const isValidRequestInterceptors = interceptors.every(interceptor => interceptor.target === InterceptorTarget.REQUEST);
         if (!isValidRequestInterceptors) throw new Error('The Request Interceptors Array contains invalid element(s).');
 
-        this.requestInterceptors = interceptors;
+        interceptors.forEach(interceptor => this.requestInterceptors.push(interceptor));
         return this;
     }
 
@@ -120,7 +120,7 @@ class RequestBuilder<T> {
         const isValidResponseInterceptors = interceptors.every(interceptor => interceptor.target === InterceptorTarget.RESPONSE);
         if (!isValidResponseInterceptors) throw new Error('The Response Interceptors Array contains invalid element(s).');
 
-        this.responseInterceptors = interceptors;
+        interceptors.forEach(interceptor => this.responseInterceptors.push(interceptor));
         return this;
     }
 

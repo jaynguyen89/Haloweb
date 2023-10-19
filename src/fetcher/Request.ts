@@ -1,6 +1,6 @@
 import axios, {
     AxiosError,
-    AxiosResponse,
+    AxiosResponse, HttpStatusCode,
     ResponseType,
 } from 'axios';
 import { Dispatch } from 'redux';
@@ -9,7 +9,7 @@ import { InterceptorChain } from 'src/fetcher/Interceptor';
 import RequestOption from 'src/fetcher/RequestOption';
 import configs from 'src/commons/configs';
 import { delay } from 'src/utilities/timeUtilities';
-import { IErrorCodeData } from 'src/commons/interfaces';
+import { IRequestResult } from 'src/commons/interfaces';
 
 class Request<T> {
     endpointUrl: string;
@@ -42,7 +42,7 @@ class Request<T> {
         this.downloadResponse = downloadResponse;
     }
 
-    public async send(dispatch: Dispatch, callback?: Function, retryIteration: number = 1): Promise<T | IErrorCodeData | undefined> {
+    public async send(dispatch: Dispatch, callback?: Function, retryIteration: number = 1): Promise<IRequestResult<T> | undefined> {
         this.requestInterceptorChain?.runRequestInterceptors(dispatch);
 
         if (this.options?.shouldIncludeCookies) axios.defaults.withCredentials = true; // include cookies
@@ -62,26 +62,33 @@ class Request<T> {
             result = await axios(requestOptions);
         } catch (e) {
             this.responseInterceptorChain?.runResponseInterceptors(dispatch, e);
-            return (e as AxiosError<unknown, any>).response?.data as IErrorCodeData;
+            const error = (e as AxiosError<unknown, any>);
+
+            if (
+                error.code === 'ERR_NETWORK' &&
+                this.options &&
+                this.options.shouldRetryOnFailure &&
+                (this.options.retryThreshold || 2) >= retryIteration
+            ) {
+                if (this.options.retryInterval) await delay(this.options.retryInterval);
+
+                retryIteration += 1;
+                await this.send(dispatch, callback, retryIteration);
+                return undefined;
+            }
+
+            return {
+                status: (error.response?.data as any)?.status,
+                data: error.config?.data ? JSON.parse(error.config.data) : undefined,
+            };
         }
 
         if (result) {
             this.responseInterceptorChain?.runResponseInterceptors(dispatch, result);
             const data = (result as AxiosResponse<any, any>).data;
 
-            callback && callback(dispatch, Boolean(data) ? data : result.status);
-            return Boolean(data) ? data : result.status;
-        }
-
-        if (
-            this.options &&
-            this.options.shouldRetryOnFailure &&
-            (this.options.retryThreshold || 2) >= retryIteration
-        ) {
-            if (this.options.retryInterval) await delay(this.options.retryInterval);
-
-            retryIteration += 1;
-            await this.send(dispatch, callback, retryIteration);
+            callback && callback(dispatch, { status: result.status!, data });
+            return { status: result.status!, data };
         }
 
         return undefined;

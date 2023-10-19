@@ -51,6 +51,8 @@ const enCommons: TTranslationMap = {
         'input-files-min-count': 'Not enough files selected, min {{count}} files.',
         'input-files-max-count': 'Too many files selected, max {{count}} files.',
         'input-one-of-fields': 'Only 1 of these fields should contain valid input, the others must be empty: {{fields}}.',
+        'recaptcha-not-clicked': 'Human verification: please click the Recaptcha checkbox.',
+        'recaptcha-token-missing': 'Recaptcha hasn\'t done its human verification. Please try reloading the page.',
     },
 };
 

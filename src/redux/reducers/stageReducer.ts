@@ -13,7 +13,8 @@ export interface IStage {
 }
 
 export interface IStageStore {
-    stages: Array<IStage>;
+    stages: Array<IStage>,
+    storageMessageKey?: string,
 }
 
 const initialState: IStageStore = {
@@ -41,6 +42,12 @@ const reducer = produce((state: IStageStore, action: AnyAction) => {
             return;
         case stageConstants.DANGEROUSLY_CLEAR_ALL_STAGE:
             state.stages = new Array<IStage>();
+            return;
+        case stageConstants.SET_STORAGE_MESSAGE_KEY:
+            state.storageMessageKey = action.payload;
+            return;
+        case stageConstants.REMOVE_STORAGE_MESSAGE_KEY:
+            state.storageMessageKey = undefined;
             return;
         default:
             return;

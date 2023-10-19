@@ -1,20 +1,20 @@
 import Box from '@mui/material/Box';
 import React, {useEffect} from 'react';
 import { useDispatch } from 'react-redux';
-import { AnyAction } from 'redux';
 import Typography from '@mui/material/Typography';
 import { HomeBackgroundImg } from 'src/assets/images';
 import Page from 'src/components/atoms/Page/Page';
 import useStyles, { textSx } from 'src/pages/HomePage/styles';
 import { removeStage } from 'src/redux/actions/stageActions';
 import Stages from 'src/models/enums/stage';
+import { surrogate } from 'src/utilities/otherUtilities';
 
 const HomePage = () => {
     const dispatch = useDispatch();
     const styles = useStyles();
 
     useEffect(() => {
-        dispatch(removeStage(Stages.HIDE_SITE_HEADER) as unknown as AnyAction);
+        surrogate(dispatch, removeStage(Stages.HIDE_SITE_HEADER));
     }, []);
 
     return (

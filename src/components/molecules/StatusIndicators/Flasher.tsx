@@ -1,22 +1,25 @@
+import { useTheme } from '@mui/material/styles';
 import React, { useMemo } from 'react';
 import { Alert, AlertColor, AlertProps, Collapse, CollapseProps, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
-import { AnyAction } from 'redux';
 import { useGetStageByName, useIsStageIncluded } from 'src/hooks/useStage';
 import Stages from 'src/models/enums/stage';
 import { removeStage } from 'src/redux/actions/stageActions';
+import { surrogate } from 'src/utilities/otherUtilities';
 
 export type TFlasher = CollapseProps & AlertProps & {
     stage: string,
     message?: string,
+    messageParams?: object,
     onClose?: () => void,
 };
 
 const Flasher = ({
     stage,
     message,
+    messageParams,
     orientation = 'vertical',
     severity = 'info',
     variant = 'standard',
@@ -27,6 +30,7 @@ const Flasher = ({
 }: TFlasher) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
+    const theme = useTheme();
     const visible = stage === 'showcase' || useIsStageIncluded(stage);
     const stageFromStore = useGetStageByName(stage);
 
@@ -44,7 +48,7 @@ const Flasher = ({
         return severity;
     }, [stage, stageFromStore]);
 
-    const handleHideFlasher = () => onClose ? onClose() : dispatch(removeStage(stage) as unknown as AnyAction);
+    const handleHideFlasher = () => onClose ? onClose() : surrogate(dispatch, removeStage(stage));
 
     return (
         <Collapse in={visible} orientation={orientation}>
@@ -63,7 +67,7 @@ const Flasher = ({
                 severity={severity}
                 variant={variant}
             >
-                {t(message)}
+                <span style={{color: theme.palette[severity].main}}>{t(message, messageParams)}</span>
             </Alert>
         </Collapse>
     );

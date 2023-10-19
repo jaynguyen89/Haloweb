@@ -3,13 +3,13 @@ import { CookiesProvider } from 'react-cookie';
 import ReactDOM from 'react-dom/client';
 import { I18nextProvider } from 'react-i18next';
 import { Provider } from 'react-redux';
-import { AnyAction } from 'redux';
 import App from 'src/foundation/App';
 import store from 'src/foundation/store';
 import { prefetchAccountDataOnLaunch } from 'src/redux/actions/authenticationActions';
 import { prefetchPublicDataOnLaunch } from 'src/redux/actions/publicDataActions';
 import { defaultCookieSetOptions } from 'src/utilities/cookies-helpers/constants';
 import { prefetchDefaultTheme } from './redux/actions/themeActions';
+import { surrogate } from 'src/utilities/otherUtilities';
 
 import i18next from 'src/translation/i18next';
 
@@ -17,9 +17,9 @@ const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement,
 );
 
-store.dispatch(prefetchAccountDataOnLaunch() as unknown as AnyAction);
-store.dispatch(prefetchDefaultTheme() as unknown as AnyAction);
-store.dispatch(prefetchPublicDataOnLaunch() as unknown as AnyAction);
+surrogate(store.dispatch, prefetchAccountDataOnLaunch());
+surrogate(store.dispatch, prefetchDefaultTheme());
+surrogate(store.dispatch, prefetchPublicDataOnLaunch());
 
 root.render(
     <React.StrictMode>

@@ -1,11 +1,11 @@
 import React from 'react';
 import { Alert, AlertProps, IconButton, Snackbar, SnackbarOrigin, SnackbarProps } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import { AnyAction } from 'redux';
 import { useIsStageIncluded } from 'src/hooks/useStage';
 import { removeStage } from 'src/redux/actions/stageActions';
 import CloseIcon from '@mui/icons-material/Close';
 import configs from 'src/commons/configs';
+import { surrogate } from 'src/utilities/otherUtilities';
 
 type TToast = SnackbarProps & AlertProps & {
     stage: string,
@@ -25,7 +25,7 @@ const Toast = ({
     const dispatch = useDispatch();
     const visible = stage === 'showcase' || useIsStageIncluded(stage);
 
-    const handleHideToast = () => dispatch(removeStage(stage) as unknown as AnyAction);
+    const handleHideToast = () => surrogate(dispatch, removeStage(stage));
 
     return (
         <Snackbar

@@ -1,4 +1,5 @@
 import { Alert, Collapse, IconButton } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useGetStageByName } from 'src/hooks/useStage';
@@ -6,7 +7,7 @@ import { useDispatch } from 'react-redux';
 import CloseIcon from '@mui/icons-material/Close';
 import { TFlasher } from 'src/components/molecules/StatusIndicators/Flasher';
 import { removeStage } from 'src/redux/actions/stageActions';
-import { AnyAction } from 'redux';
+import { surrogate } from 'src/utilities/otherUtilities';
 
 const StageFlasher = ({
     stage,
@@ -19,6 +20,7 @@ const StageFlasher = ({
 }: Omit<TFlasher, 'message' | 'severity'> & {
     onClose?: () => void,
 }) => {
+    const theme = useTheme();
     const dispatch = useDispatch();
     const { t } = useTranslation();
     const stageData = useGetStageByName(stage);
@@ -32,7 +34,7 @@ const StageFlasher = ({
         messageParams,
     } = stageData;
 
-    const handleHideFlasher = () => onClose ? onClose() : dispatch(removeStage(stage) as unknown as AnyAction);
+    const handleHideFlasher = () => onClose ? onClose() : surrogate(dispatch, removeStage(stage));
 
     return (
         <Collapse in={visible} orientation={orientation}>
@@ -51,7 +53,7 @@ const StageFlasher = ({
                 severity={type}
                 variant={variant}
             >
-                {t(message, messageParams)}
+                <span style={{color: theme.palette[type ?? 'error'].main}}>{t(message, messageParams)}</span>
             </Alert>
         </Collapse>
     );

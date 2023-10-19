@@ -8,8 +8,8 @@ class RequestOption {
     cookiesToIncludeByKeys?: Array<string>;
 
     constructor(
-        shouldIncludeCookies?: boolean,
         shouldRetryOnFailure?: boolean,
+        shouldIncludeCookies?: boolean,
         retryInterval?: number,
         retryThreshold?: number,
         cookiesToIncludeByKeys?: Array<string>,

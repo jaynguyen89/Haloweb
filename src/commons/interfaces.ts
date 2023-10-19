@@ -30,10 +30,14 @@ export interface IMenuItem {
     children?: Array<Omit<IMenuItem, 'children'>>,
 }
 
-export interface IErrorCodeData {
-    isHandled: boolean,
-    statusCodeName?: string,
-    StatusCodeName?: string,
-    message?: string,
-    value?: object,
+export interface IRequestResult<T> {
+    status: number,
+    data?: object | T,
+}
+
+export interface IStorageMessage {
+    storageKey: string,
+    targetPage: string,
+    messageKey: string,
+    messageParams?: object,
 }

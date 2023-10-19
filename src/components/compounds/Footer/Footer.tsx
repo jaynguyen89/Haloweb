@@ -7,12 +7,12 @@ import { FormControl, InputLabel, Select, SelectChangeEvent } from '@mui/materia
 import Container from '@mui/material/Container';
 import { useTranslation } from 'react-i18next';
 import { connect, useDispatch } from 'react-redux';
-import { AnyAction } from 'redux';
 import useStyles, { footerSx } from 'src/components/compounds/Footer/styles';
 import { changeSiteLanguage } from 'src/redux/actions/languageActions';
 import { setDefaultTheme } from 'src/redux/actions/themeActions';
 import { TRootState } from 'src/redux/reducers';
 import { languageResourceKeys } from 'src/translation/i18next';
+import { surrogate } from 'src/utilities/otherUtilities';
 
 const mapStateToProps = (state: TRootState) => ({
     siteLanguage: state.languageStore.siteLanguage,
@@ -34,7 +34,7 @@ const Footer = ({
     const handleSelectSiteLanguage = (event: SelectChangeEvent) => {
         const value = event.target.value;
         if (languageResourceKeys.includes(value)) {
-            dispatch(changeSiteLanguage(value, i18n) as unknown as AnyAction);
+            surrogate(dispatch, changeSiteLanguage(value, i18n));
             return;
         }
 
@@ -44,7 +44,7 @@ const Footer = ({
     const handleSelectSiteTheme = (event: SelectChangeEvent) => {
         const themeIndex = +event.target.value;
         setSelectedTheme(themeIndex);
-        dispatch(setDefaultTheme(themeIndex) as unknown as AnyAction);
+        surrogate(dispatch, setDefaultTheme(themeIndex));
     };
 
     return (

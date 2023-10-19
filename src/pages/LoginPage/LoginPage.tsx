@@ -16,8 +16,12 @@ import useStyles, { helpBoxSx, loginBoxSx, loginFormSx } from 'src/pages/LoginPa
 import { faFingerprint } from '@fortawesome/free-solid-svg-icons/faFingerprint';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons/faPaperPlane';
 import vars from 'src/commons/variables/cssVariables.scss';
-import { TRootState } from '../../redux/reducers';
-import { connect } from 'react-redux';
+import { TRootState } from 'src/redux/reducers';
+import { connect, useDispatch } from 'react-redux';
+import { readStorageMessage } from 'src/utilities/otherUtilities';
+import { StorageKeys } from 'src/commons/enums';
+import Flasher from 'src/components/molecules/StatusIndicators/Flasher';
+import Stages from 'src/models/enums/stage';
 
 const mapStateToProps = (state: TRootState) => ({
     countries: state.publicDataStore.publicData.countries,
@@ -26,8 +30,11 @@ const mapStateToProps = (state: TRootState) => ({
 const LoginPage = ({
     countries,
 }: ReturnType<typeof mapStateToProps>) => {
+    const dispatch = useDispatch();
     const { t } = useTranslation();
     const styles = useStyles();
+
+    const accountActivationMessage = readStorageMessage(dispatch, StorageKeys.ACCOUNT_ACTIVATION_SUCCESS_STORAGE_KEY);
 
     return (
         <div className={styles.loginWrapper}>
@@ -36,6 +43,15 @@ const LoginPage = ({
                 <link rel='canonical' href={window.location.href} />
                 <meta name='description' content='Sign in with email address or phone number, or using social media accounts' />
             </Helmet>
+
+            {accountActivationMessage && accountActivationMessage.targetPage === LoginPage.name && (
+                <Box sx={{ maxWidth: '60%', margin: 'auto' }}>
+                    <Flasher
+                        stage={Stages.REQUEST_TO_ACTIVATE_ACCOUNT_SUCCESS}
+                        message={accountActivationMessage.messageKey}
+                    />
+                </Box>
+            )}
 
             <Box sx={loginBoxSx}>
                 <Typography variant='h1' className={styles.title}>
@@ -139,3 +155,4 @@ const LoginPage = ({
 };
 
 export default connect(mapStateToProps)(LoginPage);
+export const loginPageName = LoginPage.name;

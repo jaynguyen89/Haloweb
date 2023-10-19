@@ -1,3 +1,5 @@
+import { IRegistrationData } from 'src/models/Authentication';
+import { IRegionalizedPhoneNumber, IRegistrationProfileData } from 'src/models/Profile';
 import IPublicData from 'src/models/PublicData';
 import {
     TFormDataState,
@@ -136,4 +138,34 @@ export const validatorOptionsMapFn: TValidatorOptionsMapFn<TFieldKey> = (publicD
         specialCharsToInclude: '\'.-',
         allowSpace: true,
     } as TRangeOption & TSpecialOption,
+});
+
+const createRegistrationProfileData = (formData: TFormDataState<typeof RegistrationFormFieldNames>): IRegistrationProfileData | undefined => {
+    if (
+        formData[RegistrationFormFieldNames.Gender].value ||
+        formData[RegistrationFormFieldNames.GivenName].value ||
+        formData[RegistrationFormFieldNames.MiddleName].value ||
+        formData[RegistrationFormFieldNames.FamilyName].value ||
+        formData[RegistrationFormFieldNames.FullName].value
+    ) return {
+        gender: formData[RegistrationFormFieldNames.Gender].value ? +formData[RegistrationFormFieldNames.Gender].value : undefined,
+        givenName: formData[RegistrationFormFieldNames.GivenName].value as string | undefined,
+        middleName: formData[RegistrationFormFieldNames.MiddleName].value as string | undefined,
+        familyName: formData[RegistrationFormFieldNames.FamilyName].value as string | undefined,
+        fullName: formData[RegistrationFormFieldNames.FullName].value as string | undefined,
+    };
+
+    return undefined;
+};
+
+export const createRegistrationData = (formData: TFormDataState<typeof RegistrationFormFieldNames>): IRegistrationData => ({
+    emailAddress: formData[RegistrationFormFieldNames.EmailAddress].value as string | undefined,
+    phoneNumber: formData[RegistrationFormFieldNames.PhoneNumber].value === undefined ? undefined : {
+        phoneNumber: formData[RegistrationFormFieldNames.PhoneNumber].value,
+        regionCode: formData[RegistrationFormFieldNames.AreaCode].value,
+    } as IRegionalizedPhoneNumber,
+    username: formData[RegistrationFormFieldNames.Username].value as string,
+    password: formData[RegistrationFormFieldNames.Password].value as string,
+    passwordConfirm: formData[RegistrationFormFieldNames.PasswordConfirm].value as string,
+    profileData: createRegistrationProfileData(formData),
 });

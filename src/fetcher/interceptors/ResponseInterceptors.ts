@@ -1,18 +1,18 @@
-import { AxiosError, AxiosResponse } from 'axios';
+import { AxiosError, AxiosResponse, HttpStatusCode } from 'axios';
 import { batch } from 'react-redux';
-import { AnyAction, Dispatch } from 'redux';
+import { Dispatch } from 'redux';
 import { InterceptorTarget } from 'src/commons/enums';
 import { Interceptor, InterceptorDataType } from 'src/fetcher/Interceptor';
 import Stages from 'src/models/enums/stage';
 import { clearStage, setStageByName } from 'src/redux/actions/stageActions';
-import { isClientErrorStatusCode, isServerErrorStatusCode, isSuccessStatusCode } from 'src/utilities/otherUtilities';
+import { isServerErrorStatusCode, isSuccessStatusCode, surrogate } from 'src/utilities/otherUtilities';
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 const SuccessInterceptor = new Interceptor(
     InterceptorTarget.RESPONSE,
     (dispatch: Dispatch, data: InterceptorDataType) => {
         const response = (data as AxiosResponse<any, any>);
-        if (isSuccessStatusCode(response.status)) dispatch(clearStage() as unknown as AnyAction);
+        if (isSuccessStatusCode(response.status)) surrogate(dispatch, clearStage());
     },
 );
 
@@ -23,8 +23,8 @@ const AxiosErrorInterceptor = new Interceptor(
 
         if (axiosError.code === 'ERR_NETWORK')
             batch(() => {
-                dispatch(clearStage() as unknown as AnyAction);
-                dispatch(setStageByName(Stages.SHOW_TOAST_CLIENT_ERROR_NETWORK) as unknown as AnyAction);
+                surrogate(dispatch, clearStage());
+                surrogate(dispatch, setStageByName(Stages.SHOW_TOAST_CLIENT_ERROR_NETWORK));
             });
     },
 );
@@ -37,21 +37,23 @@ const Error500Interceptor = new Interceptor(
         if (response && isServerErrorStatusCode(response.status)) {
             const message = `messages.error-${response?.status}`;
             batch(() => {
-                dispatch(clearStage() as unknown as AnyAction);
-                dispatch(setStageByName(Stages.SHOW_FLASHER_SERVER_ERROR, 'error', message) as unknown as AnyAction);
+                surrogate(dispatch, clearStage());
+                surrogate(dispatch, setStageByName(Stages.SHOW_FLASHER_SERVER_ERROR, 'error', message));
             });
         }
     },
 );
 
-export class Error400Interceptor {
+export class Error4xxInterceptor {
     stage: Stages;
+    statusCode: HttpStatusCode;
     messageKey?: string;
     messageParams?: Record<string, string>;
     canClear: boolean;
 
-    constructor(stage: Stages, messageKey?: string, messageParams?: Record<string, string>, canClear?: false) {
+    constructor(stage: Stages, statusCode: HttpStatusCode, canClear?: false, messageKey?: string, messageParams?: Record<string, string>) {
         this.stage = stage;
+        this.statusCode = statusCode;
         this.messageKey = messageKey;
         this.messageParams = messageParams;
         this.canClear = canClear === undefined ? true : canClear;
@@ -63,10 +65,10 @@ export class Error400Interceptor {
             (dispatch: Dispatch, e: InterceptorDataType) => {
                 const { response } = (e as AxiosError<unknown, any>);
 
-                if (response && isClientErrorStatusCode(response.status))
+                if (response && response.status === this.statusCode)
                     batch(() => {
-                        dispatch(clearStage() as unknown as AnyAction);
-                        dispatch(setStageByName(this.stage, 'error', this.messageKey, this.messageParams, this.canClear) as unknown as AnyAction);
+                        surrogate(dispatch, clearStage());
+                        surrogate(dispatch, setStageByName(this.stage, 'error', this.messageKey, this.messageParams, this.canClear));
                     });
             },
         );

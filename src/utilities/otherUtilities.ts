@@ -21,11 +21,11 @@ export const setStorageMessage = (dispatch: Dispatch, {
     surrogate(dispatch, setStorageMessageKey(storageKey));
 };
 
-export const readStorageMessage = (dispatch: Dispatch, key: string, remove: true): IStorageMessage | null => {
+export const readStorageMessage = (dispatch: Dispatch, key: string, remove?: true): IStorageMessage | null => {
     const storedMessage = localStorage.getItem(key);
     if (storedMessage) {
         const message = JSON.parse(storedMessage);
-        if (remove) {
+        if (remove === undefined || remove) {
             localStorage.removeItem(key);
             surrogate(dispatch, removeStorageMessageKey(key));
         }

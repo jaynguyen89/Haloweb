@@ -2,8 +2,7 @@ import { AlertColor } from '@mui/material';
 import { Dispatch } from 'redux';
 import * as stageConstants from 'src/redux/constants/stageConstants';
 import { IStage } from '../reducers/stageReducer';
-import { readStorageMessage, setStorageMessage, surrogate } from 'src/utilities/otherUtilities';
-import { IStorageMessage } from 'src/commons/interfaces';
+import { surrogate } from 'src/utilities/otherUtilities';
 
 export const setStageByName = (stage: string, type?: AlertColor, message?: string, messageParams?: Record<string, string>, canClear?: boolean) => {
     return (dispatch: Dispatch) => surrogate(dispatch, {

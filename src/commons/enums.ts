@@ -41,12 +41,7 @@ export enum HttpHeaderKeys {
     AUTHORIZATION = 'Authorization',
 }
 
-export enum TokenType {
-    EMAIL_REGISTRATION,
-    PHONE_REGISTRATION,
-    ONE_TIME_PASSWORD,
-    ACCOUNT_RECOVERY,
-}
+export enum TokenDestination { SMS, EMAIL}
 
 export enum StorageKeys {
     AUTH_USER = 'authUser',

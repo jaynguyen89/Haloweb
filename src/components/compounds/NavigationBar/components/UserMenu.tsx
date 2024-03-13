@@ -76,6 +76,7 @@ const UserMenu = () => {
                 open={Boolean(userMenuAnchor)}
                 onClose={() => setUserMenuAnchor(null)}
                 sx={userMenuSx}
+                disableScrollLock={true}
             >
                 {userMenuItems.map((menuItem: IMenuItem) => (
                     <div key={menuItem.title}>

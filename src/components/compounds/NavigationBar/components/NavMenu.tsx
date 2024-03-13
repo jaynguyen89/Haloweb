@@ -109,6 +109,7 @@ const NavMenuMobile = ({
                 open={Boolean(mainMenuAnchor)}
                 onClose={() => setMainMenuAnchor(null)}
                 sx={navMenuSx}
+                disableScrollLock={true}
             >
                 {menuItems.map((menuItem) => (
                     <div key={menuItem.title}>

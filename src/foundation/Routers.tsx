@@ -38,7 +38,7 @@ const routes: Array<RouteProps> = [
         element: <ConfirmOTP />,
     },
     {
-        path: '/activate-account',
+        path: '/activate-account/:accountId',
         element: <ActivateAccount />,
     },
 ];

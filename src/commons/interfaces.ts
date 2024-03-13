@@ -32,6 +32,7 @@ export interface IMenuItem {
 
 export interface IRequestResult<T> {
     status: number,
+    statusCodeName?: string,
     data?: object | T,
 }
 

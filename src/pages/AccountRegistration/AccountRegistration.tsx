@@ -44,6 +44,7 @@ import FieldsMediator, {
     TValidationResult,
 } from 'src/utilities/data-validators/fieldsMediator';
 import { surrogate } from 'src/utilities/otherUtilities';
+import {faMinus} from '@fortawesome/free-solid-svg-icons/faMinus';
 
 const mapStateToProps = (state: TRootState) => ({
     publicData: state.publicDataStore.publicData,
@@ -255,6 +256,9 @@ const AccountRegistration = ({
                                         value={formData[RegistrationFormFieldNames.AreaCode].value ?? ''}
                                         onChange={(e) => handleFieldValueChange(RegistrationFormFieldNames.AreaCode, e.target.value as string)}
                                     >
+                                        <MenuItem key='none' value=''>
+                                            <FaIcon wrapper='fa' t='obj' ic={faMinus} />
+                                        </MenuItem>
                                         {publicData.countries.map(country => (
                                             <MenuItem key={country.telephoneCode} value={country.telephoneCode}>
                                                 {`${country.telephoneCode} - ${country.isoCode3Char}`}

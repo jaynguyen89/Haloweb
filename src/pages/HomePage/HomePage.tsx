@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box';
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import Typography from '@mui/material/Typography';
 import { HomeBackgroundImg } from 'src/assets/images';

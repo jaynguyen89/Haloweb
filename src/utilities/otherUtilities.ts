@@ -8,8 +8,11 @@ export const surrogate = (dispatch: Dispatch, action: Function | AnyAction) => d
 export const isSuccessStatusCode = (statusCode: number | HttpStatusCode) =>
     statusCode >= HttpStatusCode.Ok && statusCode <= HttpStatusCode.MultiStatus;
 
-export const isClientErrorStatusCode = (statusCode: number | HttpStatusCode) =>
-    statusCode >= HttpStatusCode.BadRequest && statusCode < HttpStatusCode.InternalServerError;
+export const isInformationStatusCode = (statusCode: number | HttpStatusCode) =>
+    statusCode >= HttpStatusCode.Continue && statusCode < HttpStatusCode.Ok;
+
+export const isRedirectionStatusCode = (statusCode: number | HttpStatusCode) =>
+    statusCode >= HttpStatusCode.MultipleChoices && statusCode < HttpStatusCode.BadRequest;
 
 export const isServerErrorStatusCode = (statusCode: number | HttpStatusCode) => statusCode >= HttpStatusCode.InternalServerError;
 

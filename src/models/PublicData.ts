@@ -6,6 +6,7 @@ type TPublicDataFormat = {
 
 interface IPublicData {
     environment: string,
+    enableSecretCode: boolean,
     secretCodeLength: number,
     dateFormats: Array<TPublicDataFormat>,
     timeFormats: Array<TPublicDataFormat>,

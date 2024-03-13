@@ -2,6 +2,14 @@ import { ITimestamp } from 'src/commons/interfaces';
 import Roles from 'src/models/enums/roles';
 import { IRegionalizedPhoneNumber, IRegistrationProfileData } from 'src/models/Profile';
 import { IDeviceInformation } from 'src/models/TrustedDevice';
+import { TokenDestination } from 'src/commons/enums';
+
+export interface ITokenData {
+    destination: TokenDestination,
+    isOtp?: boolean,
+    secretCode?: string,
+    currentToken?: string,
+}
 
 export interface IAuthenticatedUser extends ITimestamp {
     isAuthenticated: boolean,

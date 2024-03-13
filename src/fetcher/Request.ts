@@ -61,6 +61,7 @@ class Request<T> {
         try {
             result = await axios(requestOptions);
         } catch (e) {
+            console.log(e);
             this.responseInterceptorChain?.runResponseInterceptors(dispatch, e);
             const error = (e as AxiosError<unknown, any>);
 
@@ -79,7 +80,8 @@ class Request<T> {
 
             return {
                 status: (error.response?.data as any)?.status,
-                data: error.config?.data ? JSON.parse(error.config.data) : undefined,
+                statusCodeName: (error.response?.data as any)?.statusCodeName,
+                data: (error.response?.data as any)?.value,
             };
         }
 

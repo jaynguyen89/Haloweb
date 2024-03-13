@@ -1,11 +1,17 @@
-import { AxiosError, AxiosResponse, HttpStatusCode } from 'axios';
-import { batch } from 'react-redux';
-import { Dispatch } from 'redux';
-import { InterceptorTarget } from 'src/commons/enums';
-import { Interceptor, InterceptorDataType } from 'src/fetcher/Interceptor';
+import {AxiosError, AxiosResponse, HttpStatusCode} from 'axios';
+import {batch} from 'react-redux';
+import {Dispatch} from 'redux';
+import {InterceptorTarget} from 'src/commons/enums';
+import {Interceptor, InterceptorDataType} from 'src/fetcher/Interceptor';
 import Stages from 'src/models/enums/stage';
-import { clearStage, setStageByName } from 'src/redux/actions/stageActions';
-import { isServerErrorStatusCode, isSuccessStatusCode, surrogate } from 'src/utilities/otherUtilities';
+import {clearStage, setStageByName} from 'src/redux/actions/stageActions';
+import {
+    isInformationStatusCode, isRedirectionStatusCode,
+    isServerErrorStatusCode,
+    isSuccessStatusCode,
+    surrogate,
+} from 'src/utilities/otherUtilities';
+import { AlertColor } from '@mui/material';
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 const SuccessInterceptor = new Interceptor(
@@ -35,16 +41,21 @@ const Error500Interceptor = new Interceptor(
         const { response } = (e as AxiosError<unknown, any>);
 
         if (response && isServerErrorStatusCode(response.status)) {
+            const codeType: AlertColor = isInformationStatusCode(response!.status)
+                                         ? 'info' : isRedirectionStatusCode(response!.status)
+                                                    ? 'warning' : 'error';
+
             const message = `messages.error-${response?.status}`;
             batch(() => {
                 surrogate(dispatch, clearStage());
-                surrogate(dispatch, setStageByName(Stages.SHOW_FLASHER_SERVER_ERROR, 'error', message));
+                surrogate(dispatch, setStageByName(Stages.SHOW_FLASHER_SERVER_ERROR, codeType, message));
             });
         }
     },
 );
 
-export class Error4xxInterceptor {
+/* To create custom error handlers for status codes 1xx, 3xx, 4xx, 5xx */
+export class StatusNxxInterceptor {
     stage: Stages;
     statusCode: HttpStatusCode;
     messageKey?: string;

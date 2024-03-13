@@ -1,36 +1,38 @@
-import { faMinus } from '@fortawesome/free-solid-svg-icons/faMinus';
-import { faPaperPlane } from '@fortawesome/free-solid-svg-icons/faPaperPlane';
-import { faUserCheck } from '@fortawesome/free-solid-svg-icons/faUserCheck';
-import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons/faQuestionCircle';
-import { Grid } from '@mui/material';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import React, { LegacyRef, useEffect, useMemo, useState } from 'react';
-import ReCAPTCHA from 'react-google-recaptcha';
-import { useTranslation } from 'react-i18next';
+import { TRootState } from 'src/redux/reducers';
 import { batch, connect, useDispatch } from 'react-redux';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import configs from 'src/commons/configs';
-import FaIcon from 'src/components/atoms/FaIcon';
-import PinCell from 'src/components/atoms/PinCell/PinCell';
-import Recaptcha from 'src/components/atoms/Recaptcha';
-import Loading from 'src/components/molecules/StatusIndicators/Loading/Loading';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import useStyles, { activateAccountBoxSx, activateAccountFormSx } from 'src/pages/ActivateAccount/styles';
 import { useIsStageIncluded } from 'src/hooks/useStage';
 import Stages from 'src/models/enums/stage';
-import useStyles, { activateAccountBoxSx, activateAccountFormSx } from 'src/pages/ActivateAccount/styles';
-import { sendRequestToGetSecretCode } from 'src/redux/actions/authenticationActions';
-import { removeStage, setStageByName } from 'src/redux/actions/stageActions';
-import { TRootState } from 'src/redux/reducers';
-import StageFlasher from 'src/components/molecules/StatusIndicators/StageFlasher';
+import React, { LegacyRef, useEffect, useMemo, useState } from 'react';
+import ReCAPTCHA from 'react-google-recaptcha';
 import { setStorageMessage, surrogate } from 'src/utilities/otherUtilities';
-import Flasher from 'src/components/molecules/StatusIndicators/Flasher';
-import { IStorageMessage } from 'src/commons/interfaces';
-import { StorageKeys } from 'src/commons/enums';
+import { removeStage, setStageByName } from 'src/redux/actions/stageActions';
+import { sendRequestToActivateAccount, sendRequestToGetSecretCode } from 'src/redux/actions/authenticationActions';
+import { StorageKeys, TokenDestination } from 'src/commons/enums';
+import configs from 'src/commons/configs';
 import { loginPageName } from 'src/pages/LoginPage/LoginPage';
+import { IStorageMessage } from 'src/commons/interfaces';
+import Loading from 'src/components/molecules/StatusIndicators/Loading/Loading';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import FaIcon from 'src/components/atoms/FaIcon';
+import { faUserCheck } from '@fortawesome/free-solid-svg-icons/faUserCheck';
+import Grid from '@mui/material/Grid';
+import StageFlasher from 'src/components/molecules/StatusIndicators/StageFlasher';
+import Flasher from 'src/components/molecules/StatusIndicators/Flasher';
+import { faMinus } from '@fortawesome/free-solid-svg-icons/faMinus';
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons/faQuestionCircle';
+import PinCell from 'src/components/atoms/PinCell/PinCell';
+import Button from '@mui/material/Button';
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons/faPaperPlane';
+import Recaptcha from 'src/components/atoms/Recaptcha';
+import { ITokenData } from 'src/models/Authentication';
 
 const mapStateToProps = (state: TRootState) => ({
     stages: state.stageStore.stages,
+    secretCodeEnable: state.publicDataStore.publicData.enableSecretCode,
     secretCodeLength: state.publicDataStore.publicData.secretCodeLength,
     isSecretCodeSent: state.authenticationStore.accountActivation.isSecretCodeSent,
     activationSuccess: state.authenticationStore.accountActivation.activationSuccess,
@@ -40,6 +42,7 @@ const mapStateToProps = (state: TRootState) => ({
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 const ActivateAccount = ({
     stages,
+    secretCodeEnable,
     secretCodeLength,
     isSecretCodeSent,
     activationSuccess,
@@ -51,6 +54,7 @@ const ActivateAccount = ({
     const styles = useStyles();
 
     const [searchParams] = useSearchParams();
+    const routeParams = useParams();
     const isActivationTimeElapsed = useIsStageIncluded(Stages.REQUEST_TO_GET_SECRET_CODE_ACTIVATION_TIME_ELAPSED);
 
     const recaptchaRef = React.createRef<LegacyRef<ReCAPTCHA> | undefined>();
@@ -58,6 +62,7 @@ const ActivateAccount = ({
 
     const [secretCode, setSecretCode] = useState('');
     const [data, setData] = useState<{
+        accountId: string,
         phoneNumber: string | null,
         emailAddress: string | null,
         username: string | null,
@@ -67,12 +72,16 @@ const ActivateAccount = ({
     useEffect(() => {
         surrogate(dispatch, setStageByName(Stages.PAGE_CONTENT_INITIALIZING));
 
+        const { accountId } = routeParams;
+        if (!accountId) throw new Error(`Missing route param: accountId`);
+
         const phoneNumber = searchParams.get('phone-number');
         const emailAddress = searchParams.get('email-address');
         const username = searchParams.get('username');
         const activationToken = searchParams.get('activation-token');
 
         setData({
+            accountId: accountId as string,
             phoneNumber: phoneNumber?.split(',').join(' ') ?? null,
             emailAddress,
             username,
@@ -80,8 +89,6 @@ const ActivateAccount = ({
         });
 
         surrogate(dispatch, removeStage(Stages.PAGE_CONTENT_INITIALIZING));
-
-        if (phoneNumber || emailAddress) surrogate(dispatch, sendRequestToGetSecretCode(emailAddress ?? phoneNumber ?? ''));
 
         return () => {
             batch(() => {
@@ -93,21 +100,27 @@ const ActivateAccount = ({
         };
     }, []);
 
+    useEffect(() => {
+        if (data && (data.phoneNumber || data.emailAddress) && secretCodeEnable)
+            surrogate(dispatch, sendRequestToGetSecretCode(data.accountId, data.emailAddress ? TokenDestination.EMAIL : TokenDestination.SMS));
+    }, [data, secretCodeEnable]);
+
     const secretCodeCaptionTranslationKey = useMemo(() => {
         const isRegisteredByEmail = data && data.emailAddress;
         return `activate-account-page.secret-code-caption-by-${isRegisteredByEmail ? 'email-address' : 'phone-number'}`;
     }, [data]);
 
     const shouldShowPinCell = useMemo(
-        () => stages.some(stage => stage.name === Stages.REQUEST_TO_GET_SECRET_CODE_DONE),
+        () => secretCodeEnable && stages.some(stage => stage.name === Stages.REQUEST_TO_GET_SECRET_CODE_DONE),
         [stages],
     );
 
     const handleSecretCodeInput = (secretCode: string) => setSecretCode(secretCode);
 
     useEffect(() => {
+        const secretCodeValid = (secretCode.length === secretCodeLength && secretCodeEnable) || !secretCodeEnable;
         const shouldActivateAccount = data && (data.emailAddress || data.phoneNumber) &&
-            data.activationToken && secretCode.length === secretCodeLength && !isActivationTimeElapsed;
+            data.activationToken && secretCodeValid && !isActivationTimeElapsed;
 
         if (shouldActivateAccount) {
             const recaptchaTokenToSend = !configs.recaptchaEnabled ? null : (
@@ -118,6 +131,14 @@ const ActivateAccount = ({
                 alert(t(`messages.${configs.recaptchaVisible ? 'recaptcha-not-clicked' : 'recaptcha-token-missing'}`));
                 return;
             }
+
+            const requestBody: ITokenData = {
+                secretCode,
+                currentToken: data!.activationToken!,
+                destination: data?.phoneNumber ? TokenDestination.SMS : TokenDestination.EMAIL,
+            };
+
+            surrogate(dispatch, sendRequestToActivateAccount(data!.accountId, requestBody, recaptchaToken));
         }
     }, [data, secretCode, isActivationTimeElapsed, recaptchaToken]);
 
@@ -145,14 +166,15 @@ const ActivateAccount = ({
 
                 <Grid container spacing={2} sx={activateAccountFormSx}>
                     <Grid item xs={12}>
-                        <StageFlasher stage={Stages.REQUEST_TO_ACTIVATE_ACCOUNT_MISSING_EMAIL_OR_PHONE} />
+                        <StageFlasher stage={Stages.REQUEST_TO_ACTIVATE_ACCOUNT_SECRET_CODE_MISSING} />
                         <StageFlasher stage={Stages.REQUEST_TO_ACTIVATE_ACCOUNT_TOKEN_EXPIRED} />
-                        <StageFlasher stage={Stages.REQUEST_TO_ACTIVATE_ACCOUNT_INVALID_TOKEN_TYPE} />
-                        <Flasher
+                        <StageFlasher stage={Stages.REQUEST_TO_ACTIVATE_ACCOUNT_INVALID_SECRET_CODE} />
+                        <StageFlasher stage={Stages.REQUEST_TO_ACTIVATE_ACCOUNT_MISMATCHED_TOKENS} />
+                        {error && <Flasher
                             severity='error'
-                            stage={Stages.REQUEST_TO_ACTIVATE_ACCOUNT_MISMATCHED_TOKENS}
-                            message={`activate-account-page.activate-account-response-error-409-by-${(error as any)?.data === 'token' ? 'activation-token' : 'secret-code'}`}
-                        />
+                            stage={Stages.REQUEST_TO_ACTIVATE_ACCOUNT_TOKEN_EXPIRED}
+                            message={`activate-account-page.activate-account-response-error-410-by-${(error as any)?.data}`}
+                        />}
                     </Grid>
                     <Grid item sm={6} xs={12}>
                         <Typography variant='subtitle1'>
@@ -206,7 +228,6 @@ const ActivateAccount = ({
                                 onClick={() => console.log('request another activation email')}
                             >
                                 {t('activate-account-page.request-another-activation-email-button')}
-                                <FaIcon wrapper='fa' t='obj' ic={faPaperPlane} />
                             </Button>
                         )}
 

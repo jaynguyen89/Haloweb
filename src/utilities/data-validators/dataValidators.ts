@@ -118,7 +118,7 @@ export class RangeValidator<T extends string> {
 
         let amongValidity = true;
         if (this.options.among) {
-            amongValidity = this.options.among.includes(data);
+            amongValidity = this.options.among.includes(`${data}`);
             if (!amongValidity) messages.set('messages.input-among', { values: this.options.among.join(', ') });
         }
 

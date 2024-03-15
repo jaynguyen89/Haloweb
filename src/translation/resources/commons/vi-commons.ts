@@ -31,6 +31,7 @@ const viCommons: TTranslationMap = {
         'input-among': 'Dữ liệu không nằm trong các giá trị được kỳ vọng: {{values}}.',
         'input-numbers-only': 'Dữ liệu cần có dạng 1 dãy số.',
         'input-alphabets-only': 'Dữ liệu không được chứa các chữ số.',
+        'input-alphanumeric': 'Dữ liệu chỉ được chứa các ký tự số và chữ cái.',
         'input-before-date': 'Vui lòng chọn ngày trước {{date}}',
         'input-after-date': 'Vui lòng chọn ngày sau {{date}}',
         'input-within-date': 'Vui lòng chọn ngày nằm giữa {{date1}} và {{date2}}',

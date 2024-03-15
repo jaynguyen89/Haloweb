@@ -4,18 +4,20 @@ import { TFieldResult } from 'src/utilities/data-validators/fieldsMediator';
 export type TRangeOption = {
     // If true, treat the input value as number, otherwise, string by default
     asNumber?: true,
-    // If specified, validate data > `min`
+    // If specified, validate data >= `min`
     min?: number,
-    // If specified, validate data < `max`
+    // If specified, validate data <= `max`
     max?: number,
     // If specified, ignore min/max options, validate data === `equal`
     equal?: number | string,
     // If specified, ignore min/max options, validate data occurs in an array
     among?: Array<number | string>,
-    // If specified, input is always treated as string, check if the string only contains numbers
+    // If specified, input is always treated as string, check if it only contains numbers
     numbersOnly?: true,
-    // If specified, input is always treated as string, check if the string only contains alphabets
-    alphabetsOnly: true,
+    // If specified, input is always treated as string, check if it only contains alphabets
+    alphabetsOnly?: true,
+    // If specified, input is always treated as string, check if it only contains numbers and alphabets
+    alphanumeric?: true,
 };
 
 export type TDateOption = {
@@ -127,10 +129,21 @@ export class RangeValidator<T extends string> {
         if (!numbersOnlyValidity) messages.set('messages.input-numbers-only', undefined);
 
         let alphabetsOnlyValidity = true;
-        if (this.options.alphabetsOnly) alphabetsOnlyValidity = /^\w+$/.test(data as string);
+        if (this.options.alphabetsOnly) alphabetsOnlyValidity = /^[a-zA-Z_]+$/.test(data as string);
         if (!alphabetsOnlyValidity) messages.set('messages.input-alphabets-only', undefined);
 
-        const isValid = minValidity && maxValidity && equalValidity && amongValidity && numbersOnlyValidity && alphabetsOnlyValidity;
+        let alphanumericValidity = true;
+        if (this.options.alphanumeric) alphanumericValidity = /^\w+$/.test(data as string);
+        if (!alphanumericValidity) messages.set('messages.input-alphanumeric', undefined);
+
+        const isValid =
+            minValidity &&
+            maxValidity &&
+            equalValidity &&
+            amongValidity &&
+            numbersOnlyValidity &&
+            alphabetsOnlyValidity &&
+            alphanumericValidity;
 
         if (isValid) messages = undefined;
         return { isValid, messages } as TFieldResult;

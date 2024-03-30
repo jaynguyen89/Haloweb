@@ -35,7 +35,7 @@ import { removeStage } from 'src/redux/actions/stageActions';
 import { TRootState } from 'src/redux/reducers';
 import {
     mapFieldsToValidators,
-    TFieldValidatorMap,
+    TFieldToValidatorMap,
     TFormDataState,
 } from 'src/utilities/data-validators/dataValidators';
 import FieldsMediator, {
@@ -77,11 +77,11 @@ const AccountRegistration = ({
         };
     }, []);
 
-    const validators: TFieldValidatorMap<TFieldKey> = useMemo(() => {
+    const validators: TFieldToValidatorMap<TFieldKey> = useMemo(() => {
         /* eslint-disable  @typescript-eslint/no-explicit-any */
         const tempValidators: any = {};
         Object.values(RegistrationFormFieldNames)
-            .filter(value => value !== RegistrationFormFieldNames.PasswordConfirm)
+            .filter(fieldName => fieldName !== RegistrationFormFieldNames.PasswordConfirm)
             .forEach(field => {
                 tempValidators[field as keyof TFieldKey] = mapFieldsToValidators(
                     formData,
@@ -91,7 +91,7 @@ const AccountRegistration = ({
                     fieldValidatorNameMap[field as keyof TFieldKey],
                 );
             });
-        return tempValidators as TFieldValidatorMap<TFieldKey>;
+        return tempValidators as TFieldToValidatorMap<TFieldKey>;
     }, [formData]);
 
     const validateFormDataWithDebounce = useDebounce(() => {

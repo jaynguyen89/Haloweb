@@ -1,4 +1,4 @@
-type TPublicDataFormat = {
+export type TPublicDataFormat = {
     index?: number,
     code?: string,
     display: string,

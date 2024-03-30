@@ -159,10 +159,12 @@ const config: Config = {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
-  // testEnvironment: "jest-environment-node",
+  // testEnvironment: 'jsdom', //'jest-environment-node',
 
   // Options that will be passed to the testEnvironment
-  // testEnvironmentOptions: {},
+  // testEnvironmentOptions: {
+  //   'browsers': ['chrome', 'firefox', 'safari'],
+  // },
 
   // Adds a location field to test results
   // testLocationInResults: false,
@@ -176,6 +178,7 @@ const config: Config = {
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   testPathIgnorePatterns: [
     '\\\\node_modules\\\\',
+    '_mocks_.ts',
   ],
 
   // The regexp pattern or array of patterns that Jest uses to detect test files

@@ -1,5 +1,7 @@
 import IPublicData from 'src/models/PublicData';
 import { TFieldResult } from 'src/utilities/data-validators/fieldsMediator';
+import { TDateFormat } from 'src/commons/types';
+import { format } from 'src/utilities/timeUtilities';
 
 export type TRangeOption = {
     // If true, treat the input value as number, otherwise, string by default
@@ -18,6 +20,8 @@ export type TRangeOption = {
     alphabetsOnly?: true,
     // If specified, input is always treated as string, check if it only contains numbers and alphabets
     alphanumeric?: true,
+    // If specified, input will be validated by Regex against this pattern.
+    pattern?: string,
 };
 
 export type TDateOption = {
@@ -26,24 +30,24 @@ export type TDateOption = {
     // If Specified, data must be after (greater than) this date
     afterDate?: Date,
     // If specified, ignore all other options, check if data occurs in an array
-    within?: Array<Date>,
+    among?: Array<Date>,
 };
 
-export type TSpecialOption = {
+export type TSpecialOption = TRangeOption & {
     // If true, the field will be considered a Password, and validated against PasswordConfirm, see mapFieldsToValidators
     isPassword?: true,
-    // If true, at least 1 lowercase char must be included in data
-    includeLowercaseChar?: true,
-    // If true, at least 1 uppercase Char must be included in data
-    includeUppercaseChar?: true,
-    includeNumber?: true,
-    // If true but specialCharsToInclude === undefined, at least 1 of any special chars must be included in data
-    includeSpecialChar?: true,
-    // If provided, when includeSpecialChar === undefined, data MAY only contain these special chars
-    // when includeSpecialChars === true, data MUST only contain at least 1 of these special chars
+    // If true, white space must include; if false, white space must not include; if undefined, white space does not matter
+    withSpace?: boolean,
+    // If true, at least 1 lowercase char must be included; if false, no lowercase char is allowed; if undefined, lowercase char does not matter
+    withLowercaseChar?: boolean,
+    // If true, at least 1 uppercase char must be included; if false, no number is allowed; if undefined, uppercase char does not matter
+    withUppercaseChar?: boolean,
+    // If true, at least 1 number must be included; if false, no number is allowed; if undefined, number does not matter
+    withNumber?: boolean,
+    // If true, at least 1 special chars must be included in data; if false, no special char is allowed; if undefined, special char does not matter
+    withSpecialChar?: boolean,
+    // If provided, when includeSpecialChar === undefined | true, data MAY or MUST only contain these special chars
     specialCharsToInclude?: string,
-    // Whether to allow spaces inside the input string
-    allowSpace?: true,
 };
 
 export type TFileOption = {
@@ -129,11 +133,11 @@ export class RangeValidator<T extends string> {
         if (!numbersOnlyValidity) messages.set('messages.input-numbers-only', undefined);
 
         let alphabetsOnlyValidity = true;
-        if (this.options.alphabetsOnly) alphabetsOnlyValidity = /^[a-zA-Z_]+$/.test(data as string);
+        if (this.options.alphabetsOnly) alphabetsOnlyValidity = /^[a-zA-Z\u00C0-\u00FF_]+$/.test(data as string);
         if (!alphabetsOnlyValidity) messages.set('messages.input-alphabets-only', undefined);
 
         let alphanumericValidity = true;
-        if (this.options.alphanumeric) alphanumericValidity = /^\w+$/.test(data as string);
+        if (this.options.alphanumeric) alphanumericValidity = /^[\w\u00C0-\u00FF]+$/.test(data as string);
         if (!alphanumericValidity) messages.set('messages.input-alphanumeric', undefined);
 
         const isValid =
@@ -153,17 +157,19 @@ export class RangeValidator<T extends string> {
 export class DateValidator<T extends Date> {
     options: TDateOption;
     input: InputData<T>;
+    formats: TDateFormat;
 
-    constructor(input: InputData<T>, options:  TDateOption) {
+    constructor(input: InputData<T>, options:  TDateOption, formats: TDateFormat) {
         this.input = input;
         this.options = options;
+        this.formats = formats;
     }
 
     public validate(): TFieldResult {
         let messages: Map<string, object | undefined> | undefined = new Map<string, object | undefined>();
         const data = this.input.data as Date;
 
-        if (this.options.within) {
+        if (this.options.among) {
             this.options.beforeDate = undefined;
             this.options.afterDate = undefined;
         }
@@ -171,21 +177,26 @@ export class DateValidator<T extends Date> {
         let afterDateValidity = true;
         if (this.options.afterDate) {
             afterDateValidity = data > this.options.afterDate;
-            if (!afterDateValidity) messages.set('messages.input-after-date', { date: this.options.afterDate });
+            if (!afterDateValidity) messages.set('messages.input-after-date', { date: format(this.options.afterDate, this.formats) });
         }
 
         let beforeDateValidity = true;
         if (this.options.beforeDate) {
             beforeDateValidity = data < this.options.beforeDate;
-            if (!beforeDateValidity) messages.set('messages.input-before-date', { date: this.options.beforeDate });
+            if (!beforeDateValidity) messages.set('messages.input-before-date', { date: format(this.options.beforeDate, this.formats) });
         }
 
+        if (!beforeDateValidity && !afterDateValidity)
+            messages = new Map<string, object>([['messages.input-between-dates', {
+                beforeDate: format(this.options.beforeDate!, this.formats),
+                afterDate: format(this.options.afterDate!, this.formats),
+            }]]);
+
         let amongValidity = true;
-        if (this.options.within) {
-            amongValidity = this.options.within.includes(data);
-            if (!amongValidity) messages.set('messages.input-within-date', {
-                date1: this.options.within[0],
-                date2: this.options.within[1],
+        if (this.options.among) {
+            amongValidity = !!(this.options.among.find(date => date.getTime() === data.getTime()));
+            if (!amongValidity) messages.set('messages.input-among-dates', {
+                dates: this.options.among.map(date => format(date, this.formats)).join(', '),
             });
         }
 
@@ -199,7 +210,7 @@ export class DateValidator<T extends Date> {
 export class SpecialValidator<T extends string> extends RangeValidator<T> {
     specialOptions: TSpecialOption;
 
-    constructor(input: InputData<T>, options: TRangeOption & TSpecialOption) {
+    constructor(input: InputData<T>, options: TSpecialOption) {
         super(input, options);
         this.specialOptions = options;
     }
@@ -211,54 +222,93 @@ export class SpecialValidator<T extends string> extends RangeValidator<T> {
         } = super.validate();
         const data = this.input.data as string;
 
+        let allowSpaceValidity = true;
+        if (this.specialOptions.withSpace !== undefined) {
+            const hasSpace = data.includes(' ');
+
+            if (this.specialOptions.withSpace && !hasSpace) {
+                (messages as Map<string, object | undefined>).set('messages.input-space-required', undefined);
+                allowSpaceValidity = hasSpace;
+            }
+
+            if (!this.specialOptions.withSpace && hasSpace) {
+                (messages as Map<string, object | undefined>).set('messages.input-space-disallowed', undefined);
+                allowSpaceValidity = !hasSpace;
+            }
+        }
+
         let includeLowercaseCharValidity = true;
-        if (this.specialOptions.includeLowercaseChar) {
-            includeLowercaseCharValidity = /[a-z]+/.test(data);
-            if (!includeLowercaseCharValidity) (messages as Map<string, object | undefined>).set('messages.input-include-lowercase-char', undefined);
+        if (this.specialOptions.withLowercaseChar !== undefined) {
+            const hasLowercaseChar = /[a-z]/g.test(data);
+
+            if (this.specialOptions.withLowercaseChar && !hasLowercaseChar) {
+                (messages as Map<string, object | undefined>).set('messages.input-lowercase-char-required', undefined);
+                includeLowercaseCharValidity = hasLowercaseChar;
+            }
+
+            if (!this.specialOptions.withLowercaseChar && hasLowercaseChar) {
+                (messages as Map<string, object | undefined>).set('messages.input-lowercase-char-disallowed', undefined);
+                includeLowercaseCharValidity = !hasLowercaseChar;
+            }
         }
 
         let includeUppercaseCharValidity = true;
-        if (this.specialOptions.includeUppercaseChar) {
-            includeUppercaseCharValidity = /[A-Z]+/.test(data);
-            if (!includeUppercaseCharValidity) (messages as Map<string, object | undefined>).set('messages.input-include-uppercase-char', undefined);
+        if (this.specialOptions.withUppercaseChar !== undefined) {
+            const hasUppercaseChar = /[A-Z]/g.test(data);
+
+            if (this.specialOptions.withUppercaseChar && !hasUppercaseChar) {
+                (messages as Map<string, object | undefined>).set('messages.input-uppercase-char-required', undefined);
+                includeUppercaseCharValidity = hasUppercaseChar;
+            }
+
+            if (!this.specialOptions.withUppercaseChar && hasUppercaseChar) {
+                (messages as Map<string, object | undefined>).set('messages.input-uppercase-char-disallowed', undefined);
+                includeUppercaseCharValidity = !hasUppercaseChar;
+            }
         }
 
         let includeNumberValidity = true;
-        if (this.specialOptions.includeNumber) {
-            includeNumberValidity = /[0-9]+/.test(data);
-            if (!includeNumberValidity) (messages as Map<string, object | undefined>).set('messages.input-include-number', undefined);
-        }
+        if (this.specialOptions.withNumber !== undefined) {
+            const hasNumber = /[0-9]/g.test(data);
 
-        let specialCharsToIncludeValidity = true;
-        if (this.specialOptions.specialCharsToInclude) {
-            if (this.specialOptions.includeSpecialChar === undefined) {
-                const pattern = `^[a-zA-Z0-9 ${this.specialOptions.specialCharsToInclude}]+$`;
-                const regex = new RegExp(pattern, 'i');
-                specialCharsToIncludeValidity = regex.test(data);
+            if (this.specialOptions.withNumber && !hasNumber) {
+                (messages as Map<string, object | undefined>).set('messages.input-number-required', undefined);
+                includeNumberValidity = hasNumber;
             }
-            else
-                specialCharsToIncludeValidity = this.specialOptions.specialCharsToInclude.split('').some(char => data.includes(char));
 
-            if (!specialCharsToIncludeValidity)
-                (messages as Map<string, object | undefined>).set(
-                    `messages.input-with-special-chars-${this.specialOptions.includeSpecialChar ? 'must' : 'may'}-include`,
-                    { chars: this.specialOptions.specialCharsToInclude },
-                );
+            if (!this.specialOptions.withNumber && hasNumber) {
+                (messages as Map<string, object | undefined>).set('messages.input-number-disallowed', undefined);
+                includeNumberValidity = !hasNumber;
+            }
         }
 
         let includeSpecialCharValidity = true;
-        if (this.specialOptions.includeSpecialChar && this.specialOptions.specialCharsToInclude === undefined) {
-            includeSpecialCharValidity = /(?=.*\W)/.test(data);
-            if (!includeSpecialCharValidity) (messages as Map<string, object | undefined>).set('messages.input-include-special-chars', undefined);
-        }
+        const hasSpecialChar = /[^a-zA-Z_\d\s:\u00C0-\u00FF]+/g.test(data);
+        const hasRequiredSpecialChars = this.specialOptions.specialCharsToInclude
+                                       ? new RegExp(`[${this.specialOptions.specialCharsToInclude}\\s]+`, 'gi').test(data)
+                                       : hasSpecialChar;
+        const hasOtherSpecialChars = this.specialOptions.specialCharsToInclude
+                                     ? new RegExp(`[^${this.specialOptions.specialCharsToInclude}\\d\\w\\s]+`, 'g').test(data)
+                                     : false;
 
-        let allowSpaceValidity = true;
-        if (!this.specialOptions.allowSpace) {
-            const hasSpace = data.includes(' ');
-            if (hasSpace) {
-                (messages as Map<string, object | undefined>).set('messages.input-allow-space', undefined);
-                allowSpaceValidity = !hasSpace;
-            }
+        if (this.specialOptions.withSpecialChar === undefined) {
+            includeSpecialCharValidity = !hasSpecialChar ? true : (
+                this.specialOptions.specialCharsToInclude ? hasRequiredSpecialChars && !hasOtherSpecialChars : true
+            );
+            if (!includeSpecialCharValidity) (messages as Map<string, object | undefined>).set(`messages.input-with-special-chars-may-include`, { chars: this.specialOptions.specialCharsToInclude });
+        }
+        else if (!this.specialOptions.withSpecialChar && hasSpecialChar) {
+            (messages as Map<string, object | undefined>).set('messages.input-special-char-disallowed', undefined);
+            includeSpecialCharValidity = !hasSpecialChar;
+        }
+        else if (
+            (this.specialOptions.withSpecialChar && !hasSpecialChar) ||
+            (hasSpecialChar && !hasRequiredSpecialChars) ||
+            (hasSpecialChar && hasRequiredSpecialChars && hasOtherSpecialChars)
+        ) {
+            const messageKey = this.specialOptions.specialCharsToInclude ? 'input-with-required-special-chars-must-include' : 'input-with-special-chars-must-include';
+            (messages as Map<string, object | undefined>).set(`messages.${messageKey}`, { chars: this.specialOptions.specialCharsToInclude });
+            includeSpecialCharValidity = false;
         }
 
         let passwordMatching = true;
@@ -268,9 +318,7 @@ export class SpecialValidator<T extends string> extends RangeValidator<T> {
             if (!passwordMatching) (messages as Map<string, object | undefined>).set('messages.input-is-password', undefined);
         }
 
-        isValid = isValid && includeLowercaseCharValidity && includeUppercaseCharValidity &&
-            includeNumberValidity && specialCharsToIncludeValidity && includeSpecialCharValidity && allowSpaceValidity;
-
+        isValid = isValid && includeLowercaseCharValidity && includeUppercaseCharValidity && includeNumberValidity && includeSpecialCharValidity && allowSpaceValidity;
         return {
             isValid,
             messages: isValid ? undefined : messages,
@@ -291,7 +339,7 @@ export class EmailValidator<T extends string> extends RangeValidator<T> {
         const data = this.input.data as string;
 
         // RFC2822 standard regex for email validation
-        const isEmail = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/.test(data);
+        const isEmail = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/gi.test(data);
         if (!isEmail) (messages as Map<string, object | undefined>).set('messages.input-email-format', undefined);
 
         isValid = isValid && isEmail;
@@ -315,8 +363,8 @@ export class UrlValidator<T extends string> extends RangeValidator<T> {
         } = super.validate();
         const data = this.input.data as string;
 
-        const isUrl = /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{2,6}\b([-a-zA-Z0-9()@:%_\\+.~#?&/=]*)/.test(data);
-        if (!isValid) (messages as Map<string, object | undefined>).set('messages.input-url-format', undefined);
+        const isUrl = /^(http(s)?:\/\/.)?(ww[w|\d]\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{2,6}\b([-a-zA-Z0-9()@:%_,\\+.~#?&/=]*)$/gi.test(data);
+        if (!isUrl) (messages as Map<string, object | undefined>).set('messages.input-url-format', undefined);
 
         isValid = isValid && isUrl;
 
@@ -327,18 +375,21 @@ export class UrlValidator<T extends string> extends RangeValidator<T> {
     }
 }
 
-export class FileValidator<T extends File> {
+export class FileValidator<T extends File | Blob> {
     options: TFileOption;
     input: InputData<T>;
 
     constructor(input: InputData<T>, options: TFileOption) {
+        if (!options.maxSize && !options.acceptedFormats)
+            throw new Error('FileValidator: invalid options - `maxSize` and `acceptedFormats` cannot be both undefined.');
+
         this.input = input;
         this.options = options;
     }
 
     public validate(): TFieldResult {
         let messages: Map<string, object | undefined> | undefined = new Map<string, object | undefined>();
-        const data = this.input.data as File;
+        const data = this.input.data as File | Blob;
 
         let maxSizeValidity = true;
         if (this.options.maxSize) {
@@ -358,11 +409,14 @@ export class FileValidator<T extends File> {
     }
 }
 
-export class FileListValidator<T extends FileList> {
+export class FileListValidator<T extends FileList | Array<File> | Array<Blob>> {
     options: TFileListOption;
     input: InputData<T>;
 
     constructor(input: InputData<T>, options: TFileListOption) {
+        if (!options.maxSize && !options.acceptedFormats)
+            throw new Error('FileListValidator: invalid options - `maxSize` and `acceptedFormats` cannot be both undefined.');
+
         this.input = input;
         this.options = options;
     }
@@ -370,7 +424,8 @@ export class FileListValidator<T extends FileList> {
     public validate(): TFieldResult {
         let isValid = true;
         let messages: Map<string, object | undefined> | undefined = new Map<string, object>();
-        const data = this.input.data as FileList;
+
+        const data = Array.from(this.input.data as FileList | Array<File> | Array<Blob>);
 
         let minCountValidity = true;
         if (this.options.minCount) {
@@ -387,13 +442,13 @@ export class FileListValidator<T extends FileList> {
         isValid = minCountValidity && maxCountValidity;
 
         for (let i = 0; i < data.length; i++) {
-            const file = data.item(i) as File;
+            const file = data.at(i) as File | Blob;
 
             let maxSizeValidity = true;
             if (this.options.maxSize) {
                 maxSizeValidity = file.size <= this.options.maxSize;
                 if (!maxSizeValidity) messages.set('messages.input-files-max-size', {
-                    name: file.name,
+                    name: 'name' in file ? file.name : 'N/A',
                     size: this.options.maxSize / 1000,
                 });
             }
@@ -402,7 +457,7 @@ export class FileListValidator<T extends FileList> {
             if (this.options.acceptedFormats) {
                 acceptedFormatsValidity = this.options.acceptedFormats.some(format => file.type.includes(format));
                 if (!acceptedFormatsValidity) messages.set('messages.input-files-accepted-formats', {
-                    name: file.name,
+                    name: 'name' in file ? file.name : 'N/A',
                     formats: this.options.acceptedFormats.join(', '),
                 });
             }
@@ -416,8 +471,8 @@ export class FileListValidator<T extends FileList> {
 }
 
 export enum ValidatorNames {
-    LengthValidator = 'LengthValidator',
     RangeValidator = 'RangeValidator',
+    DateValidator = 'DateValidator',
     SpecialValidator = 'SpecialValidator',
     EmailValidator = 'EmailValidator',
     UrlValidator = 'UrlValidator',
@@ -428,9 +483,8 @@ export enum ValidatorNames {
 export type TValidatorOption<T> = {
     [key in keyof T]: |
         TRangeOption |
-        TRangeOption & TSpecialOption |
         TSpecialOption |
-        (TRangeOption | TDateOption) |
+        TDateOption |
         TFileOption |
         TFileListOption;
 }
@@ -450,19 +504,22 @@ export const mapFieldsToValidators = <T>(
     validatorOptionsMapFn: TValidatorOptionsMapFn<T>,
     field: keyof T,
     validatorName: string,
+    dateFormats?: TDateFormat,
 ) => {
     let validator;
     switch (validatorName) {
-        case ValidatorNames.LengthValidator:
+        case ValidatorNames.RangeValidator:
             validator = new RangeValidator(
                 new InputData<string>(formData[field].value as string | undefined),
                 validatorOptionsMapFn(publicData)[field] as TRangeOption,
             );
             break;
-        case ValidatorNames.RangeValidator:
+        case ValidatorNames.DateValidator:
+            if (!dateFormats) throw Error('dateFormats is undefined when using DateValidator.');
             validator = new DateValidator(
                 new InputData<Date>(formData[field].value as Date | undefined),
                 validatorOptionsMapFn(publicData)[field] as TDateOption,
+                dateFormats,
             );
             break;
         case ValidatorNames.SpecialValidator:
@@ -517,6 +574,6 @@ export type TAnyValidator = |
     FileValidator<any> |
     FileListValidator<any>;
 
-export type TFieldValidatorMap<T> = {
+export type TFieldToValidatorMap<T> = {
     [key in keyof T]: TAnyValidator;
 };

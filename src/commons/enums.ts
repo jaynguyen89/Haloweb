@@ -55,3 +55,23 @@ export enum StorageKeys {
     PUBLIC_DATA = 'sitePublicData',
     ACCOUNT_ACTIVATION_SUCCESS_STORAGE_KEY = 'accountActivationSuccessMessage',
 }
+
+// Order of the formats must exactly match server side
+export enum DateFormats {
+    DDMMMYYYY = 'dd LL yyyy',
+    WDDMMMYYYY = 'ccc, dd LLL yyyy',
+    DDMMYYYYS = 'dd/LL/yyyy',
+    WDDMMYYYYS = 'ccc, dd/LL/yyyy',
+    DDMMYYYYD = 'dd-LL-yyyy',
+    WDDMMYYYYD = 'ccc, dd-LL-yyyy',
+    YYYYMMDDS = 'yyyy/LL/dd',
+    YYYYMMDDD = 'yyyy-LL-dd',
+}
+
+// Order of the formats must exactly match server side
+export enum TimeFormats {
+    HHMMTTC = 'hh:mm a',
+    HHMMC = 'HH:mm',
+    HHMMTTD = 'hh.mm a',
+    HHMMD = 'HH.mm',
+}

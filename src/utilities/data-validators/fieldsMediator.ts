@@ -1,4 +1,4 @@
-import { TAnyValidator, TFieldValidatorMap } from 'src/utilities/data-validators/dataValidators';
+import { TAnyValidator, TFieldToValidatorMap } from 'src/utilities/data-validators/dataValidators';
 import _flatten from 'lodash/flatten';
 import _remove from 'lodash/remove';
 
@@ -24,15 +24,15 @@ export type TValidationOptions<T> = {
     optionalFields?: Array<keyof T>,
 };
 
-// Mediator pattern: an intermediate actor to help fields in the form communicate with each other
+// Mediator pattern: an intermediate actor to help all fields in the form communicate with each other
 class FieldsMediator<T> {
 
-    private readonly validatorsMap: TFieldValidatorMap<T>;
+    private readonly validatorsMap: TFieldToValidatorMap<T>;
     private validationResult?: TValidationResult<T>;
     // If no validationOptions, consider all fields as required, otherwise, consider the fields specified as ruled by validationOptions
     private readonly validationOptions?: TValidationOptions<T>;
 
-    constructor(validatorsMap: TFieldValidatorMap<T>, validationOptions?: TValidationOptions<T>) {
+    constructor(validatorsMap: TFieldToValidatorMap<T>, validationOptions?: TValidationOptions<T>) {
         this.validatorsMap = validatorsMap;
         this.validationOptions = validationOptions;
     }

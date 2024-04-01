@@ -1,6 +1,6 @@
 import axios, {
     AxiosError,
-    AxiosResponse, HttpStatusCode,
+    AxiosResponse,
     ResponseType,
 } from 'axios';
 import { Dispatch } from 'redux';

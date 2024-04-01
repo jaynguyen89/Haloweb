@@ -61,9 +61,11 @@
     "@babel/core": "^7.24.0",
     "@babel/preset-env": "^7.24.0",
     "@babel/preset-typescript": "^7.23.3",
+    "@cfaester/enzyme-adapter-react-18": "^0.7.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@types/enzyme": "^3.10.18",
     "@types/jest": "^27.5.2",
     "@types/lodash": "^4.14.195",
     "@types/luxon": "^3.3.2",
@@ -71,6 +73,7 @@
     "@types/react-helmet": "^6.1.6",
     "babel-jest": "^29.7.0",
     "enzyme": "^3.11.0",
+    "identity-obj-proxy": "^3.0.0",
     "jest": "^27.5.1",
     "sass": "^1.63.6",
     "ts-node": "^10.9.2"
@@ -85,16 +88,13 @@
     "node_modules",
     "src"
   ],
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
+  "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!axios/)"
     ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif|svg|mp4|wav|mp3|pdf)$": "<rootDir>/__mocks__/fileMock.js",
+      "\\.(css|scss)$": "identity-obj-proxy"
+    }
   }
 }

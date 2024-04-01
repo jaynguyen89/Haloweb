@@ -5,11 +5,11 @@ import { removeStorageMessageKey, setStorageMessageKey } from 'src/redux/actions
 
 export const surrogate = (dispatch: Dispatch, action: Function | AnyAction) => dispatch(action as unknown as AnyAction);
 
-export const isSuccessStatusCode = (statusCode: number | HttpStatusCode) =>
-    statusCode >= HttpStatusCode.Ok && statusCode <= HttpStatusCode.MultiStatus;
-
 export const isInformationStatusCode = (statusCode: number | HttpStatusCode) =>
     statusCode >= HttpStatusCode.Continue && statusCode < HttpStatusCode.Ok;
+
+export const isSuccessStatusCode = (statusCode: number | HttpStatusCode) =>
+    statusCode >= HttpStatusCode.Ok && statusCode <= HttpStatusCode.ImUsed;
 
 export const isRedirectionStatusCode = (statusCode: number | HttpStatusCode) =>
     statusCode >= HttpStatusCode.MultipleChoices && statusCode < HttpStatusCode.BadRequest;
@@ -28,7 +28,7 @@ export const readStorageMessage = (dispatch: Dispatch, key: string, remove?: tru
     const storedMessage = localStorage.getItem(key);
     if (storedMessage) {
         const message = JSON.parse(storedMessage);
-        if (remove === undefined || remove) {
+        if (remove) {
             localStorage.removeItem(key);
             surrogate(dispatch, removeStorageMessageKey(key));
         }

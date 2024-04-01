@@ -1,10 +1,10 @@
-import {AxiosError, AxiosResponse, HttpStatusCode} from 'axios';
-import {batch} from 'react-redux';
-import {Dispatch} from 'redux';
-import {InterceptorTarget} from 'src/commons/enums';
-import {Interceptor, InterceptorDataType} from 'src/fetcher/Interceptor';
+import { AxiosError, AxiosResponse, HttpStatusCode } from 'axios';
+import { batch } from 'react-redux';
+import { Dispatch } from 'redux';
+import { InterceptorTarget} from 'src/commons/enums';
+import { Interceptor, InterceptorDataType } from 'src/fetcher/Interceptor';
 import Stages from 'src/models/enums/stage';
-import {clearStage, setStageByName} from 'src/redux/actions/stageActions';
+import { clearStage, setStageByName } from 'src/redux/actions/stageActions';
 import {
     isInformationStatusCode, isRedirectionStatusCode,
     isServerErrorStatusCode,

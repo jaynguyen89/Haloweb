@@ -7,10 +7,9 @@
     "setup:lin": "rm -r node_modules & rm package-lock.json & npm install --legacy-peer-deps",
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "jest",
-    "test:coverage": "jest --watchAll --json --coverage",
-    "audit": "npm audit --json --audit-level=moderate",
-    "eject": "react-scripts eject"
+    "test": "jest --env=jsdom",
+    "test:coverage": "jest --env=jsdom --watchAll --coverage",
+    "audit": "npm audit --json --audit-level=moderate"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
@@ -59,6 +58,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
+    "@babel/plugin-transform-react-jsx": "^7.23.4",
     "@babel/preset-env": "^7.24.0",
     "@babel/preset-typescript": "^7.23.3",
     "@cfaester/enzyme-adapter-react-18": "^0.7.1",
@@ -66,6 +66,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/enzyme": "^3.10.18",
+    "@types/ignore-styles": "^5.0.3",
     "@types/jest": "^27.5.2",
     "@types/lodash": "^4.14.195",
     "@types/luxon": "^3.3.2",
@@ -73,7 +74,9 @@
     "@types/react-helmet": "^6.1.6",
     "babel-jest": "^29.7.0",
     "enzyme": "^3.11.0",
+    "enzyme-to-json": "^3.6.2",
     "identity-obj-proxy": "^3.0.0",
+    "ignore-styles": "^5.0.1",
     "jest": "^27.5.1",
     "sass": "^1.63.6",
     "ts-node": "^10.9.2"

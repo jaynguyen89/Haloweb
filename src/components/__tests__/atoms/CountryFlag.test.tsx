@@ -1,13 +1,15 @@
 import React from 'react';
 import { shallow, configure } from 'enzyme';
+import toJson from 'enzyme-to-json';
 import Adapter from '@cfaester/enzyme-adapter-react-18';
 import CountryFlag from 'src/components/atoms/CountryFlag/CountryFlag';
 
 configure({ adapter: new Adapter() });
+
 describe('CountryFlag', () => {
     it('renders successfully', () => {
         const wrapper = shallow(<CountryFlag isoCountryCode='test' />);
-        expect(wrapper).toMatchSnapshot();
+        expect(toJson(wrapper)).toMatchSnapshot();
     });
 
     it('should render CountryFlag with the given data', () => {

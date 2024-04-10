@@ -21,6 +21,10 @@
     "jsx": "react-jsx",
     "baseUrl": "."
   },
+  "exclude": [
+    "node_modules",
+    "coverage"
+  ],
   "include": [
     "src",
     "assets/**/*.ts",

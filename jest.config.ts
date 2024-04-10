@@ -6,6 +6,9 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
 import type { Config } from 'jest';
+import register from 'ignore-styles';
+
+register(['.css', '.scss']);
 
 const config: Config = {
   // All imported modules in your tests should be mocked automatically
@@ -103,7 +106,10 @@ const config: Config = {
   ],
 
   // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
-  // moduleNameMapper: {},
+  moduleNameMapper: {
+    "\\.(jpg|jpeg|png|gif|svg|mp4|wav|mp3|pdf)$": "<rootDir>/__mocks__/fileMock.js",
+    "\\.(css|scss)$": "identity-obj-proxy"
+  },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
   // modulePathIgnorePatterns: [],

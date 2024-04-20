@@ -3,9 +3,9 @@ import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { faQuestion } from '@fortawesome/free-solid-svg-icons/faQuestion';
 import { FontAwesomeIcon, FontAwesomeIconProps } from '@fortawesome/react-fontawesome';
 import { useTheme } from '@mui/material';
-import React from 'react';
+import React, { useMemo } from 'react';
 
-type TIcon = Omit<FontAwesomeIconProps, 'icon'> & {
+export type TIcon = Omit<FontAwesomeIconProps, 'icon'> & {
     wrapper: 'i' | 'fa',
     t?: 'str' | 'obj', // required when wrapper === 'fa'
     ic?: IconName | IconDefinition | string,
@@ -39,20 +39,28 @@ const FaIcon = ({
         );
     }
 
-    const variantName = variant === 'fas' ? 'fa-solid'
+    const variantName = useMemo(() =>
+        variant === 'fas' ? 'fa-solid'
         : variant === 'far' ? 'fa-regular'
         : variant === 'fal' ? 'fa-light'
-        : variant === 'fab' ? 'fa-business'
+        : variant === 'fab' ? 'fa-brands'
         : variant === 'fat' ? 'fa-thin'
-        : 'fa-duotone';
+        : 'fa-duotone',
+        [variant],
+    );
 
-    const animationName = animation === undefined ? '' : `fa-${animation}`;
+    const animationName = useMemo(() =>
+        animation === undefined ? '' : `fa-${animation}`,
+        [animation],
+    );
+
+    const styles = useMemo(() =>
+        animation ? {color: iconColor, display: 'block'} : {color: iconColor},
+        [animation],
+    );
 
     return (
-        <i
-            className={`${variantName} fa-${ic} ${animationName} fa-${size}`}
-            style={{color: iconColor}}
-        />
+        <i className={`${variantName} fa-${ic} ${animationName} fa-${size}`} style={styles} />
     );
 };
 

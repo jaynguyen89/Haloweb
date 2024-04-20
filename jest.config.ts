@@ -33,9 +33,13 @@ const config: Config = {
   coverageDirectory: 'coverage',
 
   // An array of regexp pattern strings used to skip coverage collection
-  // coveragePathIgnorePatterns: [
-  //   "\\\\node_modules\\\\"
-  // ],
+  coveragePathIgnorePatterns: [
+    "\\\\node_modules\\\\",
+    "<rootDir>/src/components/atoms/Skeletons.tsx",
+    "<rootDir>/src/components/atoms/Recaptcha.tsx",
+    "**/__tests__/**",
+    "**/*(M|m)ock*.[jt]s?(x)",
+  ],
 
   // Indicates which provider should be used to instrument code for coverage
   coverageProvider: 'v8',

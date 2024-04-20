@@ -30,7 +30,7 @@ const PinCell: FunctionComponent<{
     };
 
     useEffect(() => {
-        onChange(pin.join(''));
+        if (pin.length === numOfCells) onChange(pin.join(''));
     }, [pin]);
 
     return (

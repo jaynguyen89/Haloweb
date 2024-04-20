@@ -1,18 +1,18 @@
 import { AlertColor, Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import clsx from 'clsx';
-import { isArray } from 'lodash';
+import _isArray from 'lodash/isArray';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import vars from 'src/commons/variables/cssVariables.scss';
 
-interface IMessage {
+export interface IMessage {
     message: string,
     options?: Record<string, string>,
     type?: AlertColor,
 }
 
-interface IStatus {
+export interface IStatus {
     statuses: Array<string> | Map<string, object | undefined>,
     type?: AlertColor,
 }
@@ -64,7 +64,7 @@ const MessageCaption = (props: IMessage | IStatus) => {
         );
 
     const statuses = (props as IStatus).statuses;
-    if (isArray(statuses))
+    if (_isArray(statuses))
         return (
             <>
                 {(statuses as Array<string>).map((status, i) => (
@@ -78,6 +78,7 @@ const MessageCaption = (props: IMessage | IStatus) => {
             {Array.from((statuses as Map<string, object | undefined>).entries()).map((entry, i) => {
                 const [status, options] = entry;
                 return (
+                    // @ts-ignore
                     <p key={i} className={clsx(styles.messageCaption, color)}>{t(status, options)}</p>
                 );
             })}

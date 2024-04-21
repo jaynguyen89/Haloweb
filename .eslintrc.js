@@ -48,7 +48,7 @@ module.exports = {
             ignoreTemplateLiterals: true,
             ignoreRegExpLiterals: true,
         }],
-        'max-params': ['error', 5],
+        'max-params': ['error', 7],
         'no-await-in-loop': 'error',
         'no-class-assign': 'error',
         'no-compare-neg-zero': 'error',

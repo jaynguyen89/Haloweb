@@ -318,7 +318,9 @@ export class SpecialValidator<T extends string> extends RangeValidator<T> {
             if (!passwordMatching) (messages as Map<string, object | undefined>).set('messages.input-is-password', undefined);
         }
 
-        isValid = isValid && includeLowercaseCharValidity && includeUppercaseCharValidity && includeNumberValidity && includeSpecialCharValidity && allowSpaceValidity;
+        isValid = isValid && includeLowercaseCharValidity && includeUppercaseCharValidity &&
+            includeNumberValidity && includeSpecialCharValidity && allowSpaceValidity;
+
         return {
             isValid,
             messages: isValid ? undefined : messages,

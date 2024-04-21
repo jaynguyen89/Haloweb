@@ -70,12 +70,11 @@ const Footer = ({
                                 value={selectedLanguage ?? detectedLanguage}
                                 onChange={handleSelectSiteLanguage}
                             >
-                                <MenuItem value='vi'>
-                                    <Typography variant='subtitle2'>{t('footer.language-select.vi')}</Typography>
-                                </MenuItem>
-                                <MenuItem value='en'>
-                                    <Typography variant='subtitle2'>{t('footer.language-select.en')}</Typography>
-                                </MenuItem>
+                                {languageResourceKeys.map((lang, i) => (
+                                    <MenuItem key={`${lang}-${i}`} value={lang}>
+                                        <Typography variant='subtitle2'>{t(`footer.language-select.${lang}`)}</Typography>
+                                    </MenuItem>
+                                ))}
                             </Select>
                         </FormControl>
                     </Grid>

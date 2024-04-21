@@ -1,9 +1,10 @@
 import React from 'react';
-import { render, queryByAttribute } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { shallow, configure } from 'enzyme';
 import toJson from 'enzyme-to-json';
 import Adapter from '@cfaester/enzyme-adapter-react-18';
 import Page from 'src/components/atoms/Page/Page';
+import { getById } from 'src/utilities/testUtilities';
 
 configure({ adapter: new Adapter() });
 jest.mock('src/commons/variables/cssVariables.scss', () => ({
@@ -35,10 +36,7 @@ describe('Page', () => {
         );
 
         expect(wrapper.container.getElementsByTagName('span').length).toBe(1);
-
-        const getById = queryByAttribute.bind(null, 'id');
-        expect(getById(wrapper.container, 'span-id')).toBeDefined();
-
+        expect(getById(id)(wrapper.container, 'span-id')).toBeDefined();
         expect(wrapper.container.getElementsByClassName('page-class-name').length).toBe(1);
         expect(wrapper.container.getElementsByClassName('container-class-name').length).toBe(1);
     });

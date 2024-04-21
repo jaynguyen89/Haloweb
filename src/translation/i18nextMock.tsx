@@ -20,6 +20,13 @@ const translation: ITranslation = {
             'warning-status-1': 'This is {{what}} status 1.',
             'warning-status-2': 'This is a warning status 2.',
         },
+        footer: {
+            'language-select': {
+                en: 'English',
+                vi: 'Vietnamese',
+                ha: 'Halogeno',
+            },
+        },
     },
 };
 

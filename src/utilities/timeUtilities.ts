@@ -22,5 +22,5 @@ export const format = (date: Date, options: TDateFormat): string => {
 
     // Require both date and time
     if (!options.formats.date || !options.formats.time) throw new Error('options.formats is required for formatting date and time.');
-    return DateTime.fromJSDate(date).toFormat(`${dateFormats[options.formats.date]} ${timeFormats[options.formats.time]}`)
+    return DateTime.fromJSDate(date).toFormat(`${dateFormats[options.formats.date]} ${timeFormats[options.formats.time]}`);
 };

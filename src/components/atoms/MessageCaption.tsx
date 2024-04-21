@@ -78,7 +78,6 @@ const MessageCaption = (props: IMessage | IStatus) => {
             {Array.from((statuses as Map<string, object | undefined>).entries()).map((entry, i) => {
                 const [status, options] = entry;
                 return (
-                    // @ts-ignore
                     <p key={i} className={clsx(styles.messageCaption, color)}>{t(status, options)}</p>
                 );
             })}

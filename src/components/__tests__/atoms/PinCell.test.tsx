@@ -9,7 +9,7 @@ import { fireEvent } from '@testing-library/react';
 
 configure({ adapter: new Adapter() });
 
-describe('PinCell', () => {
+describe('PinCell.tsx', () => {
     const mockOnChange = jest.fn();
 
     it('renders successfully', () => {

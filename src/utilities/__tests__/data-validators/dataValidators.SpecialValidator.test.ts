@@ -6,7 +6,7 @@ import {
 } from 'src/utilities/data-validators/dataValidators';
 import { TFieldResult } from 'src/utilities/data-validators/fieldsMediator';
 
-describe('SpecialValidator', () => {
+describe('dataValidators.ts > SpecialValidator', () => {
     it('returns `valid` for texts with or without space when withSpace === undefined', () => {
         const options: TSpecialOption = { withSpace: undefined };
         const inputs = [

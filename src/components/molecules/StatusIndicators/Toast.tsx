@@ -7,7 +7,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import configs from 'src/commons/configs';
 import { surrogate } from 'src/utilities/otherUtilities';
 
-type TToast = SnackbarProps & AlertProps & {
+export type TToast = SnackbarProps & AlertProps & {
     stage: string,
     message: string,
     position?: SnackbarOrigin,

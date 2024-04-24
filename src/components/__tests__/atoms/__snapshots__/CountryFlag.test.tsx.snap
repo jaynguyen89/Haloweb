@@ -5,3 +5,9 @@ exports[`CountryFlag renders successfully 1`] = `
   className="fi fi-test  undefined undefined"
 />
 `;
+
+exports[`CountryFlag.tsx renders successfully 1`] = `
+<span
+  className="fi fi-test  undefined undefined"
+/>
+`;

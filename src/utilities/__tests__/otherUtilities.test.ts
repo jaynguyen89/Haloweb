@@ -10,7 +10,7 @@ const successStatusCodes = Object.values(HttpStatusCode).filter(x => !isNaN(x as
 const redirectStatusCodes = Object.values(HttpStatusCode).filter(x => !isNaN(x as any) && x >= 300 && x < 400);
 const serverStatusCodes = Object.values(HttpStatusCode).filter(x => !isNaN(x as any) && x >= 500 && x < 600);
 
-describe('is[Information/Success/Redirect/Server]StatusCode', () => {
+describe('otherUtilities.ts > is[Information/Success/Redirect/Server]StatusCode', () => {
     it('should tell correct information status codes', () => {
         infoStatusCodes.forEach(x => expect(isInformationStatusCode(x as any)).toBeTruthy());
 

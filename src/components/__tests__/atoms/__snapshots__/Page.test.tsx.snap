@@ -41,3 +41,45 @@ exports[`Page renders successfully 1`] = `
   </ForwardRef(Container)>
 </ForwardRef(Box)>
 `;
+
+exports[`Page.tsx renders successfully 1`] = `
+<ForwardRef(Box)
+  className="page-class-name"
+  style={
+    Object {
+      "margin": "20px",
+    }
+  }
+  sx={
+    Object {
+      "height": "100%",
+      "margin": 0,
+      "padding": 0,
+      "width": "100%",
+    }
+  }
+>
+  <ForwardRef(Container)
+    className="container-class-name"
+    maxWidth="xl"
+    style={
+      Object {
+        "padding": "30px",
+      }
+    }
+    sx={
+      Object {
+        "mb": 1,
+        "mt": 2,
+        "padding": 0,
+      }
+    }
+  >
+    <span
+      id="span-id"
+    >
+      Test Child
+    </span>
+  </ForwardRef(Container)>
+</ForwardRef(Box)>
+`;

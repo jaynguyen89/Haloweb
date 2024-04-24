@@ -5,6 +5,54 @@ import { render } from '@testing-library/react';
 import { shallow, mount } from 'enzyme';
 import colors from 'src/commons/colors';
 
+export const paletteMock = {
+    text: {
+        primary: colors.lightBlack,
+        secondary: colors.darkGrey,
+        disabled: colors.grey,
+    },
+    primary: {
+        main: colors.lightGrey,
+        light: colors.lighterGrey,
+        dark: colors.darkGrey,
+        contrastText: colors.darkerGrey,
+    },
+    secondary: {
+        main: colors.darkTeal,
+        light: colors.lightTeal,
+        dark: colors.deepTeal,
+        contrastText: colors.lighterTeal,
+    },
+    error: {
+        main: colors.darkRed,
+        light: colors.lightRed,
+        dark: colors.deepRed,
+        contrastText: colors.lighterRed,
+    },
+    warning: {
+        main: colors.darkYellow,
+        light: colors.lightYellow,
+        dark: colors.deepYellow,
+        contrastText: colors.lighterYellow,
+    },
+    info: {
+        main: colors.darkBlue,
+        light: colors.lightBlue,
+        dark: colors.deepBlue,
+        contrastText: colors.lighterBlue,
+    },
+    success: {
+        main: colors.darkGreen,
+        light: colors.lightGreen,
+        dark: colors.deepGreen,
+        contrastText: colors.lighterGreen,
+    },
+    common: {
+        white: colors.white,
+        black: colors.black,
+    },
+};
+
 export const MockTheme = ({ children }: { children: React.ReactElement }) => {
     const themeMock = createTheme({
         mixins: {
@@ -23,53 +71,7 @@ export const MockTheme = ({ children }: { children: React.ReactElement }) => {
                 xl: 1536,
             },
         },
-        palette: {
-            text: {
-                primary: colors.lightBlack,
-                secondary: colors.darkGrey,
-                disabled: colors.grey,
-            },
-            primary: {
-                main: colors.lightGrey,
-                light: colors.lighterGrey,
-                dark: colors.darkGrey,
-                contrastText: colors.darkerGrey,
-            },
-            secondary: {
-                main: colors.darkTeal,
-                light: colors.lightTeal,
-                dark: colors.deepTeal,
-                contrastText: colors.lighterTeal,
-            },
-            error: {
-                main: colors.darkRed,
-                light: colors.lightRed,
-                dark: colors.deepRed,
-                contrastText: colors.lighterRed,
-            },
-            warning: {
-                main: colors.darkYellow,
-                light: colors.lightYellow,
-                dark: colors.deepYellow,
-                contrastText: colors.lighterYellow,
-            },
-            info: {
-                main: colors.darkBlue,
-                light: colors.lightBlue,
-                dark: colors.deepBlue,
-                contrastText: colors.lighterBlue,
-            },
-            success: {
-                main: colors.darkGreen,
-                light: colors.lightGreen,
-                dark: colors.deepGreen,
-                contrastText: colors.lighterGreen,
-            },
-            common: {
-                white: colors.white,
-                black: colors.black,
-            },
-        },
+        palette: paletteMock,
     });
 
     return <ThemeProvider theme={themeMock}>{children}</ThemeProvider>;

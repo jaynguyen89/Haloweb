@@ -24,7 +24,7 @@ const expectedMessages = {
     'warning-status-2': 'This is a warning status 2.',
 };
 
-describe('MessageCaption', () => {
+describe('MessageCaption.tsx', () => {
     it('renders messages correctly', () => {
         const messages: Array<IMessage> = [
             {

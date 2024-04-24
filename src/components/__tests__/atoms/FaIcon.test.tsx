@@ -10,7 +10,7 @@ import { faStar } from '@fortawesome/free-regular-svg-icons/faStar';
 
 configure({ adapter: new Adapter() });
 
-describe('FaIcon', () => {
+describe('FaIcon.tsx', () => {
     it('renders icon with `i` wrapper', () => {
         const propss: Array<TIcon> = [
             {

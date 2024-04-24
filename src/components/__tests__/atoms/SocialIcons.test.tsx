@@ -18,7 +18,7 @@ const icons = [
 
 configure({ adapter: new Adapter() });
 
-describe('SocialIcons', () => {
+describe('SocialIcons.tsx', () => {
     it('renders successfully', () => {
         const wrapperGrid = shallow(
             // @ts-ignore-next-line

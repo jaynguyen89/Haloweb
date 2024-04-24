@@ -2,7 +2,7 @@ import { FileListValidator, InputData, TFileListOption } from 'src/utilities/dat
 import { TFieldResult } from 'src/utilities/data-validators/fieldsMediator';
 import { Blob } from 'blob-polyfill';
 
-describe('FileListValidator', () => {
+describe('dataValidators.ts > FileListValidator', () => {
     const options: TFileListOption = {
         minCount: 1,
         maxCount: 2,

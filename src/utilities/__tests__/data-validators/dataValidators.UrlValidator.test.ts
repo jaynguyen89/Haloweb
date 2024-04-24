@@ -1,7 +1,7 @@
 import { InputData, TRangeOption, UrlValidator } from 'src/utilities/data-validators/dataValidators';
 import { TFieldResult } from 'src/utilities/data-validators/fieldsMediator';
 
-describe('UrlValidator', () => {
+describe('dataValidators.ts > UrlValidator', () => {
     it('returns `valid` for correct format of HTTP urls', () => {
         const options: TRangeOption = { min: 10, max: 100 };
         const inputs = [

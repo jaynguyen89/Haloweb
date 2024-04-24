@@ -1,4 +1,5 @@
-import { debounce, throttle } from 'lodash';
+import debounce from 'lodash/debounce';
+import throttle from 'lodash/throttle';
 import { useEffect, useMemo, useRef } from 'react';
 import configs from 'src/commons/configs';
 
@@ -7,8 +8,6 @@ type DebounceSettings = {
     maxWait?: number | undefined;
     trailing?: boolean | undefined;
 }
-
-type ThrottleSettings = Omit<DebounceSettings, 'maxWait'>;
 
 export const useDebounce = (callback: Function, duration?: number, options?: DebounceSettings) => {
     const ref = useRef<Function>();
@@ -26,6 +25,8 @@ export const useDebounce = (callback: Function, duration?: number, options?: Deb
         return debounce(runCallback, wait, options);
     }, []);
 };
+
+type ThrottleSettings = Omit<DebounceSettings, 'maxWait'>;
 
 export const useThrottle = (callback: Function, duration?: number, options?: ThrottleSettings) => {
     const ref = useRef<Function>();

@@ -6,7 +6,7 @@ import CountryFlag from 'src/components/atoms/CountryFlag/CountryFlag';
 
 configure({ adapter: new Adapter() });
 
-describe('CountryFlag', () => {
+describe('CountryFlag.tsx', () => {
     it('renders successfully', () => {
         const wrapper = shallow(<CountryFlag isoCountryCode='test' />);
         expect(toJson(wrapper)).toMatchSnapshot();

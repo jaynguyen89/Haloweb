@@ -2,7 +2,7 @@ import React from 'react';
 import { useIsStageIncluded } from 'src/hooks/useStage';
 import { Box, LinearProgress, LinearProgressProps, Typography } from '@mui/material';
 
-type TProgress = Omit<LinearProgressProps, 'variant'> & {
+export type TProgress = Omit<LinearProgressProps, 'variant'> & {
     stage: string,
 };
 
@@ -24,7 +24,7 @@ const Progress = ({
 
 export default Progress;
 
-type TLabelProgress = TProgress & {
+export type TLabelProgress = TProgress & {
     progress: number,
 };
 

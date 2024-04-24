@@ -53,7 +53,7 @@ const StageFlasher = ({
                 severity={type}
                 variant={variant}
             >
-                <span style={{color: theme.palette[type ?? 'error'].main}}>{t(message, messageParams)}</span>
+                <span style={{color: theme.palette[type ?? 'info'].main}}>{t(message as string, {...messageParams})}</span>
             </Alert>
         </Collapse>
     );

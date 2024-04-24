@@ -1,7 +1,7 @@
 import { TDateFormat } from 'src/commons/types';
-import { format } from 'src/utilities/timeUtilities';
+import { delay, format } from 'src/utilities/timeUtilities';
 
-describe('format', () => {
+describe('timeUtilities.ts > format', () => {
     it('should throw error if any formats is missing', () => {
         const options1: TDateFormat = {
             dateOnly: true,
@@ -54,5 +54,37 @@ describe('format', () => {
         const result = format(date, options);
 
         expect(result).toEqual('Sun, 24/03/2024 06.30 PM');
+    });
+});
+
+describe('timeUtilities.ts > delay', () => {
+    it('should pause for the specified duration', async () => {
+        const startTime = Date.now();
+        const delayTime = 1000; // 1 second
+
+        await delay(delayTime);
+
+        const endTime = Date.now();
+        const elapsedTime = endTime - startTime;
+
+        // Allow some margin of error due to setTimeout's precision
+        const marginOfError = 50; // 50 milliseconds
+
+        expect(elapsedTime).toBeGreaterThanOrEqual(delayTime - marginOfError);
+        expect(elapsedTime).toBeLessThanOrEqual(delayTime + marginOfError);
+    });
+
+    it('should not pause missing duration', async () => {
+        const startTime = Date.now();
+
+        await delay(undefined);
+
+        const endTime = Date.now();
+        const elapsedTime = endTime - startTime;
+
+        // Allow some margin of error due to setTimeout's precision
+        const marginOfError = 50; // 50 milliseconds
+
+        expect(elapsedTime).toBeLessThanOrEqual(marginOfError);
     });
 });

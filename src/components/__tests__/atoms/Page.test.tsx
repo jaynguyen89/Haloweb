@@ -4,7 +4,7 @@ import { shallow, configure } from 'enzyme';
 import toJson from 'enzyme-to-json';
 import Adapter from '@cfaester/enzyme-adapter-react-18';
 import Page from 'src/components/atoms/Page/Page';
-import { getById } from 'src/utilities/testUtilities';
+import { getByAttribute } from 'src/utilities/testUtilities';
 
 configure({ adapter: new Adapter() });
 jest.mock('src/commons/variables/cssVariables.scss', () => ({
@@ -13,7 +13,7 @@ jest.mock('src/commons/variables/cssVariables.scss', () => ({
     medium: 2,
 }));
 
-describe('Page', () => {
+describe('Page.tsx', () => {
     const props = {
         pageClassName: 'page-class-name',
         containerClassName: 'container-class-name',
@@ -36,7 +36,7 @@ describe('Page', () => {
         );
 
         expect(wrapper.container.getElementsByTagName('span').length).toBe(1);
-        expect(getById(id)(wrapper.container, 'span-id')).toBeDefined();
+        expect(getByAttribute('id')(wrapper.container, 'span-id')).toBeDefined();
         expect(wrapper.container.getElementsByClassName('page-class-name').length).toBe(1);
         expect(wrapper.container.getElementsByClassName('container-class-name').length).toBe(1);
     });

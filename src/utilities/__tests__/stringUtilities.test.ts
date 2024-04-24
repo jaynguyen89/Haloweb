@@ -1,6 +1,6 @@
 import { toPascalCase } from 'src/utilities/stringUtilities';
 
-describe('stringUtilities > toPascalCase', () => {
+describe('stringUtilities.ts > toPascalCase', () => {
     it('returns empty string for empty string', () => {
         const result = toPascalCase('');
         expect(result).toEqual('');

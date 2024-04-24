@@ -1,5 +1,9 @@
-import { queryByAttribute } from '@testing-library/react';
+import { queryAllByAttribute, queryAllByText, queryByAttribute, queryByText } from '@testing-library/react';
 
-export const getByLabel = (label: string) => queryByAttribute.bind(null, label);
+export const getByAttribute = (attribute: string) => queryByAttribute.bind(null, attribute);
 
-export const getById = (id: string) => queryByAttribute.bind(null, id);
+export const getAllByAttribute = (attribute: string) => queryAllByAttribute.bind(null, attribute);
+
+export const getByText = (text: string) => queryByText.bind(null, text);
+
+export const getAllByText = (text: string) => queryAllByText.bind(null, text);

@@ -5,7 +5,7 @@ import {
 } from 'src/utilities/data-validators/dataValidators';
 import { TFieldResult } from 'src/utilities/data-validators/fieldsMediator';
 
-describe('EmailValidator', () => {
+describe('dataValidators.ts > EmailValidator', () => {
     it('returns `valid` for correct formats of email addresses', () => {
         const options: TRangeOption = { min: 10, max: 50 };
         const inputs = [

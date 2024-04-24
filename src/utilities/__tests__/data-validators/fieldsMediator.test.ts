@@ -11,7 +11,7 @@ import {
 import { TFileListOption, TFileOption, TSpecialOption } from 'src/utilities/data-validators/dataValidators';
 import _flatten from 'lodash/flatten';
 
-describe('FieldsMediator', () => {
+describe('fieldsMediator.ts > FieldsMediator', () => {
     const validationOptions: TValidationOptions<TMockFieldKey> = {
         oneOfFields: [
             MockFieldNames.Email,

@@ -1,7 +1,7 @@
 import { InputData, RangeValidator, TRangeOption } from 'src/utilities/data-validators/dataValidators';
 import { TFieldResult } from 'src/utilities/data-validators/fieldsMediator';
 
-describe('RangeValidator for Number', () => {
+describe('dataValidators.ts > RangeValidator for Number', () => {
     it('returns `invalid` for non-number inputs', () => {
         const options: TRangeOption = {
             asNumber: true,
@@ -157,7 +157,7 @@ describe('RangeValidator for Number', () => {
     });
 });
 
-describe('RangeValidator for String', () => {
+describe('dataValidators.ts > RangeValidator for String', () => {
     it('returns `valid` for String inputs with length within min-max', () => {
         const options: TRangeOption = {
             min: 5,

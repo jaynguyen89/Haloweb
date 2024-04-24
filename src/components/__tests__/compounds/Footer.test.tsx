@@ -8,8 +8,8 @@ import withMocks from 'src/foundation/withMocks';
 import { screen } from '@testing-library/react';
 import userEvent from "@testing-library/user-event";
 // import { publicDataMock } from 'src/models/PublicData';
-import { getByLabel } from 'src/utilities/testUtilities';
 import { setDefaultTheme } from 'src/redux/actions/themeActions';
+import { getByAttribute } from 'src/utilities/testUtilities';
 
 configure({ adapter: new Adapter() });
 
@@ -17,7 +17,7 @@ jest.mock('src/redux/actions/themeActions', () => ({
     setDefaultTheme: jest.fn(),
 }));
 
-describe('Footer', () => {
+describe('Footer.tsx', () => {
     it('renders successfully', () => {
         const wrapper = shallowWithTheme(withMocks(<Footer />));
         expect(toJson(wrapper)).toMatchSnapshot();
@@ -26,7 +26,7 @@ describe('Footer', () => {
     it('has language selection dropdown', async () => {
         const wrapper = renderWithTheme(withMocks(<Footer />, true));
 
-        const selectBox = getByLabel('aria-labelledby')(wrapper.container, 'language-select-label');
+        const selectBox = getByAttribute('aria-labelledby')(wrapper.container, 'language-select-label');
         expect(selectBox).toBeDefined();
         userEvent.click(selectBox);
 
@@ -47,7 +47,7 @@ describe('Footer', () => {
     it('has theme selection dropdown', async () => {
         const wrapper = renderWithTheme(withMocks(<Footer />, true));
 
-        const selectBox = getByLabel('aria-labelledby')(wrapper.container, 'theme-select-label');
+        const selectBox = getByAttribute('aria-labelledby')(wrapper.container, 'theme-select-label');
         expect(selectBox).toBeDefined();
         userEvent.click(selectBox);
 

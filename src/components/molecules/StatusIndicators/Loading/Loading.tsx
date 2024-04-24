@@ -1,9 +1,8 @@
 import React from 'react';
-import { Box } from '@mui/material';
 import 'src/components/molecules/StatusIndicators/Loading/loading.scss';
 import { useIsStageIncluded } from 'src/hooks/useStage';
 
-const variants = {
+export const variants = {
     falling: 'dot-falling',
     elastic: 'dot-elastic',
     pulsing: 'dot-pulse',

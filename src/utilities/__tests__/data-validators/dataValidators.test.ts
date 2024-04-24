@@ -10,7 +10,7 @@ import {
     TMockFieldKey,
 } from 'src/utilities/__tests__/data-validators/_mocks_';
 
-describe('mapFieldsToValidators', () => {
+describe('dataValidators.ts > mapFieldsToValidators', () => {
     it('should throw for missing `dateFormats` when `DateValidator` is in use', () => {
         const test = () => mapFieldsToValidators<TMockFieldKey>(
             mockFormData,

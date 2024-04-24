@@ -8,7 +8,7 @@ import DimOverlay from 'src/components/atoms/DimOverlay';
 
 configure({ adapter: new Adapter() });
 
-describe('DimOverlay', () => {
+describe('DimOverlay.tsx', () => {
     it('renders successfully', () => {
         const wrapper = shallowWithTheme(<DimOverlay />);
         expect(toJson(wrapper)).toMatchSnapshot();

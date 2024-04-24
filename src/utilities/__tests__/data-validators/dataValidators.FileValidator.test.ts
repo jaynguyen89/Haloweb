@@ -2,7 +2,7 @@ import { FileValidator, InputData, TFileOption } from 'src/utilities/data-valida
 import { TFieldResult } from 'src/utilities/data-validators/fieldsMediator';
 import { Blob } from 'blob-polyfill';
 
-describe('FileValidator', () => {
+describe('dataValidators.ts > FileValidator', () => {
     const options: TFileOption = {
         maxSize: 10000,
         acceptedFormats: ['png'],

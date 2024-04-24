@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Loading renders successfully 1`] = `
+<div
+  data-title="dot-elastic"
+>
+  <div
+    className="stage"
+  >
+    <div
+      className="dot-elastic"
+    />
+  </div>
+</div>
+`;
+
+exports[`Loading.tsx renders successfully 1`] = `
+<div
+  data-title="dot-elastic"
+>
+  <div
+    className="stage"
+  >
+    <div
+      className="dot-elastic"
+    />
+  </div>
+</div>
+`;

@@ -67,7 +67,7 @@ const Flasher = ({
                 severity={severity}
                 variant={variant}
             >
-                <span style={{color: theme.palette[severity].main}}>{t(message, messageParams)}</span>
+                <span style={{color: theme.palette[severity].main}}>{t(message as string, {...messageParams})}</span>
             </Alert>
         </Collapse>
     );

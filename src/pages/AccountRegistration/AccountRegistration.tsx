@@ -1,6 +1,6 @@
 import { faCircleUser } from '@fortawesome/free-solid-svg-icons/faCircleUser';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons/faPaperPlane';
-import { Box, FormControl, InputLabel, Select, TextField } from '@mui/material';
+import { Box, FormControl, FormControlLabel, InputLabel, Radio, RadioGroup, Select, TextField } from '@mui/material';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
@@ -16,12 +16,13 @@ import CountryFlag from 'src/components/atoms/CountryFlag/CountryFlag';
 import FaIcon from 'src/components/atoms/FaIcon';
 import MessageCaption from 'src/components/atoms/MessageCaption';
 import Recaptcha from 'src/components/atoms/Recaptcha';
-import SocialIcons from 'src/components/atoms/SocialIcons/SocialIcons';
 import Flasher from 'src/components/molecules/StatusIndicators/Flasher';
 import { useDebounce } from 'src/hooks/eventForger';
 import { useIsStageIncluded } from 'src/hooks/useStage';
 import Stages from 'src/models/enums/stage';
-import useStyles, { helpBoxSx, registrationBoxSx, registrationFormSx } from 'src/pages/AccountRegistration/styles';
+import RegistrationBySocialAccount from 'src/pages/AccountRegistration/RegistrationBySocialAccount';
+import RegistrationProfileData from 'src/pages/AccountRegistration/RegistrationProfileData';
+import useStyles, { registrationBoxSx, registrationFormSx } from 'src/pages/AccountRegistration/styles';
 import {
     createRegistrationData,
     fieldValidatorNameMap,
@@ -44,7 +45,7 @@ import FieldsMediator, {
     TValidationResult,
 } from 'src/utilities/data-validators/fieldsMediator';
 import { surrogate } from 'src/utilities/otherUtilities';
-import {faMinus} from '@fortawesome/free-solid-svg-icons/faMinus';
+import { faMinus } from '@fortawesome/free-solid-svg-icons/faMinus';
 
 const mapStateToProps = (state: TRootState) => ({
     publicData: state.publicDataStore.publicData,
@@ -58,6 +59,8 @@ const AccountRegistration = ({
     const dispatch = useDispatch();
     const { t } = useTranslation();
     const styles = useStyles();
+
+    const [registerBy, setRegisterBy] = React.useState<string>(RegistrationFormFieldNames.EmailAddress);
 
     const [formData, setFormData] = useState<TFormDataState<typeof RegistrationFormFieldNames>>(initialRegistrationFormDataState);
     const [fieldValidation, setFieldValidation] = useState<TValidationResult<TFieldKey>>();
@@ -176,6 +179,69 @@ const AccountRegistration = ({
         surrogate(dispatch, sendRequestToRegisterAccount(registrationData, recaptchaTokenToSend));
     };
 
+    const CredentialInfo = useMemo(() => {
+        if (registerBy === RegistrationFormFieldNames.EmailAddress)
+            return (
+                <>
+                    <TextField
+                        label={t('registration-page.email-address-label')}
+                        style={{width: '100%'}}
+                        value={formData[RegistrationFormFieldNames.EmailAddress].value}
+                        onChange={(e) => handleFieldValueChange(RegistrationFormFieldNames.EmailAddress, e.target.value)}
+                    />
+                    {
+                        fieldValidation && fieldValidation[RegistrationFormFieldNames.EmailAddress].isValid !== undefined &&
+                        !fieldValidation[RegistrationFormFieldNames.EmailAddress].isValid && (
+                        <MessageCaption
+                            statuses={fieldValidation[RegistrationFormFieldNames.EmailAddress].messages as Map<string, object | undefined>}
+                        />
+                    )}
+                </>
+            );
+
+        return (
+            <Grid container spacing={1}>
+                <Grid item md={4} sm={3} xs={5}>
+                    <FormControl fullWidth>
+                        <InputLabel id='area-code-select-label'>{t('registration-page.area-code-label')}</InputLabel>
+                        <Select
+                            labelId='area-code-select-label'
+                            label={t('registration-page.area-code-label')}
+                            value={formData[RegistrationFormFieldNames.AreaCode].value ?? ''}
+                            onChange={(e) => handleFieldValueChange(RegistrationFormFieldNames.AreaCode, e.target.value as string)}
+                            variant='outlined'
+                        >
+                            <MenuItem key='none' value=''>
+                                <FaIcon wrapper='fa' t='obj' ic={faMinus} />
+                            </MenuItem>
+                            {publicData.countries.map(country => (
+                                <MenuItem key={country.telephoneCode} value={country.telephoneCode}>
+                                    {`${country.telephoneCode} - ${country.isoCode3Char}`}
+                                    <CountryFlag isoCountryCode={country.isoCode2Char} className={styles.flagIcon} />
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Grid>
+                <Grid item md={8} sm={9} xs={7}>
+                    <TextField
+                        label={t('registration-page.phone-number-label')}
+                        style={{width: '100%'}}
+                        value={formData[RegistrationFormFieldNames.PhoneNumber].value}
+                        onChange={(e) => handleFieldValueChange(RegistrationFormFieldNames.PhoneNumber, e.target.value)}
+                    />
+                </Grid>
+                {
+                    fieldValidation && fieldValidation[RegistrationFormFieldNames.PhoneNumber].isValid !== undefined &&
+                    !fieldValidation[RegistrationFormFieldNames.PhoneNumber].isValid && (
+                        <MessageCaption
+                            statuses={fieldValidation[RegistrationFormFieldNames.PhoneNumber].messages as Map<string, object | undefined>}
+                        />
+                    )}
+            </Grid>
+        );
+    }, [registerBy]);
+
     return (
         <div className={styles.registrationWrapper}>
             {accountRegistrationResult.success && (
@@ -226,65 +292,30 @@ const AccountRegistration = ({
                             <MessageCaption statuses={formValidation.messages as Map<string, object | undefined>} />
                         </Grid>
                     )}
-
-                    <Grid item md={5} xs={12}>
-                        <TextField
-                            label={t('registration-page.email-address-label')}
-                            style={{width: '100%'}}
-                            value={formData[RegistrationFormFieldNames.EmailAddress].value}
-                            onChange={(e) => handleFieldValueChange(RegistrationFormFieldNames.EmailAddress, e.target.value)}
-                        />
-                        {
-                            fieldValidation && fieldValidation[RegistrationFormFieldNames.EmailAddress].isValid !== undefined &&
-                            !fieldValidation[RegistrationFormFieldNames.EmailAddress].isValid && (
-                            <MessageCaption
-                                statuses={fieldValidation[RegistrationFormFieldNames.EmailAddress].messages as Map<string, object | undefined>}
+                    {/* The Account Registration Form */}
+                    <Grid item xs={12}>
+                        <Typography><b>{t('registration-page.register-by')}</b></Typography>
+                        <RadioGroup row
+                                    value={registerBy}
+                                    onChange={(e: React.ChangeEvent) => setRegisterBy(e.target.defaultValue)}
+                        >
+                            <FormControlLabel
+                                value={RegistrationFormFieldNames.EmailAddress}
+                                control={<Radio />}
+                                label={t('registration-page.email-address-label')}
                             />
-                        )}
+                            <FormControlLabel
+                                value={RegistrationFormFieldNames.PhoneNumber}
+                                control={<Radio />}
+                                label={t('registration-page.phone-number-label')}
+                            />
+                        </RadioGroup>
                     </Grid>
-                    <Grid item md={1} xs={12}>
-                        <div className={styles.orLabel}>{t('labels.or')}</div>
+
+                    <Grid item xs={12}>
+                        {CredentialInfo}
                     </Grid>
-                    <Grid item md={6} xs={12}>
-                        <Grid container spacing={1}>
-                            <Grid item md={4} sm={3} xs={5}>
-                                <FormControl fullWidth>
-                                    <InputLabel id='area-code-select-label'>{t('registration-page.area-code-label')}</InputLabel>
-                                    <Select
-                                        labelId='area-code-select-label'
-                                        label={t('registration-page.area-code-label')}
-                                        value={formData[RegistrationFormFieldNames.AreaCode].value ?? ''}
-                                        onChange={(e) => handleFieldValueChange(RegistrationFormFieldNames.AreaCode, e.target.value as string)}
-                                    >
-                                        <MenuItem key='none' value=''>
-                                            <FaIcon wrapper='fa' t='obj' ic={faMinus} />
-                                        </MenuItem>
-                                        {publicData.countries.map(country => (
-                                            <MenuItem key={country.telephoneCode} value={country.telephoneCode}>
-                                                {`${country.telephoneCode} - ${country.isoCode3Char}`}
-                                                <CountryFlag isoCountryCode={country.isoCode2Char} className={styles.flagIcon} />
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
-                                </FormControl>
-                            </Grid>
-                            <Grid item md={8} sm={9} xs={7}>
-                                <TextField
-                                    label={t('registration-page.phone-number-label')}
-                                    style={{width: '100%'}}
-                                    value={formData[RegistrationFormFieldNames.PhoneNumber].value}
-                                    onChange={(e) => handleFieldValueChange(RegistrationFormFieldNames.PhoneNumber, e.target.value)}
-                                />
-                            </Grid>
-                            {
-                                fieldValidation && fieldValidation[RegistrationFormFieldNames.PhoneNumber].isValid !== undefined &&
-                                !fieldValidation[RegistrationFormFieldNames.PhoneNumber].isValid && (
-                                <MessageCaption
-                                    statuses={fieldValidation[RegistrationFormFieldNames.PhoneNumber].messages as Map<string, object | undefined>}
-                                />
-                            )}
-                        </Grid>
-                    </Grid>
+
                     <Grid item sm={6} xs={12}>
                         <TextField
                             label={t('registration-page.password-label')}
@@ -310,7 +341,7 @@ const AccountRegistration = ({
                             onChange={(e) => handleFieldValueChange(RegistrationFormFieldNames.PasswordConfirm, e.target.value)}
                         />
                     </Grid>
-                    <Grid item sm={6} xs={12}>
+                    <Grid item xs={12}>
                         <TextField
                             label={t('registration-page.username-label')}
                             style={{width: '100%'}}
@@ -325,82 +356,16 @@ const AccountRegistration = ({
                             />
                         )}
                     </Grid>
-                    <Grid item sm={6} xs={12}>
-                        <FormControl fullWidth>
-                            <InputLabel
-                                id='area-code-select-label'>{t('registration-page.gender-label')}</InputLabel>
-                            <Select
-                                labelId='area-code-select-label'
-                                label={t('registration-page.gender-label')}
-                                value={formData[RegistrationFormFieldNames.Gender].value ?? ''}
-                                onChange={(e) => handleFieldValueChange(RegistrationFormFieldNames.Gender, e.target.value as string)}
-                            >
-                                {publicData.genders.map(gender => (
-                                    <MenuItem key={gender.index} value={gender.index}>{gender.display}</MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid item md={4} sm={12} xs={12}>
-                        <TextField
-                            label={t('registration-page.given-name-label')}
-                            style={{width: '100%'}}
-                            value={formData[RegistrationFormFieldNames.GivenName].value}
-                            onChange={(e) => handleFieldValueChange(RegistrationFormFieldNames.GivenName, e.target.value)}
+
+                    {configs.registerAccountWithProfileData &&
+                        <RegistrationProfileData
+                            publicData={publicData}
+                            formData={formData}
+                            handleFieldValueChange={handleFieldValueChange}
+                            fieldValidation={fieldValidation}
                         />
-                        {
-                            fieldValidation && fieldValidation[RegistrationFormFieldNames.GivenName].isValid !== undefined &&
-                            !fieldValidation[RegistrationFormFieldNames.GivenName].isValid && (
-                            <MessageCaption
-                                statuses={fieldValidation[RegistrationFormFieldNames.GivenName].messages as Map<string, object | undefined>}
-                            />
-                        )}
-                    </Grid>
-                    <Grid item md={4} sm={12} xs={12}>
-                        <TextField
-                            label={t('registration-page.middle-name-label')}
-                            style={{width: '100%'}}
-                            value={formData[RegistrationFormFieldNames.MiddleName].value}
-                            onChange={(e) => handleFieldValueChange(RegistrationFormFieldNames.MiddleName, e.target.value)}
-                        />
-                        {
-                            fieldValidation && fieldValidation[RegistrationFormFieldNames.MiddleName].isValid !== undefined &&
-                            !fieldValidation[RegistrationFormFieldNames.MiddleName].isValid && (
-                            <MessageCaption
-                                statuses={fieldValidation[RegistrationFormFieldNames.MiddleName].messages as Map<string, object | undefined>}
-                            />
-                        )}
-                    </Grid>
-                    <Grid item md={4} sm={12} xs={12}>
-                        <TextField
-                            label={t('registration-page.family-name-label')}
-                            style={{width: '100%'}}
-                            value={formData[RegistrationFormFieldNames.FamilyName].value}
-                            onChange={(e) => handleFieldValueChange(RegistrationFormFieldNames.FamilyName, e.target.value)}
-                        />
-                        {
-                            fieldValidation && fieldValidation[RegistrationFormFieldNames.FamilyName].isValid !== undefined &&
-                            !fieldValidation[RegistrationFormFieldNames.FamilyName].isValid && (
-                            <MessageCaption
-                                statuses={fieldValidation[RegistrationFormFieldNames.FamilyName].messages as Map<string, object | undefined>}
-                            />
-                        )}
-                    </Grid>
-                    <Grid item xs={12}>
-                        <TextField
-                            label={t('registration-page.full-name-label')}
-                            style={{width: '100%'}}
-                            value={formData[RegistrationFormFieldNames.FullName].value}
-                            onChange={(e) => handleFieldValueChange(RegistrationFormFieldNames.FullName, e.target.value)}
-                        />
-                        {
-                            fieldValidation && fieldValidation[RegistrationFormFieldNames.FullName].isValid !== undefined &&
-                            !fieldValidation[RegistrationFormFieldNames.FullName].isValid && (
-                            <MessageCaption
-                                statuses={fieldValidation[RegistrationFormFieldNames.FullName].messages as Map<string, object | undefined>}
-                            />
-                        )}
-                    </Grid>
+                    }
+
                     {configs.recaptchaEnabled && (
                         <Grid item xs={12}>
                             <Recaptcha
@@ -422,19 +387,8 @@ const AccountRegistration = ({
                     </Grid>
                 </Grid>
             </Box>
-            <Box sx={helpBoxSx}>
-                <p>{t('registration-page.social-registration-text')}</p>
-                <SocialIcons
-                    icons={[
-                        {iconName: 'facebook'},
-                        {iconName: 'google'},
-                        {iconName: 'twitter'},
-                        {iconName: 'instagram'},
-                        {iconName: 'microsoft'},
-                        {iconName: 'linkedin'},
-                    ]}
-                />
-            </Box>
+
+            {<RegistrationBySocialAccount publicData={publicData} />}
         </div>
     );
 };

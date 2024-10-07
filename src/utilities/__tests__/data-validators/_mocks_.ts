@@ -15,7 +15,7 @@ import { Blob } from 'blob-polyfill';
 
 export const mockPublicData: IPublicData = {
     environment: 'jest',
-    enableSecretCode: false,
+    secretCodeEnabled: false,
     secretCodeLength: 1,
     dateFormats: [{ display: '' }],
     timeFormats: [{ display: '' }],

@@ -51,7 +51,9 @@ const configs = {
         ? false
         : process.env.REACT_APP_COOKIE_HTTP_ONLY === 'true',
     cookieSamesite: process.env.REACT_APP_COOKIE_SAMESITE ?? 'none',
-
+    registerAccountWithProfileData: process.env.REACT_APP_REGISTER_ACCOUNT_WITH_PROFILE_DATA === undefined
+        ? false
+        : process.env.REACT_APP_REGISTER_ACCOUNT_WITH_PROFILE_DATA === 'true',
 };
 
 export default configs;

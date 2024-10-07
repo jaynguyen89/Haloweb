@@ -285,7 +285,7 @@ export class SpecialValidator<T extends string> extends RangeValidator<T> {
         let includeSpecialCharValidity = true;
         const hasSpecialChar = /[^a-zA-Z_\d\s:\u00C0-\u00FF]+/g.test(data);
         const hasRequiredSpecialChars = this.specialOptions.specialCharsToInclude
-                                       ? new RegExp(`[${this.specialOptions.specialCharsToInclude}\\s]+`, 'gi').test(data)
+                                       ? this.specialOptions.specialCharsToInclude.split('').some(c => data.includes(c)) //new RegExp(`[${this.specialOptions.specialCharsToInclude}\\s]+`, 'gi').test(data)
                                        : hasSpecialChar;
         const hasOtherSpecialChars = this.specialOptions.specialCharsToInclude
                                      ? new RegExp(`[^${this.specialOptions.specialCharsToInclude}\\d\\w\\s]+`, 'g').test(data)

@@ -6,7 +6,7 @@ export type TPublicDataFormat = {
 
 interface IPublicData {
     environment: string,
-    enableSecretCode: boolean,
+    secretCodeEnabled: boolean,
     secretCodeLength: number,
     dateFormats: Array<TPublicDataFormat>,
     timeFormats: Array<TPublicDataFormat>,
@@ -25,13 +25,14 @@ interface IPublicData {
         isoCode3Char: string,
         telephoneCode: string,
     }>,
+    supportedSocialAccounts: Array<string>,
 }
 
 export default IPublicData;
 
 export const publicDataMock = {
     environment: 'jest',
-    enableSecretCode: false,
+    secretCodeEnabled: false,
     secretCodeLength: 6,
     dateFormats: [
         {
@@ -175,4 +176,5 @@ export const publicDataMock = {
             telephoneCode: '99',
         },
     ],
+    supportedSocialAccounts: ['Facebook', 'Google'],
 };

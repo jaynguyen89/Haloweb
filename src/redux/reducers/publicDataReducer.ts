@@ -10,7 +10,7 @@ interface IPublicDataStore {
 const initialState: IPublicDataStore = {
     publicData: {
         environment: '',
-        enableSecretCode: false,
+        secretCodeEnabled: false,
         secretCodeLength: 0,
         dateFormats: [],
         timeFormats: [],
@@ -24,6 +24,7 @@ const initialState: IPublicDataStore = {
         careerFormats: [],
         visibilityFormats: [],
         countries: [],
+        supportedSocialAccounts: [],
     },
 };
 

@@ -26,13 +26,12 @@ import { faMinus } from '@fortawesome/free-solid-svg-icons/faMinus';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons/faQuestionCircle';
 import PinCell from 'src/components/atoms/PinCell/PinCell';
 import Button from '@mui/material/Button';
-import { faPaperPlane } from '@fortawesome/free-solid-svg-icons/faPaperPlane';
 import Recaptcha from 'src/components/atoms/Recaptcha';
 import { ITokenData } from 'src/models/Authentication';
 
 const mapStateToProps = (state: TRootState) => ({
     stages: state.stageStore.stages,
-    secretCodeEnable: state.publicDataStore.publicData.enableSecretCode,
+    secretCodeEnable: state.publicDataStore.publicData.secretCodeEnabled,
     secretCodeLength: state.publicDataStore.publicData.secretCodeLength,
     isSecretCodeSent: state.authenticationStore.accountActivation.isSecretCodeSent,
     activationSuccess: state.authenticationStore.accountActivation.activationSuccess,

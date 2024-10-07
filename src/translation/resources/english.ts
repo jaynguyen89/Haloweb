@@ -88,6 +88,7 @@ const english: ITranslation = {
         'registration-page': {
             title: 'Account Registration',
             subtitle: 'Already have account? <1>Login here</1>.',
+            'register-by': 'Register By:',
             'email-address-label': 'Email Address*',
             'area-code-label': 'Area Code',
             'phone-number-label': 'Phone Number*',

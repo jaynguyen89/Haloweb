@@ -87,6 +87,7 @@ const vietnamese: ITranslation = {
         'registration-page': {
             title: 'Đăng ký tài khoản',
             subtitle: 'Đã có tài khoản? <1>Đăng nhập tại đây</1>.',
+            'register-by': 'Tạo tài khoản bằng:',
             'email-address-label': 'Địa chỉ email',
             'area-code-label': 'Mã vùng',
             'phone-number-label': 'Số điện thoại',

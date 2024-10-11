@@ -31,7 +31,7 @@ import { ITokenData } from 'src/models/Authentication';
 
 const mapStateToProps = (state: TRootState) => ({
     stages: state.stageStore.stages,
-    secretCodeEnable: state.publicDataStore.publicData.secretCodeEnabled,
+    secretCodeEnabled: state.publicDataStore.publicData.secretCodeEnabled,
     secretCodeLength: state.publicDataStore.publicData.secretCodeLength,
     isSecretCodeSent: state.authenticationStore.accountActivation.isSecretCodeSent,
     activationSuccess: state.authenticationStore.accountActivation.activationSuccess,
@@ -41,7 +41,7 @@ const mapStateToProps = (state: TRootState) => ({
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 const ActivateAccount = ({
     stages,
-    secretCodeEnable,
+    secretCodeEnabled,
     secretCodeLength,
     isSecretCodeSent,
     activationSuccess,
@@ -100,9 +100,9 @@ const ActivateAccount = ({
     }, []);
 
     useEffect(() => {
-        if (data && (data.phoneNumber || data.emailAddress) && secretCodeEnable)
+        if (data && (data.phoneNumber || data.emailAddress) && secretCodeEnabled)
             surrogate(dispatch, sendRequestToGetSecretCode(data.accountId, data.emailAddress ? TokenDestination.EMAIL : TokenDestination.SMS));
-    }, [data, secretCodeEnable]);
+    }, [data, secretCodeEnabled]);
 
     const secretCodeCaptionTranslationKey = useMemo(() => {
         const isRegisteredByEmail = data && data.emailAddress;
@@ -110,14 +110,14 @@ const ActivateAccount = ({
     }, [data]);
 
     const shouldShowPinCell = useMemo(
-        () => secretCodeEnable && stages.some(stage => stage.name === Stages.REQUEST_TO_GET_SECRET_CODE_DONE),
+        () => secretCodeEnabled && stages.some(stage => stage.name === Stages.REQUEST_TO_GET_SECRET_CODE_DONE),
         [stages],
     );
 
     const handleSecretCodeInput = (secretCode: string) => setSecretCode(secretCode);
 
     useEffect(() => {
-        const secretCodeValid = (secretCode.length === secretCodeLength && secretCodeEnable) || !secretCodeEnable;
+        const secretCodeValid = (secretCode.length === secretCodeLength && secretCodeEnabled) || !secretCodeEnabled;
         const shouldActivateAccount = data && (data.emailAddress || data.phoneNumber) &&
             data.activationToken && secretCodeValid && !isActivationTimeElapsed;
 
@@ -198,29 +198,35 @@ const ActivateAccount = ({
                         </Typography>
                     </Grid>
                     <Grid item xs={12}>
-                        <Typography variant='subtitle1'>
-                            {t('activate-account-page.secret-code-title')}
-                        </Typography>
-                        {isSecretCodeSent && (
-                            <p className={styles.secretCodeCaption}>
-                                <FaIcon wrapper='fa' t='obj' ic={faQuestionCircle} />&nbsp;
-                                {t(secretCodeCaptionTranslationKey)}
-                            </p>
+                        {
+                            secretCodeEnabled && (
+                            <>
+                                <Typography variant='subtitle1'>
+                                    {t('activate-account-page.secret-code-title')}
+                                </Typography>
+                                {isSecretCodeSent && (
+                                    <p className={styles.secretCodeCaption}>
+                                        <FaIcon wrapper='fa' t='obj' ic={faQuestionCircle} />&nbsp;
+                                        {t(secretCodeCaptionTranslationKey)}
+                                    </p>
+                                )}
+
+                                <Loading stage={Stages.REQUEST_TO_GET_SECRET_CODE_BEGIN} />
+                                {shouldShowPinCell && (
+                                    <PinCell
+                                        type='text'
+                                        numOfCells={secretCodeLength}
+                                        disabled={!isSecretCodeSent || isActivationTimeElapsed}
+                                        onChange={handleSecretCodeInput}
+                                    />
+                                )}
+
+                                <StageFlasher stage={Stages.REQUEST_TO_GET_SECRET_CODE_INVALID_EMAIL_OR_PHONE} />
+                                <StageFlasher stage={Stages.REQUEST_TO_GET_SECRET_CODE_NO_PENDING_ACTIVATION_FOUND} />
+                                <StageFlasher stage={Stages.REQUEST_TO_GET_SECRET_CODE_ACTIVATION_TIME_ELAPSED} />
+                            </>
                         )}
 
-                        <Loading stage={Stages.REQUEST_TO_GET_SECRET_CODE_BEGIN} />
-                        {shouldShowPinCell && (
-                            <PinCell
-                                type='text'
-                                numOfCells={secretCodeLength}
-                                disabled={!isSecretCodeSent || isActivationTimeElapsed}
-                                onChange={handleSecretCodeInput}
-                            />
-                        )}
-
-                        <StageFlasher stage={Stages.REQUEST_TO_GET_SECRET_CODE_INVALID_EMAIL_OR_PHONE} />
-                        <StageFlasher stage={Stages.REQUEST_TO_GET_SECRET_CODE_NO_PENDING_ACTIVATION_FOUND} />
-                        <StageFlasher stage={Stages.REQUEST_TO_GET_SECRET_CODE_ACTIVATION_TIME_ELAPSED} />
                         {isActivationTimeElapsed && (
                             <Button
                                 variant='contained'

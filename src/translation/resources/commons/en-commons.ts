@@ -18,6 +18,7 @@ const enCommons: TTranslationMap = {
         'and': 'And',
     },
     messages: {
+        'submit-disallowed-message': 'Form is invalid, unable to submit. Please fix the invalid inputs.',
         'error-network': 'Network error: please check your internet connection or proxy configurations.',
         'error-500': '500 - An unknown issue has happened in our side. Please try again later.',
         'error-501': '501 - The requested feature is unavailable in our side.',

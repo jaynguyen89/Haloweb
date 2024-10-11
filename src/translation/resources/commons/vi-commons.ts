@@ -18,6 +18,7 @@ const viCommons: TTranslationMap = {
         'and': 'Và',
     },
     messages: {
+        'submit-disallowed-message': 'Dữ liệu không hợp lệ, không thể gửi yêu cầu. Vui lòng kiểm tra lại dữ liệu.',
         'error-network': 'Vui lòng kiểm tra kết nối mạng internet hoặc  thiết lập proxy.',
         'error-500': '(500) - Đã có lỗi xảy ra khi chúng tôi thực hiện yêu cầu của bạn. Vui lòng thử lại nhé!',
         'error-501': '(501) - Tính năng không được hỗ trợ.',

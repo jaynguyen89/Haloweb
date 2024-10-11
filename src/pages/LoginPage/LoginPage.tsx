@@ -1,40 +1,126 @@
+import { faMinus } from '@fortawesome/free-solid-svg-icons/faMinus';
 import { Checkbox, FormControl, FormControlLabel, InputLabel, Select, TextField } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
-import React from 'react';
+import _cloneDeep from 'lodash/cloneDeep';
+import React, { LegacyRef, RefObject, useMemo, useState } from 'react';
+import ReCAPTCHA from 'react-google-recaptcha';
 import { Helmet } from 'react-helmet';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import configs from 'src/commons/configs';
+import { debounceWait } from 'src/commons/constants';
 import CountryFlag from 'src/components/atoms/CountryFlag/CountryFlag';
 import FaIcon from 'src/components/atoms/FaIcon';
+import MessageCaption from 'src/components/atoms/MessageCaption';
 import Recaptcha from 'src/components/atoms/Recaptcha';
-import SocialIcons from 'src/components/atoms/SocialIcons/SocialIcons';
+import AuthSocialAccounts from 'src/components/compounds/AuthSocialAccounts/AuthSocialAccounts';
+import { useDebounce } from 'src/hooks/eventForger';
+import { RegistrationFormFieldNames } from 'src/pages/AccountRegistration/utilities';
 import useStyles, { helpBoxSx, loginBoxSx, loginFormSx } from 'src/pages/LoginPage/styles';
 import { faFingerprint } from '@fortawesome/free-solid-svg-icons/faFingerprint';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons/faPaperPlane';
 import vars from 'src/commons/variables/cssVariables.scss';
+import {
+    createLoginData,
+    initialLoginFormDataState, loginFieldValidatorMap,
+    LoginFormFieldNames,
+    loginValidatorOptionsMapFn,
+    TLoginFieldKey,
+} from 'src/pages/LoginPage/utilities';
 import { TRootState } from 'src/redux/reducers';
 import { connect, useDispatch } from 'react-redux';
+import {
+    mapFieldsToValidators,
+    TFieldToValidatorMap,
+    TFormDataState,
+} from 'src/utilities/data-validators/dataValidators';
+import FieldsMediator, { TFieldMediatorOptions, TFormResult, TValidationResult } from 'src/utilities/data-validators/fieldsMediator';
 import { readStorageMessage } from 'src/utilities/otherUtilities';
 import { StorageKeys } from 'src/commons/enums';
 import Flasher from 'src/components/molecules/StatusIndicators/Flasher';
 import Stages from 'src/models/enums/stage';
 
 const mapStateToProps = (state: TRootState) => ({
-    countries: state.publicDataStore.publicData.countries,
+    publicData: state.publicDataStore.publicData,
 });
 
 const LoginPage = ({
-    countries,
+    publicData,
 }: ReturnType<typeof mapStateToProps>) => {
     const dispatch = useDispatch();
     const { t } = useTranslation();
     const styles = useStyles();
 
+    const [formData, setFormData] = useState<TFormDataState<typeof LoginFormFieldNames>>(initialLoginFormDataState);
+    const [fieldValidation, setFieldValidation] = useState<TValidationResult<TLoginFieldKey>>();
+    const [formValidation, setFormValidation] = useState<TFormResult>({ isValid: false });
+
+    const recaptchaRef = React.createRef<LegacyRef<ReCAPTCHA> | undefined>();
+    const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
+
     const accountActivationMessage = readStorageMessage(dispatch, StorageKeys.ACCOUNT_ACTIVATION_SUCCESS_STORAGE_KEY);
+
+    const validators: TFieldToValidatorMap<TLoginFieldKey> = useMemo(() => {
+        const tempValidators: TFieldToValidatorMap<TLoginFieldKey> = {};
+        Object.values(LoginFormFieldNames)
+            .filter(field => field !== LoginFormFieldNames.Trusted)
+            .forEach(field => tempValidators[field] = mapFieldsToValidators(
+                formData, publicData, loginValidatorOptionsMapFn, field, loginFieldValidatorMap[field],
+            ));
+        return tempValidators;
+    }, [formData]);
+
+    const validateFormDataWithDebounce = useDebounce(() => {
+        const options: TFieldMediatorOptions<TLoginFieldKey> = {
+            oneOfFields: [
+                RegistrationFormFieldNames.EmailAddress,
+                [
+                    RegistrationFormFieldNames.AreaCode,
+                    RegistrationFormFieldNames.PhoneNumber,
+                ],
+            ],
+        };
+
+        const fieldsMediator = new FieldsMediator(validators, options);
+        const validationResults = fieldsMediator.notifyValidationResult();
+
+        setFieldValidation(validationResults);
+        setFormValidation(fieldsMediator.validateForm());
+    }, debounceWait);
+
+    const handleFieldValueChange = (
+        fieldName: keyof typeof LoginFormFieldNames,
+        value: string | undefined,
+    ) => {
+        const formDataClone = _cloneDeep(formData);
+        formDataClone[fieldName].value = value;
+
+        setFormData(formDataClone);
+        validateFormDataWithDebounce();
+    };
+
+    const handleLogin = () => {
+        if (!formValidation.isValid) {
+            alert(t('messages.submit-disallowed-message'));
+            return;
+        }
+
+        const recaptchaTokenToSend = !configs.recaptchaEnabled ? null : (
+            configs.recaptchaVisible ? recaptchaToken : (recaptchaRef.current as unknown as ReCAPTCHA)?.getValue()
+        );
+
+        if (configs.recaptchaEnabled && !recaptchaTokenToSend) {
+            alert(t(`messages.${configs.recaptchaVisible ? 'recaptcha-not-clicked' : 'recaptcha-token-missing'}`));
+            return;
+        }
+
+        const loginData = createLoginData(formData);
+        console.log(loginData);
+    };
 
     return (
         <div className={styles.loginWrapper}>
@@ -60,11 +146,27 @@ const LoginPage = ({
                 </Typography>
 
                 <Grid container spacing={2} sx={loginFormSx}>
+                    {!formValidation.isValid && formValidation.messages && (
+                        <Grid item xs={12} sx={{pb: '1rem'}}>
+                            <MessageCaption statuses={formValidation.messages as Map<string, object | undefined>} />
+                        </Grid>
+                    )}
+
+                    {/* The Login Form */}
                     <Grid item md={5} xs={12}>
                         <TextField
                             label={t('login-page.email-address-label')}
                             style={{width: '100%'}}
+                            value={formData[LoginFormFieldNames.EmailAddress].value}
+                            onChange={(e) => handleFieldValueChange(LoginFormFieldNames.EmailAddress, e.target.value)}
                         />
+                        {
+                            fieldValidation && fieldValidation[LoginFormFieldNames.EmailAddress].isValid !== undefined &&
+                            !fieldValidation[LoginFormFieldNames.EmailAddress].isValid && (
+                            <MessageCaption
+                                statuses={fieldValidation[LoginFormFieldNames.EmailAddress].messages as Map<string, object | undefined>}
+                            />
+                        )}
                     </Grid>
                     <Grid item md={1} xs={12}>
                         <div className={styles.orLabel}>{t('labels.or')}</div>
@@ -78,8 +180,14 @@ const LoginPage = ({
                                     <Select
                                         labelId='area-code-select-label'
                                         label={t('login-page.area-code-label')}
+                                        variant='outlined'
+                                        value={formData[LoginFormFieldNames.AreaCode].value ?? ''}
+                                        onChange={(e) => handleFieldValueChange(LoginFormFieldNames.AreaCode, e.target.value as string)}
                                     >
-                                        {countries.map(country => (
+                                        <MenuItem key='none' value=''>
+                                            <FaIcon wrapper='fa' t='obj' ic={faMinus} />
+                                        </MenuItem>
+                                        {publicData.countries.map(country => (
                                             <MenuItem key={country.telephoneCode} value={country.telephoneCode}>
                                                 {`${country.telephoneCode} - ${country.isoCode3Char}`}
                                                 <CountryFlag isoCountryCode={country.isoCode2Char} className={styles.flagIcon} />
@@ -92,31 +200,58 @@ const LoginPage = ({
                                 <TextField
                                     label={t('login-page.phone-number-label')}
                                     style={{width: '100%'}}
+                                    value={formData[LoginFormFieldNames.PhoneNumber].value}
+                                    onChange={(e) => handleFieldValueChange(LoginFormFieldNames.PhoneNumber, e.target.value)}
                                 />
                             </Grid>
+                            {
+                                fieldValidation && fieldValidation[LoginFormFieldNames.PhoneNumber].isValid !== undefined &&
+                                !fieldValidation[LoginFormFieldNames.PhoneNumber].isValid && (
+                                <MessageCaption
+                                    statuses={fieldValidation[LoginFormFieldNames.PhoneNumber].messages as Map<string, object | undefined>}
+                                />
+                            )}
                         </Grid>
                     </Grid>
                     <Grid item xs={12}>
                         <TextField
                             label={t('login-page.password-label')}
                             style={{width: '100%'}}
+                            type='password'
+                            value={formData[LoginFormFieldNames.Password].value}
+                            onChange={(e) => handleFieldValueChange(LoginFormFieldNames.Password, e.target.value)}
                         />
+                        {
+                            fieldValidation && fieldValidation[LoginFormFieldNames.Password].isValid !== undefined &&
+                            !fieldValidation[LoginFormFieldNames.Password].isValid && (
+                            <MessageCaption
+                                statuses={fieldValidation[LoginFormFieldNames.Password].messages as Map<string, object | undefined>}
+                            />
+                        )}
                     </Grid>
                     <Grid item xs={12}>
                         <FormControlLabel
-                            control={<Checkbox defaultChecked/>}
+                            control={<Checkbox
+                                value={formData[LoginFormFieldNames.Trusted].value}
+                                onChange={(e) => handleFieldValueChange(LoginFormFieldNames.Trusted, e.target.checked)}
+                            />}
                             label={t('login-page.trusted-checkbox-text')}
                         />
                     </Grid>
-                    <Grid item xs={12}>
-                        <Recaptcha
-                            onChange={(token) => console.log(token)}
-                        />
-                    </Grid>
+                    {configs.recaptchaEnabled && (
+                        <Grid item xs={12}>
+                            <Recaptcha
+                                recaptchaRef={recaptchaRef as RefObject<ReCAPTCHA>}
+                                onChange={(token) => setRecaptchaToken(token)}
+                            />
+                        </Grid>
+                    )}
                     <Grid item xs={12}>
                         <Button
                             variant='contained'
                             className={styles.loginButton}
+                            disabled={!formValidation.isValid}
+                            onClick={!formValidation.isValid ? undefined : handleLogin}
                         >
                             {t('buttons.submit')}&nbsp;
                             <FaIcon wrapper='fa' t='obj' ic={faPaperPlane} />
@@ -136,19 +271,10 @@ const LoginPage = ({
                     </Trans>
                 </Typography>
 
-                <Box className={styles.socialLogins}>
-                    <p>{t('login-page.social-login-text')}</p>
-                    <SocialIcons
-                        icons={[
-                            {iconName: 'facebook'},
-                            {iconName: 'google'},
-                            {iconName: 'twitter'},
-                            {iconName: 'instagram'},
-                            {iconName: 'microsoft'},
-                            {iconName: 'linkedin'},
-                        ]}
-                    />
-                </Box>
+                <AuthSocialAccounts
+                    destination={LoginPage.name}
+                    socialAccountNames={publicData.supportedSocialAccounts}
+                />
             </Box>
         </div>
     );

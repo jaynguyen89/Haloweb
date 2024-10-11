@@ -5,7 +5,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import MessageCaption from 'src/components/atoms/MessageCaption';
 import IPublicData from 'src/models/PublicData';
-import { RegistrationFormFieldNames, TFieldKey } from 'src/pages/AccountRegistration/utilities';
+import { RegistrationFormFieldNames, TRegistrationFieldKey } from 'src/pages/AccountRegistration/utilities';
 import { TFormDataState } from 'src/utilities/data-validators/dataValidators';
 import { TValidationResult } from 'src/utilities/data-validators/fieldsMediator';
 
@@ -13,7 +13,7 @@ interface IRegistrationProfileData {
     publicData: IPublicData,
     formData: TFormDataState<typeof RegistrationFormFieldNames>,
     handleFieldValueChange: (fieldName: keyof typeof RegistrationFormFieldNames, value: string | undefined) => void,
-    fieldValidation: TValidationResult<TFieldKey>,
+    fieldValidation: TValidationResult<TRegistrationFieldKey>,
 }
 
 const RegistrationProfileData = ({

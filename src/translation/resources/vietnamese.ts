@@ -100,7 +100,6 @@ const vietnamese: ITranslation = {
             'full-name-label': 'Đây có phải là tên đầy đủ của bạn?',
             'gender-label': 'Giới tính',
             'social-registration-text': 'Đăng ký với tài khoản mạng xã hội',
-            'submit-disallowed-message': 'Dữ liệu không hợp lệ, không thể gửi yêu cầu. Vui lòng kiểm tra lại dữ liệu.',
             'server-error-400-invalid-data': 'Một số dữ liệu không hợp lệ. Vui lòng kiểm tra lại các mục sau: {{fields}}',
             'response-error-409-conflict-email-address': 'Địa chỉ email đã được đăng ký tài khoản Halogen. Vui lòng sử dụng email khác. Nếu bạn quên mật khẩu, hãy thử khôi phục mật khẩu.',
             'response-error-409-conflict-phone-number': 'Số điện thoại đã được đăng ký tài khoản Halogen. Vui lòng sử dụng số khác. Nếu bạn quên mật khẩu, hãy thử khôi phục mật khẩu.',

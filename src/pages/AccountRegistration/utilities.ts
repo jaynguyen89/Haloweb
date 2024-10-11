@@ -69,9 +69,9 @@ export const initialRegistrationFormDataState: TFormDataState<typeof Registratio
     },
 };
 
-export type TFieldKey = Omit<typeof RegistrationFormFieldNames, 'PasswordConfirm'>;
+export type TRegistrationFieldKey = Omit<typeof RegistrationFormFieldNames, 'PasswordConfirm'>;
 
-export const fieldValidatorNameMap = {
+export const registrationFieldValidatorMap = {
     [RegistrationFormFieldNames.EmailAddress]: ValidatorNames.EmailValidator,
     [RegistrationFormFieldNames.AreaCode]: ValidatorNames.RangeValidator,
     [RegistrationFormFieldNames.PhoneNumber]: ValidatorNames.RangeValidator,
@@ -84,7 +84,9 @@ export const fieldValidatorNameMap = {
     [RegistrationFormFieldNames.FullName]: ValidatorNames.SpecialValidator,
 };
 
-export const validatorOptionsMapFn: TValidatorOptionsMapFn<TFieldKey> = (publicData?: IPublicData): TValidatorOption<TFieldKey> => ({
+export const registrationValidatorOptionsMapFn: TValidatorOptionsMapFn<TRegistrationFieldKey> =
+    (publicData?: IPublicData): TValidatorOption<TRegistrationFieldKey> =>
+({
     [RegistrationFormFieldNames.EmailAddress]: {
         min: 6,
         max: 100,

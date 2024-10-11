@@ -1,6 +1,6 @@
 import FieldsMediator, {
     TFormResult,
-    TValidationOptions,
+    TFieldMediatorOptions,
     TValidationResult,
 } from 'src/utilities/data-validators/fieldsMediator';
 import {
@@ -12,7 +12,7 @@ import { TFileListOption, TFileOption, TSpecialOption } from 'src/utilities/data
 import _flatten from 'lodash/flatten';
 
 describe('fieldsMediator.ts > FieldsMediator', () => {
-    const validationOptions: TValidationOptions<TMockFieldKey> = {
+    const validationOptions: TFieldMediatorOptions<TMockFieldKey> = {
         oneOfFields: [
             MockFieldNames.Email,
             [
@@ -99,7 +99,7 @@ describe('fieldsMediator.ts > FieldsMediator', () => {
     });
 
     it('should validate form correctly by `optionalFields`', () => {
-        const options: TValidationOptions<TMockFieldKey> = {
+        const options: TFieldMediatorOptions<TMockFieldKey> = {
             optionalFields: [
                 MockFieldNames.DateTime,
                 MockFieldNames.Url,

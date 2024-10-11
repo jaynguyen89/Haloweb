@@ -70,18 +70,6 @@ const useStyles = makeStyles((theme: Theme) => ({
             color: theme.palette.primary.light,
         },
     },
-    socialLogins: {
-        margin: 0,
-        padding: 0,
-        width: '100%',
-        '& p': {
-            fontWeight: vars.thick,
-            fontSize: `${vars.h9} !important`,
-        },
-        '& div.MuiGrid-item': {
-            textAlign: 'center',
-        },
-    },
 }));
 
 export default useStyles;

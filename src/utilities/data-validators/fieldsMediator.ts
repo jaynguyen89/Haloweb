@@ -16,7 +16,7 @@ export type TValidationResult<T> = {
     [key in keyof T] : TFieldResult;
 };
 
-export type TValidationOptions<T> = {
+export type TFieldMediatorOptions<T> = {
     // Exactly 1 of the specified fields must have valid value, the others must be undefined
     // If a child array is specified, all its items must be either valid or undefined
     oneOfFields?: Array<keyof T | Array<keyof T>>,
@@ -30,9 +30,9 @@ class FieldsMediator<T> {
     private readonly validatorsMap: TFieldToValidatorMap<T>;
     private validationResult?: TValidationResult<T>;
     // If no validationOptions, consider all fields as required, otherwise, consider the fields specified as ruled by validationOptions
-    private readonly validationOptions?: TValidationOptions<T>;
+    private readonly validationOptions?: TFieldMediatorOptions<T>;
 
-    constructor(validatorsMap: TFieldToValidatorMap<T>, validationOptions?: TValidationOptions<T>) {
+    constructor(validatorsMap: TFieldToValidatorMap<T>, validationOptions?: TFieldMediatorOptions<T>) {
         this.validatorsMap = validatorsMap;
         this.validationOptions = validationOptions;
     }

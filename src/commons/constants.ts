@@ -35,3 +35,5 @@ export const themeBreakpoints = {
     lg: +vars.wideWidth.slice(0, -2), // 1280px
     xl: +vars.ultrawideWidth.slice(0, -2), // 1536px
 };
+
+export const debounceWait = 1500; // milliseconds

@@ -283,32 +283,33 @@ export class SpecialValidator<T extends string> extends RangeValidator<T> {
         }
 
         let includeSpecialCharValidity = true;
-        const hasSpecialChar = /[^a-zA-Z_\d\s:\u00C0-\u00FF]+/g.test(data);
-        const hasRequiredSpecialChars = this.specialOptions.specialCharsToInclude
-                                       ? this.specialOptions.specialCharsToInclude.split('').some(c => data.includes(c)) //new RegExp(`[${this.specialOptions.specialCharsToInclude}\\s]+`, 'gi').test(data)
-                                       : hasSpecialChar;
-        const hasOtherSpecialChars = this.specialOptions.specialCharsToInclude
-                                     ? new RegExp(`[^${this.specialOptions.specialCharsToInclude}\\d\\w\\s]+`, 'g').test(data)
-                                     : false;
+        if (this.specialOptions.specialCharsToInclude) {
+            const hasSpecialChar = /[^a-zA-Z_\d\s:\u00C0-\u00FF]+/g.test(data);
+            const hasRequiredSpecialChars = this.specialOptions.specialCharsToInclude.split('').some(c => data.includes(c)) || hasSpecialChar;
 
-        if (this.specialOptions.withSpecialChar === undefined) {
-            includeSpecialCharValidity = !hasSpecialChar ? true : (
-                this.specialOptions.specialCharsToInclude ? hasRequiredSpecialChars && !hasOtherSpecialChars : true
-            );
-            if (!includeSpecialCharValidity) (messages as Map<string, object | undefined>).set(`messages.input-with-special-chars-may-include`, { chars: this.specialOptions.specialCharsToInclude });
-        }
-        else if (!this.specialOptions.withSpecialChar && hasSpecialChar) {
-            (messages as Map<string, object | undefined>).set('messages.input-special-char-disallowed', undefined);
-            includeSpecialCharValidity = !hasSpecialChar;
-        }
-        else if (
-            (this.specialOptions.withSpecialChar && !hasSpecialChar) ||
-            (hasSpecialChar && !hasRequiredSpecialChars) ||
-            (hasSpecialChar && hasRequiredSpecialChars && hasOtherSpecialChars)
-        ) {
-            const messageKey = this.specialOptions.specialCharsToInclude ? 'input-with-required-special-chars-must-include' : 'input-with-special-chars-must-include';
-            (messages as Map<string, object | undefined>).set(`messages.${messageKey}`, { chars: this.specialOptions.specialCharsToInclude });
-            includeSpecialCharValidity = false;
+            let dataWithoutSpecialChars = data.slice();
+            this.specialOptions.specialCharsToInclude.split('').every(c => dataWithoutSpecialChars = dataWithoutSpecialChars.includes(c) ? dataWithoutSpecialChars.replaceAll(c, '') : dataWithoutSpecialChars);
+            const hasOtherSpecialChars = this.specialOptions.specialCharsToInclude
+                ? new RegExp(`[^\\d\\w\\s]+`, 'g').test(dataWithoutSpecialChars)
+                : false;
+
+            if (this.specialOptions.withSpecialChar === undefined) {
+                includeSpecialCharValidity = !hasSpecialChar ? true : (
+                    this.specialOptions.specialCharsToInclude ? hasRequiredSpecialChars && !hasOtherSpecialChars : true
+                );
+                if (!includeSpecialCharValidity) (messages as Map<string, object | undefined>).set(`messages.input-with-special-chars-may-include`, {chars: this.specialOptions.specialCharsToInclude});
+            } else if (!this.specialOptions.withSpecialChar && hasSpecialChar) {
+                (messages as Map<string, object | undefined>).set('messages.input-special-char-disallowed', undefined);
+                includeSpecialCharValidity = !hasSpecialChar;
+            } else if (
+                (this.specialOptions.withSpecialChar && !hasSpecialChar) ||
+                (hasSpecialChar && !hasRequiredSpecialChars) ||
+                (hasSpecialChar && hasRequiredSpecialChars && hasOtherSpecialChars)
+            ) {
+                const messageKey = this.specialOptions.specialCharsToInclude ? 'input-with-required-special-chars-must-include' : 'input-with-special-chars-must-include';
+                (messages as Map<string, object | undefined>).set(`messages.${messageKey}`, {chars: this.specialOptions.specialCharsToInclude});
+                includeSpecialCharValidity = false;
+            }
         }
 
         let passwordMatching = true;
@@ -507,7 +508,7 @@ export const mapFieldsToValidators = <T>(
     field: keyof T,
     validatorName: string,
     dateFormats?: TDateFormat,
-) => {
+): TFieldToValidatorMap<T> => {
     let validator;
     switch (validatorName) {
         case ValidatorNames.RangeValidator:
@@ -565,16 +566,15 @@ export const mapFieldsToValidators = <T>(
     return validator;
 };
 
-/* eslint-disable  @typescript-eslint/no-explicit-any */
 export type TAnyValidator = |
     undefined |
-    RangeValidator<any> |
-    DateValidator<any> |
-    SpecialValidator<any> |
-    EmailValidator<any> |
-    UrlValidator<any> |
-    FileValidator<any> |
-    FileListValidator<any>;
+    RangeValidator |
+    DateValidator |
+    SpecialValidator |
+    EmailValidator |
+    UrlValidator |
+    FileValidator |
+    FileListValidator;
 
 export type TFieldToValidatorMap<T> = {
     [key in keyof T]: TAnyValidator;

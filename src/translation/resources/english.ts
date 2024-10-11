@@ -101,7 +101,6 @@ const english: ITranslation = {
             'full-name-label': 'Is this how your Full Name looked like?',
             'gender-label': 'Gender',
             'social-registration-text': 'Register with your social network account',
-            'submit-disallowed-message': 'Form is invalid, unable to submit. Please fix the invalid inputs.',
             'response-error-400-invalid-data': 'Some data are invalid. Please check and correct the following fields: {{fields}}',
             'response-error-409-conflict-email-address': 'The email address has been associated to an existing account. Please use another email address to register. If you own that email address, please try the Forgot Password feature.',
             'response-error-409-conflict-phone-number': 'The phone number has been associated to an existing account. Please use another phone number to register. If you own that phone number, please try the Forgot Password feature.',

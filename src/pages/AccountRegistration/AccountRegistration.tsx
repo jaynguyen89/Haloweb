@@ -6,12 +6,13 @@ import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import _cloneDeep from 'lodash/cloneDeep';
-import React, { LegacyRef, useEffect, useMemo, useState } from 'react';
+import React, { LegacyRef, RefObject, useEffect, useMemo, useState } from 'react';
 import ReCAPTCHA from 'react-google-recaptcha';
 import { Trans, useTranslation } from 'react-i18next';
 import { connect, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import configs from 'src/commons/configs';
+import { debounceWait } from 'src/commons/constants';
 import CountryFlag from 'src/components/atoms/CountryFlag/CountryFlag';
 import FaIcon from 'src/components/atoms/FaIcon';
 import MessageCaption from 'src/components/atoms/MessageCaption';
@@ -20,28 +21,28 @@ import Flasher from 'src/components/molecules/StatusIndicators/Flasher';
 import { useDebounce } from 'src/hooks/eventForger';
 import { useIsStageIncluded } from 'src/hooks/useStage';
 import Stages from 'src/models/enums/stage';
-import RegistrationBySocialAccount from 'src/pages/AccountRegistration/RegistrationBySocialAccount';
+import AuthSocialAccounts from 'src/components/compounds/AuthSocialAccounts/AuthSocialAccounts';
 import RegistrationProfileData from 'src/pages/AccountRegistration/RegistrationProfileData';
 import useStyles, { registrationBoxSx, registrationFormSx } from 'src/pages/AccountRegistration/styles';
 import {
     createRegistrationData,
-    fieldValidatorNameMap,
+    registrationFieldValidatorMap,
     initialRegistrationFormDataState,
     RegistrationFormFieldNames,
-    TFieldKey,
-    validatorOptionsMapFn,
+    TRegistrationFieldKey,
+    registrationValidatorOptionsMapFn,
 } from 'src/pages/AccountRegistration/utilities';
 import { sendRequestToRegisterAccount } from 'src/redux/actions/authenticationActions';
 import { removeStage } from 'src/redux/actions/stageActions';
 import { TRootState } from 'src/redux/reducers';
 import {
     mapFieldsToValidators,
-    TFieldToValidatorMap,
+    TFieldToValidatorMap, TFieldValidatorMap,
     TFormDataState,
 } from 'src/utilities/data-validators/dataValidators';
 import FieldsMediator, {
     TFormResult,
-    TValidationOptions,
+    TFieldMediatorOptions,
     TValidationResult,
 } from 'src/utilities/data-validators/fieldsMediator';
 import { surrogate } from 'src/utilities/otherUtilities';
@@ -63,7 +64,7 @@ const AccountRegistration = ({
     const [registerBy, setRegisterBy] = React.useState<string>(RegistrationFormFieldNames.EmailAddress);
 
     const [formData, setFormData] = useState<TFormDataState<typeof RegistrationFormFieldNames>>(initialRegistrationFormDataState);
-    const [fieldValidation, setFieldValidation] = useState<TValidationResult<TFieldKey>>();
+    const [fieldValidation, setFieldValidation] = useState<TValidationResult<TRegistrationFieldKey>>();
     const [formValidation, setFormValidation] = useState<TFormResult>({ isValid: false });
 
     const recaptchaRef = React.createRef<LegacyRef<ReCAPTCHA> | undefined>();
@@ -80,32 +81,22 @@ const AccountRegistration = ({
         };
     }, []);
 
-    const validators: TFieldToValidatorMap<TFieldKey> = useMemo(() => {
-        /* eslint-disable  @typescript-eslint/no-explicit-any */
-        const tempValidators: any = {};
+    const validators: TFieldToValidatorMap<TRegistrationFieldKey> = useMemo(() => {
+        const tempValidators: TFieldToValidatorMap<TRegistrationFieldKey> = {};
         Object.values(RegistrationFormFieldNames)
             .filter(fieldName => fieldName !== RegistrationFormFieldNames.PasswordConfirm)
-            .forEach(field => {
-                tempValidators[field as keyof TFieldKey] = mapFieldsToValidators(
-                    formData,
-                    publicData,
-                    validatorOptionsMapFn,
-                    field as keyof TFieldKey,
-                    fieldValidatorNameMap[field as keyof TFieldKey],
-                );
-            });
-        return tempValidators as TFieldToValidatorMap<TFieldKey>;
+            .forEach(field => tempValidators[field as keyof TRegistrationFieldKey] = mapFieldsToValidators(
+                formData,
+                publicData,
+                registrationValidatorOptionsMapFn,
+                field as keyof TRegistrationFieldKey,
+                registrationFieldValidatorMap[field as keyof TRegistrationFieldKey],
+            ));
+        return tempValidators as TFieldToValidatorMap<TRegistrationFieldKey>;
     }, [formData]);
 
     const validateFormDataWithDebounce = useDebounce(() => {
-        const options: TValidationOptions<TFieldKey> = {
-            oneOfFields: [
-                RegistrationFormFieldNames.EmailAddress,
-                [
-                    RegistrationFormFieldNames.AreaCode,
-                    RegistrationFormFieldNames.PhoneNumber,
-                ],
-            ],
+        const options: TFieldMediatorOptions<TRegistrationFieldKey> = {
             optionalFields: [
                 RegistrationFormFieldNames.Gender,
                 RegistrationFormFieldNames.GivenName,
@@ -120,7 +111,7 @@ const AccountRegistration = ({
 
         setFieldValidation(validationResults);
         setFormValidation(fieldsMediator.validateForm());
-    }, 1500);
+    }, debounceWait);
 
     const handleFieldValueChange = (
         fieldName: keyof typeof RegistrationFormFieldNames,
@@ -161,7 +152,7 @@ const AccountRegistration = ({
 
     const handleFormSubmit = () => {
         if (!formValidation.isValid) {
-            alert(t('registration-page.submit-disallowed-message'));
+            alert(t('messages.submit-disallowed-message'));
             return;
         }
 
@@ -175,7 +166,6 @@ const AccountRegistration = ({
         }
 
         const registrationData = createRegistrationData(formData);
-
         surrogate(dispatch, sendRequestToRegisterAccount(registrationData, recaptchaTokenToSend));
     };
 
@@ -207,9 +197,9 @@ const AccountRegistration = ({
                         <Select
                             labelId='area-code-select-label'
                             label={t('registration-page.area-code-label')}
+                            variant='outlined'
                             value={formData[RegistrationFormFieldNames.AreaCode].value ?? ''}
                             onChange={(e) => handleFieldValueChange(RegistrationFormFieldNames.AreaCode, e.target.value as string)}
-                            variant='outlined'
                         >
                             <MenuItem key='none' value=''>
                                 <FaIcon wrapper='fa' t='obj' ic={faMinus} />
@@ -234,10 +224,10 @@ const AccountRegistration = ({
                 {
                     fieldValidation && fieldValidation[RegistrationFormFieldNames.PhoneNumber].isValid !== undefined &&
                     !fieldValidation[RegistrationFormFieldNames.PhoneNumber].isValid && (
-                        <MessageCaption
-                            statuses={fieldValidation[RegistrationFormFieldNames.PhoneNumber].messages as Map<string, object | undefined>}
-                        />
-                    )}
+                    <MessageCaption
+                        statuses={fieldValidation[RegistrationFormFieldNames.PhoneNumber].messages as Map<string, object | undefined>}
+                    />
+                )}
             </Grid>
         );
     }, [registerBy]);
@@ -320,7 +310,7 @@ const AccountRegistration = ({
                         <TextField
                             label={t('registration-page.password-label')}
                             style={{width: '100%'}}
-                            type={'password'}
+                            type='password'
                             value={formData[RegistrationFormFieldNames.Password].value}
                             onChange={(e) => handleFieldValueChange(RegistrationFormFieldNames.Password, e.target.value)}
                         />
@@ -336,7 +326,7 @@ const AccountRegistration = ({
                         <TextField
                             label={t('registration-page.password-confirm-label')}
                             style={{width: '100%'}}
-                            type={'password'}
+                            type='password'
                             value={formData[RegistrationFormFieldNames.PasswordConfirm].value}
                             onChange={(e) => handleFieldValueChange(RegistrationFormFieldNames.PasswordConfirm, e.target.value)}
                         />
@@ -369,7 +359,7 @@ const AccountRegistration = ({
                     {configs.recaptchaEnabled && (
                         <Grid item xs={12}>
                             <Recaptcha
-                                recaptchaRef={recaptchaRef as any}
+                                recaptchaRef={recaptchaRef as RefObject<ReCAPTCHA>}
                                 onChange={(token) => setRecaptchaToken(token)}
                             />
                         </Grid>
@@ -388,7 +378,10 @@ const AccountRegistration = ({
                 </Grid>
             </Box>
 
-            {<RegistrationBySocialAccount publicData={publicData} />}
+            <AuthSocialAccounts
+                destination={AccountRegistration.name}
+                socialAccountNames={publicData.supportedSocialAccounts}
+            />
         </div>
     );
 };

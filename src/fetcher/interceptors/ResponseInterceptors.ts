@@ -54,6 +54,14 @@ const Error500Interceptor = new Interceptor(
     },
 );
 
+export type TStatusInterceptorParams = {
+    stage: Stages,
+    statusCode: HttpStatusCode,
+    canClear?: boolean,
+    messageKey?: string,
+    messageParams?: Record<string, string>,
+};
+
 /* To create custom error handlers for status codes 1xx, 3xx, 4xx, 5xx */
 export class StatusNxxInterceptor {
     stage: Stages;
@@ -62,7 +70,7 @@ export class StatusNxxInterceptor {
     messageParams?: Record<string, string>;
     canClear: boolean;
 
-    constructor(stage: Stages, statusCode: HttpStatusCode, canClear?: false, messageKey?: string, messageParams?: Record<string, string>) {
+    constructor({ stage, statusCode, canClear, messageKey, messageParams }: TStatusInterceptorParams) {
         this.stage = stage;
         this.statusCode = statusCode;
         this.messageKey = messageKey;

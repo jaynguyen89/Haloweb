@@ -76,6 +76,9 @@ const english: ITranslation = {
         },
         'login-page': {
             title: 'Sign in',
+            'login-by': 'Sign-in with:',
+            'by-credentials': 'Account credentials',
+            'by-otp': 'One-Time Password (OTP)',
             'email-address-label': 'Email Address',
             'area-code-label': 'Area Code',
             'phone-number-label': 'Phone Number',
@@ -84,6 +87,13 @@ const english: ITranslation = {
             'forgot-password-text': 'Forgot your password? Please <1>click here</1> to reset password.',
             'register-account-text': 'Haven\'t had an account yet? Please <1>click here</1> to create a new account',
             'social-login-text': 'A quicker way, login with social networks',
+            'login-response-error-400-by-email': 'The format of your email address seems to be invalid.',
+            'login-response-error-400-by-phone': 'The format of your phone number seems to be invalid.',
+            'login-response-error-409-credentials': 'No record matches your credentials.',
+            'login-response-error-409-otp': 'The OTP you have entered is incorrect.',
+            'login-response-error-410': 'Your pre-authenticated information has become invalid due to long inactivity. Please try to login again.',
+            'login-response-error-422': 'Your account has not been activated. Please activate your account first.',
+            'login-response-error-423': 'Your account has been locked or suspended from login. Please find more information below before reattempting login.',
         },
         'registration-page': {
             title: 'Account Registration',

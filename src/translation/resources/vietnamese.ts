@@ -75,6 +75,9 @@ const vietnamese: ITranslation = {
         },
         'login-page': {
             title: 'Đăng Nhập',
+            'login-by': 'Đăng nhập với:',
+            'by-credentials': 'Tài khoản và mật khẩu',
+            'by-otp': 'Mã OTP',
             'email-address-label': 'Địa chỉ email',
             'area-code-label': 'Mã vùng',
             'phone-number-label': 'Số điện thoại',
@@ -83,6 +86,13 @@ const vietnamese: ITranslation = {
             'forgot-password-text': 'Quên mật khẩu? Vui lòng <1>nhấn vào đây</1> để đặt lại mật khẩu.',
             'register-account-text': 'Chưa có tài khoản? Vui lòng <1>nhấn vào đây</1> để tạo tài khoản mới.',
             'social-login-text': 'Để nhanh chóng hơn, bạn có thể đăng nhập bằng tài khoản mạng xã hội',
+            'login-response-error-400-by-email': 'Định dạng địa chỉ email không hợp lệ.',
+            'login-response-error-400-by-phone': 'Định dạng số điện thoại không hợp lệ.',
+            'login-response-error-409-credentials': 'Không tìm thấy tài khoản khớp với thông tin đăng nhập.',
+            'login-response-error-409-otp': 'Mã OTP bạn vừa nhập không đúng.',
+            'login-response-error-410': 'Thông tin đăng nhập của bạn đã quá hạn do quá thời gian xác nhận OTP. Vui lòng đăng nhập lại từ đầu.',
+            'login-response-error-422': 'Tài khoản của bạn chưa được kích hoạt. Vui lòng kích hoạt tài khoản trước khi đăng nhập.',
+            'login-response-error-423': 'Tài khoản đã bị khóa hoặc đình chỉ sử dụng tính năng đăng nhập. Vui lòng xem thêm thông tin bên dưới để mở khóa tài khoản.',
         },
         'registration-page': {
             title: 'Đăng ký tài khoản',

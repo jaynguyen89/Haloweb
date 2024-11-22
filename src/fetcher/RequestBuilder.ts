@@ -1,5 +1,5 @@
 import { Environments, InterceptorTarget, RequestContentTypes, RequestMethods } from 'src/commons/enums';
-import { Interceptor, InterceptorChain } from 'src/fetcher/Interceptor';
+import InterceptorChain, { Interceptor } from 'src/fetcher/Interceptor';
 import RequestOption from 'src/fetcher/RequestOption';
 import configs from 'src/commons/configs';
 import Request from 'src/fetcher/Request';

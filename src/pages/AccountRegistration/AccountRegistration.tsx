@@ -287,7 +287,7 @@ const AccountRegistration = ({
                         <Typography><b>{t('registration-page.register-by')}</b></Typography>
                         <RadioGroup row
                                     value={registerBy}
-                                    onChange={(e: React.ChangeEvent) => setRegisterBy(e.target.defaultValue)}
+                                    onChange={(e: React.ChangeEvent) => setRegisterBy(e.target.value)}
                         >
                             <FormControlLabel
                                 value={RegistrationFormFieldNames.EmailAddress}

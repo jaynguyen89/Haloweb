@@ -1,12 +1,21 @@
 import { faMinus } from '@fortawesome/free-solid-svg-icons/faMinus';
-import { Checkbox, FormControl, FormControlLabel, InputLabel, Select, TextField } from '@mui/material';
+import {
+    Checkbox,
+    FormControl,
+    FormControlLabel,
+    InputLabel,
+    Radio,
+    RadioGroup,
+    Select,
+    TextField,
+} from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import _cloneDeep from 'lodash/cloneDeep';
-import React, { LegacyRef, RefObject, useMemo, useState } from 'react';
+import React, { LegacyRef, RefObject, useCallback, useEffect, useMemo, useState } from 'react';
 import ReCAPTCHA from 'react-google-recaptcha';
 import { Helmet } from 'react-helmet';
 import { Trans, useTranslation } from 'react-i18next';
@@ -26,7 +35,7 @@ import { faPaperPlane } from '@fortawesome/free-solid-svg-icons/faPaperPlane';
 import vars from 'src/commons/variables/cssVariables.scss';
 import {
     createLoginData,
-    initialLoginFormDataState, loginFieldValidatorMap,
+    initialLoginFormDataState, LoginBy, loginFieldValidatorMap,
     LoginFormFieldNames,
     loginValidatorOptionsMapFn,
     TLoginFieldKey,
@@ -55,6 +64,7 @@ const LoginPage = ({
     const { t } = useTranslation();
     const styles = useStyles();
 
+    const [loginBy, setLoginBy] = useState(LoginBy.Credentials);
     const [formData, setFormData] = useState<TFormDataState<typeof LoginFormFieldNames>>(initialLoginFormDataState);
     const [fieldValidation, setFieldValidation] = useState<TValidationResult<TLoginFieldKey>>();
     const [formValidation, setFormValidation] = useState<TFormResult>({ isValid: false });
@@ -69,10 +79,10 @@ const LoginPage = ({
         Object.values(LoginFormFieldNames)
             .filter(field => field !== LoginFormFieldNames.Trusted)
             .forEach(field => tempValidators[field] = mapFieldsToValidators(
-                formData, publicData, loginValidatorOptionsMapFn, field, loginFieldValidatorMap[field],
+                formData, publicData, loginValidatorOptionsMapFn, field, loginFieldValidatorMap[field], loginBy,
             ));
         return tempValidators;
-    }, [formData]);
+    }, [formData, loginBy]);
 
     const validateFormDataWithDebounce = useDebounce(() => {
         const options: TFieldMediatorOptions<TLoginFieldKey> = {
@@ -83,6 +93,7 @@ const LoginPage = ({
                     RegistrationFormFieldNames.PhoneNumber,
                 ],
             ],
+            optionalFields: loginBy === LoginBy.Credentials ? undefined : [LoginFormFieldNames.Password],
         };
 
         const fieldsMediator = new FieldsMediator(validators, options);
@@ -118,7 +129,7 @@ const LoginPage = ({
             return;
         }
 
-        const loginData = createLoginData(formData);
+        let loginData = createLoginData(formData);
         console.log(loginData);
     };
 
@@ -153,6 +164,28 @@ const LoginPage = ({
                     )}
 
                     {/* The Login Form */}
+                    <Grid item xs={12}>
+                        <Typography><b>{t('login-page.login-by')}</b></Typography>
+                        <RadioGroup row
+                                    value={loginBy}
+                                    onChange={(e: React.ChangeEvent) => {
+                                        const value = e.target.value;
+                                        setLoginBy(value);
+                                        if (value === LoginBy.OTP) handleFieldValueChange(LoginFormFieldNames.Password, undefined);
+                                    }}
+                        >
+                            <FormControlLabel
+                                value={LoginBy.Credentials}
+                                control={<Radio />}
+                                label={t('login-page.by-credentials')}
+                            />
+                            <FormControlLabel
+                                value={LoginBy.OTP}
+                                control={<Radio />}
+                                label={t('login-page.by-otp')}
+                            />
+                        </RadioGroup>
+                    </Grid>
                     <Grid item md={5} xs={12}>
                         <TextField
                             label={t('login-page.email-address-label')}
@@ -213,22 +246,24 @@ const LoginPage = ({
                             )}
                         </Grid>
                     </Grid>
-                    <Grid item xs={12}>
-                        <TextField
-                            label={t('login-page.password-label')}
-                            style={{width: '100%'}}
-                            type='password'
-                            value={formData[LoginFormFieldNames.Password].value}
-                            onChange={(e) => handleFieldValueChange(LoginFormFieldNames.Password, e.target.value)}
-                        />
-                        {
-                            fieldValidation && fieldValidation[LoginFormFieldNames.Password].isValid !== undefined &&
-                            !fieldValidation[LoginFormFieldNames.Password].isValid && (
-                            <MessageCaption
-                                statuses={fieldValidation[LoginFormFieldNames.Password].messages as Map<string, object | undefined>}
+                    {loginBy === LoginBy.Credentials && (
+                        <Grid item xs={12}>
+                            <TextField
+                                label={t('login-page.password-label')}
+                                style={{width: '100%'}}
+                                type='password'
+                                value={formData[LoginFormFieldNames.Password].value}
+                                onChange={(e) => handleFieldValueChange(LoginFormFieldNames.Password, e.target.value)}
                             />
-                        )}
-                    </Grid>
+                            {
+                                fieldValidation && fieldValidation[LoginFormFieldNames.Password].isValid !== undefined &&
+                                !fieldValidation[LoginFormFieldNames.Password].isValid && (
+                                <MessageCaption
+                                    statuses={fieldValidation[LoginFormFieldNames.Password].messages as Map<string, object | undefined>}
+                                />
+                            )}
+                        </Grid>
+                    )}
                     <Grid item xs={12}>
                         <FormControlLabel
                             control={<Checkbox

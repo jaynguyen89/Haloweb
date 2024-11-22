@@ -8,24 +8,22 @@ import { setStageByName } from 'src/redux/actions/stageActions';
 import * as publicDataConstants from 'src/redux/constants/publicDataConstants';
 import { surrogate } from 'src/utilities/otherUtilities';
 
-export const prefetchPublicDataOnLaunch = () => {
-    return async (dispatch: Dispatch) => {
-        surrogate(dispatch, setStageByName(Stages.PREFETCH_SITE_PUBLIC_DATA_ONGOING));
+export const prefetchPublicDataOnLaunch = () => async (dispatch: Dispatch) => {
+    surrogate(dispatch, setStageByName(Stages.PREFETCH_SITE_PUBLIC_DATA_ONGOING));
 
-        const publicDataInStorage = localStorage.getItem(StorageKeys.PUBLIC_DATA);
-        let publicData = publicDataInStorage === null ? undefined : JSON.parse(publicDataInStorage) as IPublicData;
-        if (!publicData) {
-            const request = new RequestBuilder<IPublicData>()
-                .withMethod(RequestMethods.GET)
-                .withEndpoint(`${ControllerEndpoints.PUBLIC_DATA}/enums`)
-                .build();
+    const publicDataInStorage = localStorage.getItem(StorageKeys.PUBLIC_DATA);
+    let publicData = publicDataInStorage === null ? undefined : JSON.parse(publicDataInStorage) as IPublicData;
+    if (!publicData) {
+        const request = new RequestBuilder<IPublicData>()
+            .withMethod(RequestMethods.GET)
+            .withEndpoint(`${ControllerEndpoints.PUBLIC_DATA}/enums`)
+            .build();
 
-            const result = await request.send(dispatch, configs.requestShouldRetryOnFailure ? capturePublicDataResponseOnRetry : undefined);
-            publicData = result?.data as IPublicData | undefined;
-        }
+        const result = await request.send(dispatch, configs.requestShouldRetryOnFailure ? capturePublicDataResponseOnRetry : undefined);
+        publicData = result?.data as IPublicData | undefined;
+    }
 
-        if (publicData) dispatchPublicDataAndSetStorage(dispatch, publicData, publicDataInStorage === null);
-    };
+    if (publicData) dispatchPublicDataAndSetStorage(dispatch, publicData, publicDataInStorage === null);
 };
 
 const capturePublicDataResponseOnRetry = (dispatch: Dispatch, publicData: IPublicData) => {

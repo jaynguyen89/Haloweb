@@ -492,7 +492,10 @@ export type TValidatorOption<T> = {
         TFileListOption;
 }
 
-export type TValidatorOptionsMapFn<T> = (publicData?: IPublicData) => TValidatorOption<T>;
+export type TValidatorOptionsMapFn<T> = (
+    publicData?: IPublicData,
+    extra?: unknown,
+) => TValidatorOption<T>;
 
 export type TFormDataState<T> = {
     [key in keyof T]: {
@@ -508,25 +511,26 @@ export const mapFieldsToValidators = <T>(
     field: keyof T,
     validatorName: string,
     dateFormats?: TDateFormat,
+    extra?: unknown,
 ): TFieldToValidatorMap<T> => {
     let validator;
     switch (validatorName) {
         case ValidatorNames.RangeValidator:
             validator = new RangeValidator(
                 new InputData<string>(formData[field].value as string | undefined),
-                validatorOptionsMapFn(publicData)[field] as TRangeOption,
+                validatorOptionsMapFn(publicData, extra)[field] as TRangeOption,
             );
             break;
         case ValidatorNames.DateValidator:
             if (!dateFormats) throw Error('dateFormats is undefined when using DateValidator.');
             validator = new DateValidator(
                 new InputData<Date>(formData[field].value as Date | undefined),
-                validatorOptionsMapFn(publicData)[field] as TDateOption,
+                validatorOptionsMapFn(publicData, extra)[field] as TDateOption,
                 dateFormats,
             );
             break;
         case ValidatorNames.SpecialValidator:
-            const validatorOptions = validatorOptionsMapFn(publicData)[field] as TRangeOption & TSpecialOption;
+            const validatorOptions = validatorOptionsMapFn(publicData, extra)[field] as TRangeOption & TSpecialOption;
             if (validatorOptions.isPassword) {
                 const passwordConfirmValue = formData['PasswordConfirm' as keyof T].value;
                 validatorOptions.among = passwordConfirmValue ? [passwordConfirmValue] as Array<string> : undefined;
@@ -537,25 +541,25 @@ export const mapFieldsToValidators = <T>(
         case ValidatorNames.EmailValidator:
             validator = new EmailValidator(
                 new InputData<string>(formData[field].value as string | undefined),
-                validatorOptionsMapFn(publicData)[field] as TRangeOption,
+                validatorOptionsMapFn(publicData, extra)[field] as TRangeOption,
             );
             break;
         case ValidatorNames.UrlValidator:
             validator = new UrlValidator(
                 new InputData<string>(formData[field].value as string | undefined),
-                validatorOptionsMapFn(publicData)[field] as TRangeOption,
+                validatorOptionsMapFn(publicData, extra)[field] as TRangeOption,
             );
             break;
         case ValidatorNames.FileValidator:
             validator = new FileValidator(
                 new InputData<File>(formData[field].value as File | undefined),
-                validatorOptionsMapFn(publicData)[field] as TFileOption,
+                validatorOptionsMapFn(publicData, extra)[field] as TFileOption,
             );
             break;
         case ValidatorNames.FileListValidator:
             validator = new FileListValidator(
                 new InputData<FileList>(formData[field].value as FileList | undefined),
-                validatorOptionsMapFn(publicData)[field] as TFileListOption,
+                validatorOptionsMapFn(publicData, extra)[field] as TFileListOption,
             );
             break;
         default:

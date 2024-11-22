@@ -16,6 +16,11 @@ export enum LoginFormFieldNames {
     Trusted = 'Trusted',
 }
 
+export enum LoginBy {
+    Credentials = 'Credentials',
+    OTP = 'OTP',
+}
+
 export const initialLoginFormDataState: TFormDataState<typeof LoginFormFieldNames> = {
     [LoginFormFieldNames.EmailAddress]: {
         value: undefined,
@@ -45,7 +50,7 @@ export const loginFieldValidatorMap = {
 export type TLoginFieldKey = Omit<typeof LoginFormFieldNames, 'Trusted'>;
 
 export const loginValidatorOptionsMapFn: TValidatorOptionsMapFn<TLoginFieldKey> =
-    (publicData?: IPublicData): TValidatorOption<TLoginFieldKey> =>
+    (publicData?: IPublicData, extra: unknown): TValidatorOption<TLoginFieldKey> =>
 ({
     [LoginFormFieldNames.EmailAddress]: {
         min: 6,
@@ -58,7 +63,7 @@ export const loginValidatorOptionsMapFn: TValidatorOptionsMapFn<TLoginFieldKey> 
         equal: 9,
         numbersOnly: true,
     } as TRangeOption,
-    [LoginFormFieldNames.Password]: {
+    [LoginFormFieldNames.Password]: extra === LoginBy.OTP ? undefined : {
         min: 8,
         max: 24,
     } as TRangeOption,

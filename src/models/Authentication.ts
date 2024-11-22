@@ -40,3 +40,13 @@ export interface IRegistrationData extends IAuthenticationData {
     username: string,
     profileData?: IRegistrationProfileData,
 }
+
+export interface IAuthorization {
+    accountId: string,
+    roles: Array<Roles>,
+    bearerToken: string,
+    authorizationToken: string,
+    refreshToken: string,
+    authorizedTimestamp: number,
+    validityDuration: number,
+}

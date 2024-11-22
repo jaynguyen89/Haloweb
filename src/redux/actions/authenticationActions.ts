@@ -1,10 +1,24 @@
 import { HttpStatusCode } from 'axios';
 import { Dispatch } from 'redux';
-import { ControllerEndpoints, HttpHeaderKeys, RequestMethods, StorageKeys, TokenDestination } from 'src/commons/enums';
+import {
+    ControllerEndpoints,
+    HttpHeaderKeys,
+    RequestHeaderKeys,
+    RequestMethods,
+    StorageKeys,
+    TokenDestination,
+} from 'src/commons/enums';
+import { createInterceptors } from 'src/fetcher/Interceptor';
 import { StatusNxxInterceptor } from 'src/fetcher/interceptors/ResponseInterceptors';
 import RequestBuilder from 'src/fetcher/RequestBuilder';
 import RequestOption from 'src/fetcher/RequestOption';
-import { IAuthenticatedUser, IRegistrationData, ITokenData } from 'src/models/Authentication';
+import {
+    IAuthenticatedUser,
+    IAuthenticationData, IAuthorization,
+    ILoginInformation,
+    IRegistrationData,
+    ITokenData,
+} from 'src/models/Authentication';
 import Stages from 'src/models/enums/stage';
 import { removeStage, setStage, setStageByName } from 'src/redux/actions/stageActions';
 import * as authenticationConstants from 'src/redux/constants/authenticationConstants';
@@ -22,146 +36,219 @@ export const prefetchAccountDataOnLaunch = () => {
     });
 };
 
-export const sendRequestToRegisterAccount = (registrationData: IRegistrationData, recaptchaToken: string | null) => {
-    return async (dispatch: Dispatch) => {
-        surrogate(dispatch, setStageByName(Stages.REQUEST_TO_REGISTER_ACCOUNT_BEGIN));
+export const sendRequestToRegisterAccount = (registrationData: IRegistrationData, recaptchaToken: string | null) => async (dispatch: Dispatch) => {
+    surrogate(dispatch, setStageByName(Stages.REQUEST_TO_REGISTER_ACCOUNT_BEGIN));
 
-        const error400Interceptor = new StatusNxxInterceptor(
-            Stages.REGISTER_ACCOUNT_BAD_REQUEST_INVALID_DATA,
-            HttpStatusCode.BadRequest,
-            false,
-        ).get();
-
-        const error409Interceptor = new StatusNxxInterceptor(
-            Stages.REGISTER_ACCOUNT_CONFLICT_EMAIL_ADDRESS_OR_PHONE_NUMBER,
-            HttpStatusCode.Conflict,
-            false,
-        ).get();
-
-        const requestBuilder = new RequestBuilder<number>()
-            .withMethod(RequestMethods.POST)
-            .withEndpoint(`${ControllerEndpoints.AUTHENTICATION}/register-account`)
-            .withBody(registrationData)
-            .withOptions(new RequestOption(false))
-            .withResponseInterceptors([error400Interceptor, error409Interceptor]);
-
-        if (recaptchaToken) requestBuilder.withHeader(HttpHeaderKeys.RECAPTCHA_TOKEN, recaptchaToken);
-        const request = requestBuilder.build();
-
-        const result = await request.send(dispatch);
-        const isSuccess = result && isSuccessStatusCode(result.status);
-
-        isSuccess && surrogate(dispatch, setStageByName(Stages.REQUEST_TO_REGISTER_ACCOUNT_SUCCESS));
-
-        surrogate(dispatch, {
-            type: isSuccess ? authenticationConstants.REGISTER_ACCOUNT_SUCCESS : authenticationConstants.REGISTER_ACCOUNT_FAILED,
-            payload: isSuccess ? undefined : result?.data,
-        });
-    };
-};
-
-export const sendRequestToGetSecretCode = (accountId: string, destination: TokenDestination) => {
-    return async (dispatch: Dispatch) => {
-        surrogate(dispatch, setStageByName(Stages.REQUEST_TO_GET_SECRET_CODE_BEGIN));
-
-        const status100Interceptor = new StatusNxxInterceptor(
-            Stages.REQUEST_TO_GET_SECRET_CODE_UNNECESSARY,
-            HttpStatusCode.Continue,
-            undefined,
-            'activate-account-page.request-to-get-secret-code-unnecessary',
-        ).get();
-
-        const error404Interceptor = new StatusNxxInterceptor(
-            Stages.REQUEST_TO_GET_SECRET_CODE_NO_PENDING_ACTIVATION_FOUND,
-            HttpStatusCode.NotFound,
-            undefined,
-            'activate-account-page.request-to-get-secret-code-no-pending-activation-found',
-        ).get();
-
-        const error422Interceptor = new StatusNxxInterceptor(
-            Stages.REQUEST_TO_GET_SECRET_CODE_INVALID_EMAIL_OR_PHONE,
-            HttpStatusCode.UnprocessableEntity,
-            undefined,
-            'activate-account-page.request-to-get-secret-code-invalid-destination',
-        ).get();
-
-        const error410Interceptor = new StatusNxxInterceptor(
-            Stages.REQUEST_TO_GET_SECRET_CODE_ACTIVATION_TIME_ELAPSED,
-            HttpStatusCode.Gone,
-            undefined,
-            'activate-account-page.request-to-get-secret-code-activation-time-elapsed',
-        ).get();
-
-        const request = new RequestBuilder<undefined>()
-            .withMethod(RequestMethods.GET)
-            .withHeader('AccountId', accountId)
-            .withEndpoint(`${ControllerEndpoints.AUTHENTICATION}/send-secret-code`)
-            .withQuery('destination', `${destination}`)
-            .withResponseInterceptors([status100Interceptor, error404Interceptor, error410Interceptor, error422Interceptor])
-            .build();
-
-        const result = await request.send(dispatch);
-
-        surrogate(dispatch, setStage({
-            name: Stages.REQUEST_TO_GET_SECRET_CODE_DONE,
+    const responseInterceptors = createInterceptors([
+        {
+            stage: Stages.REGISTER_ACCOUNT_BAD_REQUEST_INVALID_DATA,
+            statusCode: HttpStatusCode.BadRequest,
             canClear: false,
-        }));
+        },
+        {
+            stage: Stages.REGISTER_ACCOUNT_CONFLICT_EMAIL_ADDRESS_OR_PHONE_NUMBER,
+            statusCode: HttpStatusCode.Conflict,
+            canClear: false,
+        },
+    ]);
 
-        if (isSuccessStatusCode(result?.status ?? 0)) surrogate(dispatch, {
-            type: authenticationConstants.ACTIVATE_ACCOUNT_SECRET_CODE_SENT,
-        });
-    };
+    const requestBuilder = new RequestBuilder<number>()
+        .withMethod(RequestMethods.POST)
+        .withEndpoint(`${ControllerEndpoints.AUTHENTICATION}/register-account`)
+        .withBody(registrationData)
+        .withResponseInterceptors(responseInterceptors);
+
+    if (recaptchaToken) requestBuilder.withHeader(HttpHeaderKeys.RECAPTCHA_TOKEN, recaptchaToken);
+    const request = requestBuilder.build();
+
+    const result = await request.send(dispatch);
+    const isSuccess = result && isSuccessStatusCode(result.status);
+
+    isSuccess && surrogate(dispatch, setStageByName(Stages.REQUEST_TO_REGISTER_ACCOUNT_SUCCESS));
+
+    surrogate(dispatch, {
+        type: isSuccess ? authenticationConstants.REGISTER_ACCOUNT_SUCCESS : authenticationConstants.REGISTER_ACCOUNT_FAILED,
+        payload: isSuccess ? undefined : result?.data,
+    });
 };
 
-export const sendRequestToActivateAccount = (accountId: string, body: ITokenData, recaptchaToken: string | null) => {
-    return async (dispatch: Dispatch) => {
-        surrogate(dispatch, setStageByName(Stages.REQUEST_TO_ACTIVATE_ACCOUNT_BEGIN));
+export const sendRequestToGetSecretCode = (accountId: string, destination: TokenDestination) => async (dispatch: Dispatch) => {
+    surrogate(dispatch, setStageByName(Stages.REQUEST_TO_GET_SECRET_CODE_BEGIN));
 
-        const error400Interceptor = new StatusNxxInterceptor(
-            Stages.REQUEST_TO_ACTIVATE_ACCOUNT_SECRET_CODE_MISSING,
-            HttpStatusCode.BadRequest,
-            undefined,
-            'activate-account-page.activate-account-response-error-400',
-        ).get();
+    const responseInterceptors = createInterceptors([
+        {
+            stage: Stages.REQUEST_TO_GET_SECRET_CODE_UNNECESSARY,
+            statusCode: HttpStatusCode.Continue,
+            messageKey: 'activate-account-page.request-to-get-secret-code-unnecessary',
+        },
+        {
+            stage: Stages.REQUEST_TO_GET_SECRET_CODE_NO_PENDING_ACTIVATION_FOUND,
+            statusCode: HttpStatusCode.NotFound,
+            messageKey: 'activate-account-page.request-to-get-secret-code-no-pending-activation-found',
+        },
+        {
+            stage: Stages.REQUEST_TO_GET_SECRET_CODE_INVALID_EMAIL_OR_PHONE,
+            statusCode: HttpStatusCode.UnprocessableEntity,
+            messageKey: 'activate-account-page.request-to-get-secret-code-invalid-destination',
+        },
+        {
+            stage: Stages.REQUEST_TO_GET_SECRET_CODE_ACTIVATION_TIME_ELAPSED,
+            statusCode: HttpStatusCode.Gone,
+            messageKey: 'activate-account-page.request-to-get-secret-code-activation-time-elapsed',
+        },
+    ]);
 
-        const error403Interceptor = new StatusNxxInterceptor(
-            Stages.REQUEST_TO_ACTIVATE_ACCOUNT_INVALID_SECRET_CODE,
-            HttpStatusCode.Forbidden,
-            undefined,
-            'activate-account-page.activate-account-response-error-403',
-        ).get();
+    const request = new RequestBuilder<undefined>()
+        .withMethod(RequestMethods.GET)
+        .withHeader(RequestHeaderKeys.AccountId, accountId)
+        .withEndpoint(`${ControllerEndpoints.AUTHENTICATION}/send-secret-code`)
+        .withQuery('destination', `${destination}`)
+        .withResponseInterceptors(responseInterceptors)
+        .build();
 
-        const error409Interceptor = new StatusNxxInterceptor(
-            Stages.REQUEST_TO_ACTIVATE_ACCOUNT_MISMATCHED_TOKENS,
-            HttpStatusCode.Conflict,
-            undefined,
-            'activate-account-page.activate-account-response-error-409',
-        ).get();
+    const result = await request.send(dispatch);
 
-        const error410Interceptor = new StatusNxxInterceptor(
-            Stages.REQUEST_TO_ACTIVATE_ACCOUNT_TOKEN_EXPIRED,
-            HttpStatusCode.Gone,
-        ).get();
+    surrogate(dispatch, setStage({
+        name: Stages.REQUEST_TO_GET_SECRET_CODE_DONE,
+        canClear: false,
+    }));
 
-        const requestBuilder = new RequestBuilder<number>()
-            .withMethod(RequestMethods.PUT)
-            .withHeader('AccountId', accountId)
-            .withEndpoint(`${ControllerEndpoints.AUTHENTICATION}/activate-account`)
-            .withBody(body)
-            .withResponseInterceptors([error400Interceptor, error403Interceptor, error409Interceptor, error410Interceptor]);
+    if (isSuccessStatusCode(result?.status ?? 0)) surrogate(dispatch, {
+        type: authenticationConstants.ACTIVATE_ACCOUNT_SECRET_CODE_SENT,
+    });
+};
 
-        if (recaptchaToken) requestBuilder.withHeader(HttpHeaderKeys.RECAPTCHA_TOKEN, recaptchaToken);
+export const sendRequestToActivateAccount = (accountId: string, body: ITokenData, recaptchaToken: string | null) => async (dispatch: Dispatch) => {
+    surrogate(dispatch, setStageByName(Stages.REQUEST_TO_ACTIVATE_ACCOUNT_BEGIN));
 
-        const request = requestBuilder.build();
-        const result = await request.send(dispatch);
-        const isSuccess = result && isSuccessStatusCode(result.status);
+    const responseInterceptors = createInterceptors([
+        {
+            stage: Stages.REQUEST_TO_ACTIVATE_ACCOUNT_SECRET_CODE_MISSING,
+            statusCode: HttpStatusCode.BadRequest,
+            messageKey: 'activate-account-page.activate-account-response-error-400',
+        },
+        {
+            stage: Stages.REQUEST_TO_ACTIVATE_ACCOUNT_INVALID_SECRET_CODE,
+            statusCode: HttpStatusCode.Forbidden,
+            messageKey: 'activate-account-page.activate-account-response-error-403',
+        },
+        {
+            stage: Stages.REQUEST_TO_ACTIVATE_ACCOUNT_MISMATCHED_TOKENS,
+            statusCode: HttpStatusCode.Conflict,
+            messageKey: 'activate-account-page.activate-account-response-error-409',
+        },
+        {
+            stage: Stages.REQUEST_TO_ACTIVATE_ACCOUNT_TOKEN_EXPIRED,
+            statusCode: HttpStatusCode.Gone,
+        },
+    ]);
 
-        surrogate(dispatch, removeStage(Stages.REQUEST_TO_ACTIVATE_ACCOUNT_BEGIN));
-        isSuccess && surrogate(dispatch, setStageByName(Stages.REQUEST_TO_ACTIVATE_ACCOUNT_SUCCESS));
+    const requestBuilder = new RequestBuilder<number>()
+        .withMethod(RequestMethods.PUT)
+        .withHeader(RequestHeaderKeys.AccountId, accountId)
+        .withEndpoint(`${ControllerEndpoints.AUTHENTICATION}/activate-account`)
+        .withBody(body)
+        .withResponseInterceptors(responseInterceptors);
 
-        surrogate(dispatch, {
-            type: isSuccess ? authenticationConstants.ACTIVATE_ACCOUNT_SUCCESS : authenticationConstants.ACTIVATE_ACCOUNT_FAILED,
-            payload: isSuccess ? undefined : result?.data,
-        });
-    };
+    if (recaptchaToken) requestBuilder.withHeader(HttpHeaderKeys.RECAPTCHA_TOKEN, recaptchaToken);
+
+    const request = requestBuilder.build();
+    const result = await request.send(dispatch);
+    const isSuccess = result && isSuccessStatusCode(result.status);
+
+    surrogate(dispatch, removeStage(Stages.REQUEST_TO_ACTIVATE_ACCOUNT_BEGIN));
+    isSuccess && surrogate(dispatch, setStageByName(Stages.REQUEST_TO_ACTIVATE_ACCOUNT_SUCCESS));
+
+    surrogate(dispatch, {
+        type: isSuccess ? authenticationConstants.ACTIVATE_ACCOUNT_SUCCESS : authenticationConstants.ACTIVATE_ACCOUNT_FAILED,
+        payload: isSuccess ? undefined : result?.data,
+    });
+};
+
+export const sendRequestToLoginByCredentials = (
+    loginData: IAuthenticationData,
+    recaptchaToken: string | null,
+) => async (dispatch: Dispatch) => {
+    surrogate(dispatch, setStageByName(Stages.REQUEST_TO_LOGIN_BEGIN));
+
+    const responseInterceptors = createInterceptors([
+        {
+            stage: Stages.REQUEST_TO_LOGIN_BAD_REQUEST,
+            statusCode: HttpStatusCode.BadRequest,
+            messageKey: `login-page.login-response-error-400-by-${loginData.emailAddress ? 'email' : 'phone'}`,
+        },
+        {
+            stage: Stages.REQUEST_TO_LOGIN_UNMATCHED_CREDENTIALS,
+            statusCode: HttpStatusCode.Conflict,
+            messageKey: 'login-page.login-response-error-409-credentials',
+        },
+        {
+            stage: Stages.REQUEST_TO_LOGIN_UNACTIVATED_ACCOUNT,
+            statusCode: HttpStatusCode.UnprocessableEntity,
+            messageKey: 'login-page.login-response-error-422',
+        },
+        {
+            stage: Stages.REQUEST_TO_LOGIN_LOCKED_OUT,
+            statusCode: HttpStatusCode.Locked,
+            messageKey: 'login-page.login-response-error-423',
+        },
+    ]);
+
+    const requestBuilder = new RequestBuilder<IAuthorization>()
+        .withMethod(RequestMethods.POST)
+        .withEndpoint(`${ControllerEndpoints.AUTHENTICATION}/authenticate-by-credentials`)
+        .withBody(loginData)
+        .withResponseInterceptors(responseInterceptors);
+
+    if (recaptchaToken) requestBuilder.withHeader(RequestHeaderKeys.RecaptchaToken, recaptchaToken);
+
+    const request = requestBuilder.build();
+    const result = await request.send(dispatch);
+    const isSuccess = result && isSuccessStatusCode(result.status);
+
+    surrogate(dispatch, removeStage(Stages.REQUEST_TO_LOGIN_BEGIN));
+};
+
+export const sendRequestToLoginByOtp = (loginData: ILoginInformation) => async (dispatch: Dispatch) => {
+    surrogate(dispatch, setStageByName(Stages.REQUEST_TO_LOGIN_BEGIN));
+
+    const responseInterceptors = createInterceptors([
+        {
+            stage: Stages.REQUEST_TO_LOGIN_BAD_REQUEST,
+            statusCode: HttpStatusCode.BadRequest,
+            messageKey: `login-page.login-response-error-400-by-${loginData.emailAddress ? 'email' : 'phone'}`,
+        },
+        {
+            stage: Stages.REQUEST_TO_LOGIN_UNACTIVATED_ACCOUNT,
+            statusCode: HttpStatusCode.UnprocessableEntity,
+            messageKey: 'login-page.login-response-error-422',
+        },
+        {
+            stage: Stages.REQUEST_TO_LOGIN_LOCKED_OUT,
+            statusCode: HttpStatusCode.Locked,
+            messageKey: 'login-page.login-response-error-423',
+        },
+    ]);
+};
+
+export const sendRequestToVerifyOtp = (otp: string) => async (dispatch: Dispatch) => {
+    surrogate(dispatch, setStageByName(Stages.REQUEST_TO_LOGIN_BEGIN));
+
+    const responseInterceptors = createInterceptors([
+        {
+            stage: Stages.REQUEST_TO_LOGIN_UNMATCHED_OTP,
+            statusCode: HttpStatusCode.Conflict,
+            messageKey: 'login-page.login-response-error-409-otp',
+        },
+        {
+            stage: Stages.REQUEST_TO_LOGIN_PREAUTH_TIMEOUT,
+            statusCode: HttpStatusCode.Gone,
+            messageKey: 'login-page.login-response-error-410',
+        },
+        {
+            stage: Stages.REQUEST_TO_LOGIN_LOCKED_OUT,
+            statusCode: HttpStatusCode.Locked,
+            messageKey: 'login-page.login-response-error-423',
+        },
+    ]);
 };

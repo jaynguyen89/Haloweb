@@ -13,6 +13,12 @@ export enum RequestMethods {
     DELETE = 'DELETE',
 }
 
+export enum RequestHeaderKeys {
+    AccountId = 'AccountId',
+    RecaptchaToken = 'RecaptchaToken',
+    TwoFactorToken = 'TwoFactorToken',
+}
+
 export enum InterceptorTarget {
     REQUEST = 'REQUEST',
     RESPONSE = 'RESPONSE',

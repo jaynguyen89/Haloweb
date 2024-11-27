@@ -1,16 +1,16 @@
 import { applyMiddleware, compose, legacy_createStore as createStore, AnyAction } from 'redux';
 import thunk from 'redux-thunk';
+import { StorageKeys } from 'src/commons/enums';
 import reducers from 'src/redux/reducers';
 import * as authenticationConstants from 'src/redux/constants/authenticationConstants';
 
 const setLocalStorageData = () => (next: (action: AnyAction) => void) => (action: AnyAction): void => {
-    if (action.type === authenticationConstants.AUTHENTICATED) {
-        localStorage.setItem('authToken', action.payload.authToken);
-        localStorage.setItem('userId', action.payload.userId);
-        localStorage.setItem('role', action.payload.role);
-    }
+    if (action.type === authenticationConstants.LOGIN_SUCCESS)
+        localStorage.setItem(StorageKeys.AUTHORIZATION, JSON.stringify(action.payload));
 
-    if (action.type === authenticationConstants.AUTHENTICATION_VOID) localStorage.clear();
+    if (action.type === authenticationConstants.AUTHENTICATION_VOID)
+        localStorage.clear();
+
     next(action);
 };
 

@@ -40,6 +40,12 @@ const App = () => {
                         severity='error'
                         message={t('messages.error-network')}
                     />
+                    <Toast
+                        stage={Stages.REQUEST_TO_LOGIN_SUCCESS}
+                        severity='success'
+                        message={t('messages.authentication-success')}
+                    />
+
                     <NavigationBar />
                     {shouldShowLoading && <DimOverlay />}
                     <Loading stage={Stages.PREFETCH_SITE_PUBLIC_DATA_ONGOING} />

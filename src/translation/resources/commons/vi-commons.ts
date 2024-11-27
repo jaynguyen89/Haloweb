@@ -61,6 +61,7 @@ const viCommons: TTranslationMap = {
         'input-one-of-fields': 'Chỉ 1 trong các mục sau đây cần được nhập dữ liệu hợp lệ, các mục còn lại để trống: {{fields}}',
         'recaptcha-not-clicked': 'Recaptcha: vui lòng nhấp vào ô kiểm Recaptcha.',
         'recaptcha-token-missing': 'Recaptcha chưa thể xác minh bạn là con người. Vui lòng tải lại trang.',
+        'authentication-success': 'Bạn đã đăng nhập thành công!',
     },
 };
 

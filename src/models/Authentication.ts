@@ -1,4 +1,3 @@
-import { ITimestamp } from 'src/commons/interfaces';
 import Roles from 'src/models/enums/roles';
 import { IRegionalizedPhoneNumber, IRegistrationProfileData } from 'src/models/Profile';
 import { IDeviceInformation } from 'src/models/TrustedDevice';
@@ -9,19 +8,6 @@ export interface ITokenData {
     isOtp?: boolean,
     secretCode?: string,
     currentToken?: string,
-}
-
-export interface IAuthenticatedUser extends ITimestamp {
-    isAuthenticated: boolean,
-    userId: string,
-    username: string,
-    avatarName: string,
-    fullName: string,
-    jwtToken: string,
-    authToken: string,
-    validityDuration: number,
-    authTimestamp: number,
-    roles: Array<Roles>,
 }
 
 export interface ILoginInformation {
@@ -49,4 +35,5 @@ export interface IAuthorization {
     refreshToken: string,
     authorizedTimestamp: number,
     validityDuration: number,
+    twoFactorConfirmed: boolean | null,
 }

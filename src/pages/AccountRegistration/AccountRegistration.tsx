@@ -9,7 +9,7 @@ import _cloneDeep from 'lodash/cloneDeep';
 import React, { LegacyRef, RefObject, useEffect, useMemo, useState } from 'react';
 import ReCAPTCHA from 'react-google-recaptcha';
 import { Trans, useTranslation } from 'react-i18next';
-import { connect, useDispatch } from 'react-redux';
+import { batch, connect, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import configs from 'src/commons/configs';
 import { debounceWait } from 'src/commons/constants';
@@ -37,7 +37,7 @@ import { removeStage } from 'src/redux/actions/stageActions';
 import { TRootState } from 'src/redux/reducers';
 import {
     mapFieldsToValidators,
-    TFieldToValidatorMap, TFieldValidatorMap,
+    TFieldToValidatorMap,
     TFormDataState,
 } from 'src/utilities/data-validators/dataValidators';
 import FieldsMediator, {
@@ -74,11 +74,11 @@ const AccountRegistration = ({
     const isError409FromServer = useIsStageIncluded(Stages.REGISTER_ACCOUNT_CONFLICT_EMAIL_ADDRESS_OR_PHONE_NUMBER);
 
     useEffect(() => {
-        return () => {
+        return () => batch(() => {
             surrogate(dispatch, removeStage(Stages.REGISTER_ACCOUNT_BAD_REQUEST_INVALID_DATA));
             surrogate(dispatch, removeStage(Stages.REGISTER_ACCOUNT_CONFLICT_EMAIL_ADDRESS_OR_PHONE_NUMBER));
             surrogate(dispatch, removeStage(Stages.REQUEST_TO_REGISTER_ACCOUNT_SUCCESS));
-        };
+        });
     }, []);
 
     const validators: TFieldToValidatorMap<TRegistrationFieldKey> = useMemo(() => {
@@ -97,6 +97,13 @@ const AccountRegistration = ({
 
     const validateFormDataWithDebounce = useDebounce(() => {
         const options: TFieldMediatorOptions<TRegistrationFieldKey> = {
+            oneOfFields: [
+                RegistrationFormFieldNames.EmailAddress,
+                [
+                    RegistrationFormFieldNames.AreaCode,
+                    RegistrationFormFieldNames.PhoneNumber,
+                ],
+            ],
             optionalFields: [
                 RegistrationFormFieldNames.Gender,
                 RegistrationFormFieldNames.GivenName,

@@ -61,6 +61,7 @@ const enCommons: TTranslationMap = {
         'input-one-of-fields': 'Only 1 of these fields should contain valid input, the others must be empty: {{fields}}.',
         'recaptcha-not-clicked': 'Human verification: please click the Recaptcha checkbox.',
         'recaptcha-token-missing': 'Recaptcha hasn\'t done its human verification. Please try reloading the page.',
+        'authentication-success': 'You have logged in successfully!',
     },
 };
 

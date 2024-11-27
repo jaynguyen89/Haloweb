@@ -36,6 +36,11 @@ export const loginFormSx: SxProps<Theme> = {
     mb: vars.xxsmall,
 };
 
+export const flasherBoxSx: SxProps<Theme> = {
+    maxWidth: '60%',
+    margin: 'auto',
+};
+
 const useStyles = makeStyles((theme: Theme) => ({
     loginWrapper: {
         margin: `${vars.xh1} auto`,

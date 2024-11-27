@@ -54,6 +54,15 @@ const configs = {
     registerAccountWithProfileData: process.env.REACT_APP_REGISTER_ACCOUNT_WITH_PROFILE_DATA === undefined
         ? false
         : process.env.REACT_APP_REGISTER_ACCOUNT_WITH_PROFILE_DATA === 'true',
+    loginFailedThreshold: process.env.REACT_APP_LOGIN_FAILED_THRESHOLD === undefined
+        ? 5
+        : +process.env.REACT_APP_LOGIN_FAILED_THRESHOLD,
+    lockedOutThreshold: process.env.REACT_APP_LOCKED_OUT_THRESHOLD === undefined
+        ? 3
+        : +process.env.REACT_APP_LOCKED_OUT_THRESHOLD,
+    lockedOutDuration: process.env.REACT_APP_LOCKED_OUT_DURATION === undefined
+        ? 900000
+        : +process.env.REACT_APP_LOCKED_OUT_DURATION,
 };
 
 export default configs;

@@ -1,3 +1,4 @@
+import React from 'react';
 import { ITranslation } from 'src/commons/interfaces';
 import enCommons from 'src/translation/resources/commons/en-commons';
 
@@ -86,6 +87,7 @@ const english: ITranslation = {
             'trusted-checkbox-text': 'Trust this device',
             'forgot-password-text': 'Forgot your password? Please <1>click here</1> to reset password.',
             'register-account-text': 'Haven\'t had an account yet? Please <1>click here</1> to create a new account',
+            'confirm-ownership-text': 'If you need to confirm your ownership to remove a Suspend status on your account, please <1>click here</1>.',
             'social-login-text': 'A quicker way, login with social networks',
             'login-response-error-400-by-email': 'The format of your email address seems to be invalid.',
             'login-response-error-400-by-phone': 'The format of your phone number seems to be invalid.',
@@ -94,6 +96,15 @@ const english: ITranslation = {
             'login-response-error-410': 'Your pre-authenticated information has become invalid due to long inactivity. Please try to login again.',
             'login-response-error-422': 'Your account has not been activated. Please activate your account first.',
             'login-response-error-423': 'Your account has been locked or suspended from login. Please find more information below before reattempting login.',
+            'failure-message-1': 'You have made {{count}} failed login attempt{{plural}}, ',
+            'failure-message-2': 'after {{attempts}} more failed attempt{{plural}}, you have to wait {{wait}} minutes before reattempting login.',
+            'failure-message-3': 'after {{attempts}} more failed attempt{{plural}}, your account will be suspended.',
+            'locked-message-1': 'Your account has been temporarily locked from using Login feature.',
+            'locked-message-2': 'Please wait {{minutes}} minutes {{seconds}} seconds before attempting to login again.',
+            'locked-message-3': 'You have waited more than {{minutes}} minutes, and your account has been unlocked. Try to log in again if you wish to.',
+            'suspend-message-1': 'Your account has been suspended due to too many failed login attempts.',
+            'suspend-message-2': 'Please <1>click here</1> to confirm your account ownership and remove the Suspend status on your account.',
+            'suspend-message-3': 'If you\'ve forgotten your password, please also try to <1>reset password</1> after the above step.',
         },
         'registration-page': {
             title: 'Account Registration',

@@ -95,9 +95,10 @@ class FieldsMediator<T> {
                 if (resultCounts.validCount > 1) break;
             }
 
-            isValidByOneOfFields =
+            isValidByOneOfFields = resultCounts.undefinedCount === oneOfFields.length || (
                 resultCounts.validCount === 1 &&
-                resultCounts.validCount + resultCounts.undefinedCount === oneOfFields.length;
+                resultCounts.validCount + resultCounts.undefinedCount === oneOfFields.length
+            );
 
             if (!isValidByOneOfFields) return {
                 isValid: false,

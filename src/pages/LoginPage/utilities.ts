@@ -1,8 +1,8 @@
-import { IAuthenticationData } from 'src/models/Authentication';
+import { IAuthenticationData, ILoginInformation } from 'src/models/Authentication';
 import { IRegionalizedPhoneNumber } from 'src/models/Profile';
 import IPublicData from 'src/models/PublicData';
 import {
-    TFormDataState, TRangeOption, TSpecialOption,
+    TFormDataState, TRangeOption,
     TValidatorOption,
     TValidatorOptionsMapFn,
     ValidatorNames,
@@ -69,13 +69,22 @@ export const loginValidatorOptionsMapFn: TValidatorOptionsMapFn<TLoginFieldKey> 
     } as TRangeOption,
 });
 
-export const createLoginData = (formData: TFormDataState<typeof LoginFormFieldNames>): IAuthenticationData => ({
-    emailAddress: formData[LoginFormFieldNames.EmailAddress].value as string | undefined,
-    phoneNumber: formData[LoginFormFieldNames.PhoneNumber].value === undefined ? undefined : {
-        phoneNumber: formData[LoginFormFieldNames.PhoneNumber].value,
-        regionCode: formData[LoginFormFieldNames.AreaCode].value,
-    } as IRegionalizedPhoneNumber,
-    password: formData[LoginFormFieldNames.Password].value,
-    isTrusted: formData[LoginFormFieldNames.Trusted].value,
-    deviceInformation: undefined,
-});
+export const createLoginData = (formData: TFormDataState<typeof LoginFormFieldNames>, loginBy: LoginBy): IAuthenticationData | ILoginInformation =>
+    loginBy === LoginBy.Credentials
+     ? ({
+        emailAddress: formData[LoginFormFieldNames.EmailAddress].value as string | undefined,
+        phoneNumber: formData[LoginFormFieldNames.PhoneNumber].value === undefined ? undefined : {
+            phoneNumber: formData[LoginFormFieldNames.PhoneNumber].value,
+            regionCode: formData[LoginFormFieldNames.AreaCode].value,
+        } as IRegionalizedPhoneNumber,
+        password: formData[LoginFormFieldNames.Password].value,
+        isTrusted: formData[LoginFormFieldNames.Trusted].value,
+        deviceInformation: undefined,
+    }) as IAuthenticationData
+    : ({
+        emailAddress: formData[LoginFormFieldNames.EmailAddress].value as string | undefined,
+        phoneNumber: formData[LoginFormFieldNames.PhoneNumber].value === undefined ? undefined : {
+            phoneNumber: formData[LoginFormFieldNames.PhoneNumber].value,
+            regionCode: formData[LoginFormFieldNames.AreaCode].value,
+        } as IRegionalizedPhoneNumber,
+    }) as ILoginInformation;

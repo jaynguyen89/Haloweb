@@ -1,3 +1,4 @@
+import { faCircle } from '@fortawesome/free-solid-svg-icons/faCircle';
 import { faMinus } from '@fortawesome/free-solid-svg-icons/faMinus';
 import {
     Checkbox,
@@ -15,11 +16,12 @@ import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import _cloneDeep from 'lodash/cloneDeep';
-import React, { LegacyRef, RefObject, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { LegacyRef, RefObject, useEffect, useMemo, useState } from 'react';
 import ReCAPTCHA from 'react-google-recaptcha';
 import { Helmet } from 'react-helmet';
 import { Trans, useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { Dispatch } from 'redux';
 import configs from 'src/commons/configs';
 import { debounceWait } from 'src/commons/constants';
 import CountryFlag from 'src/components/atoms/CountryFlag/CountryFlag';
@@ -27,9 +29,12 @@ import FaIcon from 'src/components/atoms/FaIcon';
 import MessageCaption from 'src/components/atoms/MessageCaption';
 import Recaptcha from 'src/components/atoms/Recaptcha';
 import AuthSocialAccounts from 'src/components/compounds/AuthSocialAccounts/AuthSocialAccounts';
+import Loading from 'src/components/molecules/StatusIndicators/Loading/Loading';
 import { useDebounce } from 'src/hooks/eventForger';
+import { useIsStageIncluded } from 'src/hooks/useStage';
 import { RegistrationFormFieldNames } from 'src/pages/AccountRegistration/utilities';
-import useStyles, { helpBoxSx, loginBoxSx, loginFormSx } from 'src/pages/LoginPage/styles';
+import LoginFailureMessage from 'src/pages/LoginPage/LoginFailureMessage/LoginFailureMessage';
+import useStyles, { flasherBoxSx, helpBoxSx, loginBoxSx, loginFormSx } from 'src/pages/LoginPage/styles';
 import { faFingerprint } from '@fortawesome/free-solid-svg-icons/faFingerprint';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons/faPaperPlane';
 import vars from 'src/commons/variables/cssVariables.scss';
@@ -40,27 +45,32 @@ import {
     loginValidatorOptionsMapFn,
     TLoginFieldKey,
 } from 'src/pages/LoginPage/utilities';
+import { sendRequestToLoginByCredentials, sendRequestToLoginByOtp } from 'src/redux/actions/authenticationActions';
+import { removeStage } from 'src/redux/actions/stageActions';
 import { TRootState } from 'src/redux/reducers';
-import { connect, useDispatch } from 'react-redux';
+import { batch, connect, useDispatch } from 'react-redux';
 import {
     mapFieldsToValidators,
     TFieldToValidatorMap,
     TFormDataState,
 } from 'src/utilities/data-validators/dataValidators';
 import FieldsMediator, { TFieldMediatorOptions, TFormResult, TValidationResult } from 'src/utilities/data-validators/fieldsMediator';
-import { readStorageMessage } from 'src/utilities/otherUtilities';
+import { readStorageMessage, surrogate } from 'src/utilities/otherUtilities';
 import { StorageKeys } from 'src/commons/enums';
 import Flasher from 'src/components/molecules/StatusIndicators/Flasher';
 import Stages from 'src/models/enums/stage';
 
 const mapStateToProps = (state: TRootState) => ({
     publicData: state.publicDataStore.publicData,
+    authorization: state.authenticationStore.authorization,
 });
 
 const LoginPage = ({
     publicData,
+    authorization,
 }: ReturnType<typeof mapStateToProps>) => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { t } = useTranslation();
     const styles = useStyles();
 
@@ -73,6 +83,32 @@ const LoginPage = ({
     const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
 
     const accountActivationMessage = readStorageMessage(dispatch, StorageKeys.ACCOUNT_ACTIVATION_SUCCESS_STORAGE_KEY);
+
+    const isLoginProcessing = useIsStageIncluded(Stages.REQUEST_TO_LOGIN_BEGIN);
+    const hasError400 = useIsStageIncluded(Stages.REQUEST_TO_LOGIN_BAD_REQUEST);
+    const hasError422 = useIsStageIncluded(Stages.REQUEST_TO_LOGIN_UNACTIVATED_ACCOUNT);
+    const isLoginFailed = useIsStageIncluded(Stages.LOGIN_FAILURE);
+    const isLoginSuccess = useIsStageIncluded(Stages.REQUEST_TO_LOGIN_SUCCESS);
+
+    useEffect(() => {
+        return () => batch(() => {
+            surrogate(dispatch, removeStage(Stages.REQUEST_TO_LOGIN_BAD_REQUEST));
+            surrogate(dispatch, removeStage(Stages.REQUEST_TO_LOGIN_UNACTIVATED_ACCOUNT));
+            surrogate(dispatch, removeStage(Stages.LOGIN_FAILURE));
+            surrogate(dispatch, removeStage(Stages.REQUEST_TO_LOGIN_SUCCESS));
+        });
+    }, []);
+
+    useEffect(() => {
+        if (isLoginSuccess && authorization) {
+            if (loginBy === LoginBy.OTP) navigate('/confirm-otp');
+            else if (authorization.twoFactorConfirmed === null || authorization.twoFactorConfirmed) {
+                navigate('/profile');
+                return;
+            }
+            else navigate('/confirm-tfa');
+        }
+    }, [isLoginSuccess, authorization]);
 
     const validators: TFieldToValidatorMap<TLoginFieldKey> = useMemo(() => {
         const tempValidators: TFieldToValidatorMap<TLoginFieldKey> = {};
@@ -129,8 +165,9 @@ const LoginPage = ({
             return;
         }
 
-        let loginData = createLoginData(formData);
-        console.log(loginData);
+        const loginData = createLoginData(formData, loginBy);
+        const loginRequest = loginBy === LoginBy.Credentials ? sendRequestToLoginByCredentials : sendRequestToLoginByOtp;
+        surrogate(dispatch, loginRequest(loginData));
     };
 
     return (
@@ -142,10 +179,25 @@ const LoginPage = ({
             </Helmet>
 
             {accountActivationMessage && accountActivationMessage.targetPage === LoginPage.name && (
-                <Box sx={{ maxWidth: '60%', margin: 'auto' }}>
+                <Box sx={flasherBoxSx}>
                     <Flasher
                         stage={Stages.REQUEST_TO_ACTIVATE_ACCOUNT_SUCCESS}
                         message={accountActivationMessage.messageKey}
+                    />
+                </Box>
+            )}
+
+            {(hasError400 || hasError422) && (
+                <Box sx={flasherBoxSx}>
+                    <Flasher
+                        severity='error'
+                        stage={Stages.REQUEST_TO_LOGIN_BAD_REQUEST}
+                        message={`login-page.login-response-error-400-by-${formData[LoginFormFieldNames.EmailAddress].value ? 'email' : 'phone'}`}
+                    />
+                    <Flasher
+                        severity='error'
+                        stage={Stages.REQUEST_TO_LOGIN_UNACTIVATED_ACCOUNT}
+                        message='login-page.login-response-error-422'
                     />
                 </Box>
             )}
@@ -154,9 +206,16 @@ const LoginPage = ({
                 <Typography variant='h1' className={styles.title}>
                     {t('login-page.title')}&nbsp;
                     <FaIcon wrapper='fa' t='obj' ic={faFingerprint} />
+                    <Loading stage={Stages.REQUEST_TO_LOGIN_BEGIN} />
                 </Typography>
 
                 <Grid container spacing={2} sx={loginFormSx}>
+                    {isLoginFailed && (
+                        <Grid item xs={12}>
+                            <LoginFailureMessage />
+                        </Grid>
+                    )}
+
                     {!formValidation.isValid && formValidation.messages && (
                         <Grid item xs={12} sx={{pb: '1rem'}}>
                             <MessageCaption statuses={formValidation.messages as Map<string, object | undefined>} />
@@ -285,7 +344,7 @@ const LoginPage = ({
                         <Button
                             variant='contained'
                             className={styles.loginButton}
-                            disabled={!formValidation.isValid}
+                            disabled={!formValidation.isValid || isLoginProcessing}
                             onClick={!formValidation.isValid ? undefined : handleLogin}
                         >
                             {t('buttons.submit')}&nbsp;
@@ -296,13 +355,22 @@ const LoginPage = ({
             </Box>
             <Box sx={helpBoxSx}>
                 <Typography variant='subtitle2' mb={vars.micro}>
+                    <FaIcon wrapper='fa' size='xs' t='obj' ic={faCircle} />&nbsp;&nbsp;
                     <Trans i18nKey='login-page.forgot-password-text'>
                         Forgot your password? Please <Link to='/forgot-password'>click here</Link> to reset password.
                     </Trans>
                 </Typography>
-                <Typography variant='subtitle2'>
+                <Typography variant='subtitle2' mb={vars.micro}>
+                    <FaIcon wrapper='fa' size='xs' t='obj' ic={faCircle} />&nbsp;&nbsp;
                     <Trans i18nKey='login-page.register-account-text'>
                         Haven't had an account yet? Please <Link to='/register-account'>click here</Link> to create a new account.
+                    </Trans>
+                </Typography>
+                <Typography variant='subtitle2'>
+                    <FaIcon wrapper='fa' size='xs' t='obj' ic={faCircle} />&nbsp;&nbsp;
+                    <Trans i18nKey='login-page.confirm-ownership-text'>
+                        If you need to confirm your ownership to remove a Suspend status on your account,
+                        Please <Link onClick={() => console.log('send email to confirm ownership')}>click here</Link>.
                     </Trans>
                 </Typography>
 

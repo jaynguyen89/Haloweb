@@ -1,4 +1,5 @@
 import { HttpStatusCode } from 'axios';
+import { batch } from 'react-redux';
 import { Dispatch } from 'redux';
 import {
     ControllerEndpoints,
@@ -8,12 +9,8 @@ import {
     StorageKeys,
     TokenDestination,
 } from 'src/commons/enums';
-import { createInterceptors } from 'src/fetcher/Interceptor';
-import { StatusNxxInterceptor } from 'src/fetcher/interceptors/ResponseInterceptors';
 import RequestBuilder from 'src/fetcher/RequestBuilder';
-import RequestOption from 'src/fetcher/RequestOption';
 import {
-    IAuthenticatedUser,
     IAuthenticationData, IAuthorization,
     ILoginInformation,
     IRegistrationData,
@@ -22,17 +19,17 @@ import {
 import Stages from 'src/models/enums/stage';
 import { removeStage, setStage, setStageByName } from 'src/redux/actions/stageActions';
 import * as authenticationConstants from 'src/redux/constants/authenticationConstants';
-import { isSuccessStatusCode, surrogate } from 'src/utilities/otherUtilities';
+import { createInterceptors, isSuccessStatusCode, surrogate } from 'src/utilities/otherUtilities';
 
 export const prefetchAccountDataOnLaunch = () => {
-    const storedAuthUser = localStorage.getItem(StorageKeys.AUTH_USER);
-    const authUser = storedAuthUser ? JSON.parse(storedAuthUser) as IAuthenticatedUser : undefined;
+    const storedAuthorization = localStorage.getItem(StorageKeys.AUTHORIZATION);
+    const authorization = storedAuthorization ? JSON.parse(storedAuthorization) as IAuthorization : undefined;
 
     return (dispatch: Dispatch) => surrogate(dispatch, {
-        type: authUser
+        type: authorization
             ? authenticationConstants.INITIALIZE_AUTH_ON_LAUNCH
             : authenticationConstants.AUTHENTICATION_VOID,
-        payload: authUser,
+        payload: authorization,
     });
 };
 
@@ -167,7 +164,7 @@ export const sendRequestToActivateAccount = (accountId: string, body: ITokenData
 
 export const sendRequestToLoginByCredentials = (
     loginData: IAuthenticationData,
-    recaptchaToken: string | null,
+    recaptchaToken: string | null = null,
 ) => async (dispatch: Dispatch) => {
     surrogate(dispatch, setStageByName(Stages.REQUEST_TO_LOGIN_BEGIN));
 
@@ -175,23 +172,23 @@ export const sendRequestToLoginByCredentials = (
         {
             stage: Stages.REQUEST_TO_LOGIN_BAD_REQUEST,
             statusCode: HttpStatusCode.BadRequest,
-            messageKey: `login-page.login-response-error-400-by-${loginData.emailAddress ? 'email' : 'phone'}`,
+            //messageKey: `login-page.login-response-error-400-by-${loginData.emailAddress ? 'email' : 'phone'}`,
         },
-        {
-            stage: Stages.REQUEST_TO_LOGIN_UNMATCHED_CREDENTIALS,
-            statusCode: HttpStatusCode.Conflict,
-            messageKey: 'login-page.login-response-error-409-credentials',
-        },
+        // {
+        //     stage: Stages.REQUEST_TO_LOGIN_UNMATCHED_CREDENTIALS,
+        //     statusCode: HttpStatusCode.Conflict,
+        //     messageKey: 'login-page.login-response-error-409-credentials',
+        // },
         {
             stage: Stages.REQUEST_TO_LOGIN_UNACTIVATED_ACCOUNT,
             statusCode: HttpStatusCode.UnprocessableEntity,
-            messageKey: 'login-page.login-response-error-422',
+            //messageKey: 'login-page.login-response-error-422',
         },
-        {
-            stage: Stages.REQUEST_TO_LOGIN_LOCKED_OUT,
-            statusCode: HttpStatusCode.Locked,
-            messageKey: 'login-page.login-response-error-423',
-        },
+        // {
+        //     stage: Stages.REQUEST_TO_LOGIN_LOCKED_OUT,
+        //     statusCode: HttpStatusCode.Locked,
+        //     messageKey: 'login-page.login-response-error-423',
+        // },
     ]);
 
     const requestBuilder = new RequestBuilder<IAuthorization>()
@@ -204,51 +201,91 @@ export const sendRequestToLoginByCredentials = (
 
     const request = requestBuilder.build();
     const result = await request.send(dispatch);
-    const isSuccess = result && isSuccessStatusCode(result.status);
 
     surrogate(dispatch, removeStage(Stages.REQUEST_TO_LOGIN_BEGIN));
+    const isSuccess = result && isSuccessStatusCode(result.status);
+
+    if (isSuccess)
+        batch(() => {
+            surrogate(dispatch, setStageByName(Stages.REQUEST_TO_LOGIN_SUCCESS));
+            surrogate(dispatch, {
+                type: authenticationConstants.LOGIN_SUCCESS,
+                payload: result?.data,
+            });
+        });
+    else
+        batch(() => {
+            surrogate(dispatch, setStageByName(Stages.LOGIN_FAILURE));
+            surrogate(dispatch, {
+                type: authenticationConstants.LOGIN_FAILURE,
+                payload: { statusCode: result?.status, data: result?.data },
+            });
+        });
 };
 
-export const sendRequestToLoginByOtp = (loginData: ILoginInformation) => async (dispatch: Dispatch) => {
+export const sendRequestToLoginByOtp = (
+    loginData: ILoginInformation,
+    recaptchaToken: string | null = null,
+) => async (dispatch: Dispatch) => {
     surrogate(dispatch, setStageByName(Stages.REQUEST_TO_LOGIN_BEGIN));
 
     const responseInterceptors = createInterceptors([
         {
             stage: Stages.REQUEST_TO_LOGIN_BAD_REQUEST,
             statusCode: HttpStatusCode.BadRequest,
-            messageKey: `login-page.login-response-error-400-by-${loginData.emailAddress ? 'email' : 'phone'}`,
+            //messageKey: `login-page.login-response-error-400-by-${loginData.emailAddress ? 'email' : 'phone'}`,
         },
         {
             stage: Stages.REQUEST_TO_LOGIN_UNACTIVATED_ACCOUNT,
             statusCode: HttpStatusCode.UnprocessableEntity,
-            messageKey: 'login-page.login-response-error-422',
+            //messageKey: 'login-page.login-response-error-422',
         },
-        {
-            stage: Stages.REQUEST_TO_LOGIN_LOCKED_OUT,
-            statusCode: HttpStatusCode.Locked,
-            messageKey: 'login-page.login-response-error-423',
-        },
+        // {
+        //     stage: Stages.REQUEST_TO_LOGIN_LOCKED_OUT,
+        //     statusCode: HttpStatusCode.Locked,
+        //     messageKey: 'login-page.login-response-error-423',
+        // },
     ]);
+
+    const requestBuilder = new RequestBuilder<IAuthorization>()
+        .withMethod(RequestMethods.POST)
+        .withEndpoint(`${ControllerEndpoints.AUTHENTICATION}/authenticate-by-otp`)
+        .withBody(loginData)
+        .withResponseInterceptors(responseInterceptors);
+
+    if (recaptchaToken) requestBuilder.withHeader(RequestHeaderKeys.RecaptchaToken, recaptchaToken);
+
+    const request = requestBuilder.build();
+    const result = await request.send(dispatch);
+    const isSuccess = result && isSuccessStatusCode(result.status);
+
+    surrogate(dispatch, removeStage(Stages.REQUEST_TO_LOGIN_BEGIN));
+    isSuccess && surrogate(dispatch, setStageByName(Stages.REQUEST_TO_LOGIN_SUCCESS));
+
+    surrogate(dispatch, {
+        type: isSuccess ? authenticationConstants.PRE_LOGIN_SUCCESS : authenticationConstants.LOGIN_FAILURE,
+        payload: isSuccess ? result?.data : undefined,
+    });
 };
 
-export const sendRequestToVerifyOtp = (otp: string) => async (dispatch: Dispatch) => {
+export const sendRequestToVerifyOtp = (otp: string) => (dispatch: Dispatch) => {
     surrogate(dispatch, setStageByName(Stages.REQUEST_TO_LOGIN_BEGIN));
 
     const responseInterceptors = createInterceptors([
-        {
-            stage: Stages.REQUEST_TO_LOGIN_UNMATCHED_OTP,
-            statusCode: HttpStatusCode.Conflict,
-            messageKey: 'login-page.login-response-error-409-otp',
-        },
+        // {
+        //     stage: Stages.REQUEST_TO_LOGIN_UNMATCHED_OTP,
+        //     statusCode: HttpStatusCode.Conflict,
+        //     messageKey: 'login-page.login-response-error-409-otp',
+        // },
         {
             stage: Stages.REQUEST_TO_LOGIN_PREAUTH_TIMEOUT,
             statusCode: HttpStatusCode.Gone,
-            messageKey: 'login-page.login-response-error-410',
+            //messageKey: 'login-page.login-response-error-410',
         },
-        {
-            stage: Stages.REQUEST_TO_LOGIN_LOCKED_OUT,
-            statusCode: HttpStatusCode.Locked,
-            messageKey: 'login-page.login-response-error-423',
-        },
+        // {
+        //     stage: Stages.REQUEST_TO_LOGIN_LOCKED_OUT,
+        //     statusCode: HttpStatusCode.Locked,
+        //     messageKey: 'login-page.login-response-error-423',
+        // },
     ]);
 };

@@ -1,10 +1,11 @@
+import { HttpStatusCode } from 'axios';
+import configs from 'src/commons/configs';
 import * as authenticationConstants from 'src/redux/constants/authenticationConstants';
 import produce from 'immer';
 import { AnyAction } from 'redux';
-import { IAuthenticatedUser } from 'src/models/Authentication';
+import { IAuthorization } from 'src/models/Authentication';
 
 interface IAuthenticationStore {
-    authenticatedUser: IAuthenticatedUser | null,
     accountActivation: {
         isSecretCodeSent: boolean,
         activationSuccess: boolean,
@@ -14,10 +15,17 @@ interface IAuthenticationStore {
         success: boolean,
         error?: object,
     },
+    loginFailure: {
+        count?: number,
+        lockedCount?: number,
+        statusCode: number,
+        isSuspended?: boolean,
+        timestamp?: number,
+    } | null,
+    authorization: IAuthorization | null,
 }
 
 const initialState: IAuthenticationStore = {
-    authenticatedUser: null,
     accountActivation: {
         isSecretCodeSent: false,
         activationSuccess: false,
@@ -27,13 +35,15 @@ const initialState: IAuthenticationStore = {
         success: false,
         error: undefined,
     },
+    loginFailure: null,
+    authorization: null,
 };
 
 const reducer = produce((state: IAuthenticationStore, action: AnyAction) => {
     switch (action.type) {
         case authenticationConstants.INITIALIZE_AUTH_ON_LAUNCH:
-        case authenticationConstants.AUTHENTICATED:
-            state.authenticatedUser = action.payload;
+        case authenticationConstants.LOGIN_SUCCESS:
+            state.authorization = action.payload;
             return;
         case authenticationConstants.REGISTER_ACCOUNT_FAILED:
             state.accountRegistration.success = false;
@@ -51,8 +61,27 @@ const reducer = produce((state: IAuthenticationStore, action: AnyAction) => {
             state.accountActivation.activationSuccess = true;
             state.accountActivation.activationError = undefined;
             return;
+        case authenticationConstants.LOGIN_FAILURE:
+            const { statusCode, data } = action.payload;
+
+            if (statusCode === HttpStatusCode.Conflict)
+                state.loginFailure = {
+                    count: data.loginFailedCount,
+                    lockedCount: data.lockOutCount,
+                };
+
+            if (statusCode === HttpStatusCode.Locked)
+                state.loginFailure = {
+                    isSuspended: data.isSuspended,
+                    timestamp: data.timestamp,
+                    count: data.loginFailedCount,
+                    lockedCount: data.lockOutCount,
+                };
+
+            state.loginFailure.statusCode = statusCode;
+            return;
         case authenticationConstants.AUTHENTICATION_VOID:
-            state.authenticatedUser = null;
+            state.authorization = null;
             return;
         case authenticationConstants.ACTIVATE_ACCOUNT_SECRET_CODE_SENT:
             state.accountActivation.isSecretCodeSent = true;

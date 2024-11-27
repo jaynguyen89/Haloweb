@@ -1,6 +1,8 @@
 import { HttpStatusCode } from 'axios';
 import { AnyAction, Dispatch } from 'redux';
+import { InterceptorTarget } from 'src/commons/enums';
 import { IStorageMessage } from 'src/commons/interfaces';
+import { StatusNxxInterceptor, TStatusInterceptorParams } from 'src/fetcher/interceptors/ResponseInterceptors';
 import { removeStorageMessageKey, setStorageMessageKey } from 'src/redux/actions/stageActions';
 
 export const surrogate = (dispatch: Dispatch, action: Function | AnyAction) => dispatch(action as unknown as AnyAction);
@@ -38,3 +40,6 @@ export const readStorageMessage = (dispatch: Dispatch, key: string, remove?: tru
 
     return null;
 };
+
+export const createInterceptors = (data: Array<TStatusInterceptorParams>, target = InterceptorTarget.RESPONSE) =>
+    data.map(params => new StatusNxxInterceptor(params).get());

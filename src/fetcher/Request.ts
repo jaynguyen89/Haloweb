@@ -5,7 +5,7 @@ import axios, {
 } from 'axios';
 import { Dispatch } from 'redux';
 import { RequestMethods } from 'src/commons/enums';
-import InterceptorChain from 'src/fetcher/Interceptor';
+import { InterceptorChain } from 'src/fetcher/Interceptor';
 import RequestOption from 'src/fetcher/RequestOption';
 import configs from 'src/commons/configs';
 import { delay } from 'src/utilities/timeUtilities';

@@ -1,11 +1,11 @@
 import { Environments, InterceptorTarget, RequestContentTypes, RequestMethods } from 'src/commons/enums';
-import InterceptorChain, { Interceptor } from 'src/fetcher/Interceptor';
+import { Interceptor, InterceptorChain } from 'src/fetcher/Interceptor';
 import RequestOption from 'src/fetcher/RequestOption';
 import configs from 'src/commons/configs';
 import Request from 'src/fetcher/Request';
 import requestInterceptors from 'src/fetcher/interceptors/RequestInterceptors';
 import responseInterceptors from 'src/fetcher/interceptors/ResponseInterceptors';
-import { IAuthenticatedUser } from 'src/models/Authentication';
+import { IAuthorization } from 'src/models/Authentication';
 
 class RequestBuilder<T> {
     baseUrl: string;
@@ -142,7 +142,7 @@ class RequestBuilder<T> {
         return this;
     }
 
-    public build(authenticatedUser?: IAuthenticatedUser): Request<T> {
+    public build(authorization?: IAuthorization): Request<T> {
         if ((this.method === RequestMethods.GET || this.method === RequestMethods.DELETE) && (this.body || this.form))
             throw new Error('The request METHOD is invalid, consider to use \'POST\', or \'PUT\', or \'PATCH\'.');
 
@@ -152,7 +152,7 @@ class RequestBuilder<T> {
             throw new Error('The request METHOD is invalid, consider to use \'GET\', or \'DELETE\'.');
 
         const endpointUrl = this.buildEndpointUrl();
-        const headers = this.buildHeaders(authenticatedUser);
+        const headers = this.buildHeaders(authorization);
         const body = this.buildBody();
         const interceptorChains = this.buildInterceptorChains();
 
@@ -179,11 +179,11 @@ class RequestBuilder<T> {
         return endpointUrl;
     }
 
-    private buildHeaders(authenticatedUser?: IAuthenticatedUser): Record<string, string | undefined> {
-        const authenticationHeaders = authenticatedUser
+    private buildHeaders(authorization?: IAuthorization): Record<string, string | undefined> {
+        const authenticationHeaders = authorization
             ? {
-                UserId: authenticatedUser.userId,
-                Authorization: `Bearer ${authenticatedUser.jwtToken}`,
+                AccountId: authorization.accountId,
+                Authorization: `Bearer ${authorization.bearerToken}`,
             }
             : {};
 

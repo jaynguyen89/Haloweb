@@ -1,9 +1,7 @@
-import { AxiosError, AxiosResponse, HttpStatusCode } from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
 import { Dispatch } from 'redux';
 import { InterceptorTarget } from 'src/commons/enums';
-import { StatusNxxInterceptor, TStatusInterceptorParams } from 'src/fetcher/interceptors/ResponseInterceptors';
 import Request from 'src/fetcher/Request';
-import Stages from 'src/models/enums/stage';
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 export type InterceptorDataType = Request<unknown> | AxiosResponse<any, any> | AxiosError<unknown, any> | unknown;
@@ -26,7 +24,7 @@ export class Interceptor {
     }
 }
 
-class InterceptorChain {
+export class InterceptorChain {
     callback: typeof CallbackFunction;
     next?: InterceptorChain;
 
@@ -65,7 +63,3 @@ class InterceptorChain {
         }
     }
 }
-
-export default InterceptorChain;
-
-export const createInterceptors = (data: Array<TStatusInterceptorParams>) => data.map(params => new StatusNxxInterceptor(params).get());

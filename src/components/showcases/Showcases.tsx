@@ -36,6 +36,7 @@ const ToastShowcase = lazy(() => import('src/components/showcases/components/Toa
 const CountryFlagsShowcase = lazy(() => import('src/components/showcases/components/CountryFlagsShowcase'));
 const SocialIconsShowcase = lazy(() => import('src/components/showcases/components/SocialIconsShowcase'));
 const NumberCellShowcase = lazy(() => import('src/components/showcases/components/PinCellShowcase'));
+import CountDownShowcase from 'src/components/showcases/components/CountDownShowcase';
 
 const components = [
     {
@@ -82,6 +83,11 @@ const components = [
         key: 'number-cell',
         label: 'Number Cell',
         showcase: <NumberCellShowcase />,
+    },
+    {
+        key: 'count-down',
+        label: 'Count Down',
+        showcase: <CountDownShowcase duration={300} />,
     },
 ];
 

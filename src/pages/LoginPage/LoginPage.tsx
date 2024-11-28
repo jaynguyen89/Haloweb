@@ -21,7 +21,6 @@ import ReCAPTCHA from 'react-google-recaptcha';
 import { Helmet } from 'react-helmet';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
-import { Dispatch } from 'redux';
 import configs from 'src/commons/configs';
 import { debounceWait } from 'src/commons/constants';
 import CountryFlag from 'src/components/atoms/CountryFlag/CountryFlag';

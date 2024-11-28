@@ -19,10 +19,6 @@ export const otpBoxSx: SxProps<Theme> = {
     boxShadow: (theme) => (theme.mixins as IMixins).shadowDark,
 };
 
-export const otpFormSx: SxProps<Theme> = {
-    mb: vars.xxsmall,
-};
-
 const useStyles = makeStyles((theme: Theme) => ({
     otpWrapper: {
         margin: `${vars.xh1} auto`,
@@ -34,11 +30,36 @@ const useStyles = makeStyles((theme: Theme) => ({
         textAlign: 'center',
         margin: `${vars.tiny} auto ${vars.small} !important`,
     },
+    explanation: {
+        fontSize: '0.75rem',
+        fontWeight: vars.thin,
+        textAlign: 'center',
+        marginTop: vars.none,
+        marginBottom: vars.xmicro,
+    },
     subtitle: {
         margin: `${vars.large} auto ${vars.micro}`,
         fontSize: '0.75rem',
         fontWeight: vars.thin,
         textAlign: 'center',
+    },
+    otpInputWrapper: {
+        width: '100%',
+        textAlign: 'center',
+        '& input': {
+            width: '15rem',
+            border: `1px solid ${theme.palette.text.disabled}`,
+            color: theme.palette.text.primary,
+            borderRadius: vars.micro,
+            padding: `${vars.xtiny} ${vars.xxtiny}`,
+            fontSize: vars.mh9,
+        },
+        '& button': {
+            fontSize: vars.mh8,
+            padding: `${vars.micro} ${vars.tiny}`,
+            verticalAlign: 'middle',
+            marginLeft: vars.xxtiny,
+        },
     },
 }));
 

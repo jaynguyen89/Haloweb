@@ -172,23 +172,11 @@ export const sendRequestToLoginByCredentials = (
         {
             stage: Stages.REQUEST_TO_LOGIN_BAD_REQUEST,
             statusCode: HttpStatusCode.BadRequest,
-            //messageKey: `login-page.login-response-error-400-by-${loginData.emailAddress ? 'email' : 'phone'}`,
         },
-        // {
-        //     stage: Stages.REQUEST_TO_LOGIN_UNMATCHED_CREDENTIALS,
-        //     statusCode: HttpStatusCode.Conflict,
-        //     messageKey: 'login-page.login-response-error-409-credentials',
-        // },
         {
             stage: Stages.REQUEST_TO_LOGIN_UNACTIVATED_ACCOUNT,
             statusCode: HttpStatusCode.UnprocessableEntity,
-            //messageKey: 'login-page.login-response-error-422',
         },
-        // {
-        //     stage: Stages.REQUEST_TO_LOGIN_LOCKED_OUT,
-        //     statusCode: HttpStatusCode.Locked,
-        //     messageKey: 'login-page.login-response-error-423',
-        // },
     ]);
 
     const requestBuilder = new RequestBuilder<IAuthorization>()
@@ -233,18 +221,11 @@ export const sendRequestToLoginByOtp = (
         {
             stage: Stages.REQUEST_TO_LOGIN_BAD_REQUEST,
             statusCode: HttpStatusCode.BadRequest,
-            //messageKey: `login-page.login-response-error-400-by-${loginData.emailAddress ? 'email' : 'phone'}`,
         },
         {
             stage: Stages.REQUEST_TO_LOGIN_UNACTIVATED_ACCOUNT,
             statusCode: HttpStatusCode.UnprocessableEntity,
-            //messageKey: 'login-page.login-response-error-422',
         },
-        // {
-        //     stage: Stages.REQUEST_TO_LOGIN_LOCKED_OUT,
-        //     statusCode: HttpStatusCode.Locked,
-        //     messageKey: 'login-page.login-response-error-423',
-        // },
     ]);
 
     const requestBuilder = new RequestBuilder<IAuthorization>()
@@ -262,13 +243,28 @@ export const sendRequestToLoginByOtp = (
     surrogate(dispatch, removeStage(Stages.REQUEST_TO_LOGIN_BEGIN));
     isSuccess && surrogate(dispatch, setStageByName(Stages.REQUEST_TO_LOGIN_SUCCESS));
 
-    surrogate(dispatch, {
-        type: isSuccess ? authenticationConstants.PRE_LOGIN_SUCCESS : authenticationConstants.LOGIN_FAILURE,
-        payload: isSuccess ? result?.data : undefined,
-    });
+    if (isSuccess)
+        batch(() => {
+            surrogate(dispatch, setStageByName(Stages.REQUEST_TO_LOGIN_SUCCESS));
+            surrogate(dispatch, {
+                type: authenticationConstants.PRE_LOGIN_SUCCESS,
+                payload: result?.data,
+            });
+        });
+    else
+        batch(() => {
+            surrogate(dispatch, setStageByName(Stages.LOGIN_FAILURE));
+            surrogate(dispatch, {
+                type: authenticationConstants.LOGIN_FAILURE,
+                payload: { statusCode: result?.status, data: result?.data },
+            });
+        });
 };
 
-export const sendRequestToVerifyOtp = (otp: string) => (dispatch: Dispatch) => {
+export const sendRequestToVerifyOtp = (
+    authorization: IAuthorization,
+    otp: string
+) => (dispatch: Dispatch) => {
     surrogate(dispatch, setStageByName(Stages.REQUEST_TO_LOGIN_BEGIN));
 
     const responseInterceptors = createInterceptors([

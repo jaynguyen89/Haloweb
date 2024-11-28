@@ -36,7 +36,7 @@ const routes: Array<RouteProps> = [
         element: <ResetOrChangePassword />,
     },
     {
-        path: '/confirm-otp',
+        path: '/confirm-otp/:byEmail',
         element: <ConfirmOTP />,
     },
     {

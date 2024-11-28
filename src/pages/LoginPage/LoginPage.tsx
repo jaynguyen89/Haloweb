@@ -100,7 +100,7 @@ const LoginPage = ({
 
     useEffect(() => {
         if (isLoginSuccess && authorization) {
-            if (loginBy === LoginBy.OTP) navigate('/confirm-otp');
+            if (loginBy === LoginBy.OTP) navigate(`/confirm-otp/${formData[LoginFormFieldNames.EmailAddress].value ? 1 : 0}`);
             else if (authorization.twoFactorConfirmed === null || authorization.twoFactorConfirmed) {
                 navigate('/profile');
                 return;

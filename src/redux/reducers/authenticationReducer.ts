@@ -1,5 +1,4 @@
 import { HttpStatusCode } from 'axios';
-import configs from 'src/commons/configs';
 import * as authenticationConstants from 'src/redux/constants/authenticationConstants';
 import produce from 'immer';
 import { AnyAction } from 'redux';
@@ -42,6 +41,7 @@ const initialState: IAuthenticationStore = {
 const reducer = produce((state: IAuthenticationStore, action: AnyAction) => {
     switch (action.type) {
         case authenticationConstants.INITIALIZE_AUTH_ON_LAUNCH:
+        case authenticationConstants.PRE_LOGIN_SUCCESS:
         case authenticationConstants.LOGIN_SUCCESS:
             state.authorization = action.payload;
             return;

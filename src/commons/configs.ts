@@ -63,6 +63,12 @@ const configs = {
     lockedOutDuration: process.env.REACT_APP_LOCKED_OUT_DURATION === undefined
         ? 900000
         : +process.env.REACT_APP_LOCKED_OUT_DURATION,
+    otpMinLength: process.env.REACT_APP_OTP_MIN_LENGTH === undefined
+        ? 10
+        : +process.env.REACT_APP_OTP_MIN_LENGTH,
+    otpMaxLength: process.env.REACT_APP_OTP_MAX_LENGTH === undefined
+        ? 15
+        : +process.env.REACT_APP_OTP_MAX_LENGTH,
 };
 
 export default configs;

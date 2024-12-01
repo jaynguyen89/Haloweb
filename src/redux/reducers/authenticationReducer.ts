@@ -20,7 +20,7 @@ interface IAuthenticationStore {
         statusCode: number,
         isSuspended?: boolean,
         timestamp?: number,
-    } | null,
+    },
     authorization: IAuthorization | null,
 }
 
@@ -34,7 +34,9 @@ const initialState: IAuthenticationStore = {
         success: false,
         error: undefined,
     },
-    loginFailure: null,
+    loginFailure: {
+        statusCode: 0,
+    },
     authorization: null,
 };
 

@@ -17,6 +17,7 @@ export enum RequestHeaderKeys {
     AccountId = 'AccountId',
     RecaptchaToken = 'RecaptchaToken',
     TwoFactorToken = 'TwoFactorToken',
+    OTP = 'OneTimePassword',
 }
 
 export enum InterceptorTarget {

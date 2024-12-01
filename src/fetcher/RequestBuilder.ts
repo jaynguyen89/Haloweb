@@ -184,6 +184,7 @@ class RequestBuilder<T> {
             ? {
                 AccountId: authorization.accountId,
                 Authorization: `Bearer ${authorization.bearerToken}`,
+                AccessToken: authorization.authorizationToken,
             }
             : {};
 

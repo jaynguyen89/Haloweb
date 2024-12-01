@@ -241,8 +241,6 @@ export const sendRequestToLoginByOtp = (
     const isSuccess = result && isSuccessStatusCode(result.status);
 
     surrogate(dispatch, removeStage(Stages.REQUEST_TO_LOGIN_BEGIN));
-    isSuccess && surrogate(dispatch, setStageByName(Stages.REQUEST_TO_LOGIN_SUCCESS));
-
     if (isSuccess)
         batch(() => {
             surrogate(dispatch, setStageByName(Stages.REQUEST_TO_LOGIN_SUCCESS));
@@ -263,25 +261,43 @@ export const sendRequestToLoginByOtp = (
 
 export const sendRequestToVerifyOtp = (
     authorization: IAuthorization,
-    otp: string
-) => (dispatch: Dispatch) => {
+    otp: string,
+) => async (dispatch: Dispatch) => {
     surrogate(dispatch, setStageByName(Stages.REQUEST_TO_LOGIN_BEGIN));
 
     const responseInterceptors = createInterceptors([
-        // {
-        //     stage: Stages.REQUEST_TO_LOGIN_UNMATCHED_OTP,
-        //     statusCode: HttpStatusCode.Conflict,
-        //     messageKey: 'login-page.login-response-error-409-otp',
-        // },
         {
             stage: Stages.REQUEST_TO_LOGIN_PREAUTH_TIMEOUT,
             statusCode: HttpStatusCode.Gone,
-            //messageKey: 'login-page.login-response-error-410',
         },
-        // {
-        //     stage: Stages.REQUEST_TO_LOGIN_LOCKED_OUT,
-        //     statusCode: HttpStatusCode.Locked,
-        //     messageKey: 'login-page.login-response-error-423',
-        // },
     ]);
+
+    const response = await new RequestBuilder<IAuthorization>()
+        .withMethod(RequestMethods.POST)
+        .withEndpoint(`${ControllerEndpoints.AUTHENTICATION}/verify-otp`)
+        .withHeader(RequestHeaderKeys.OTP, otp)
+        .withResponseInterceptors(responseInterceptors)
+        .withBody({})
+        .build(authorization)
+        .send(dispatch);
+
+    const isSuccess = response && isSuccessStatusCode(response.status);
+    surrogate(dispatch, removeStage(Stages.REQUEST_TO_LOGIN_BEGIN));
+
+    if (isSuccess)
+        batch(() => {
+            surrogate(dispatch, setStageByName(Stages.REQUEST_TO_LOGIN_SUCCESS));
+            surrogate(dispatch, {
+                type: authenticationConstants.LOGIN_SUCCESS,
+                payload: response?.data,
+            });
+        });
+    else
+        batch(() => {
+            surrogate(dispatch, setStageByName(Stages.LOGIN_FAILURE));
+            surrogate(dispatch, {
+                type: authenticationConstants.LOGIN_FAILURE,
+                payload: { statusCode: response?.status, data: response?.data },
+            });
+        });
 };

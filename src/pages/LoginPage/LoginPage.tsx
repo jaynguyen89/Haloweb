@@ -22,7 +22,6 @@ import { Helmet } from 'react-helmet';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import configs from 'src/commons/configs';
-import { debounceWait } from 'src/commons/constants';
 import CountryFlag from 'src/components/atoms/CountryFlag/CountryFlag';
 import FaIcon from 'src/components/atoms/FaIcon';
 import MessageCaption from 'src/components/atoms/MessageCaption';
@@ -136,7 +135,7 @@ const LoginPage = ({
 
         setFieldValidation(validationResults);
         setFormValidation(fieldsMediator.validateForm());
-    }, debounceWait);
+    }, configs.debounceWaitDuration);
 
     const handleFieldValueChange = (
         fieldName: keyof typeof LoginFormFieldNames,

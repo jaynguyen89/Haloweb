@@ -32,10 +32,10 @@ const configs = {
         ? 3
         : +process.env.REACT_APP_REQUEST_RETRY_THRESHOLD,
     debounceWaitDuration: process.env.REACT_APP_DEBOUNCE_WAIT_DURATION === undefined
-        ? 1000
+        ? 1500
         : +process.env.REACT_APP_DEBOUNCE_WAIT_DURATION,
     throttleWaitDuration: process.env.REACT_APP_THROTTLE_WAIT_DURATION === undefined
-        ? 500
+        ? 1000
         : +process.env.REACT_APP_THROTTLE_WAIT_DURATION,
     cookieExpiryTime: process.env.REACT_APP_COOKIE_EXPIRY_TIME === undefined
         ? 30

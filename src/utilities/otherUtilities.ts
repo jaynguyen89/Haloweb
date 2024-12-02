@@ -41,5 +41,6 @@ export const readStorageMessage = (dispatch: Dispatch, key: string, remove?: tru
     return null;
 };
 
-export const createInterceptors = (data: Array<TStatusInterceptorParams>, target = InterceptorTarget.RESPONSE) =>
+// Todo: In later expansions, add 1 more param `target = InterceptorTarget.RESPONSE` to support creating request interceptors
+export const createInterceptors = (data: Array<TStatusInterceptorParams>) =>
     data.map(params => new StatusNxxInterceptor(params).get());

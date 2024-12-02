@@ -40,6 +40,7 @@ const ConfirmOTP = ({
 
     const isLoginProcessing = useIsStageIncluded(Stages.REQUEST_TO_LOGIN_BEGIN);
     const hasError400 = useIsStageIncluded(Stages.REQUEST_TO_LOGIN_BAD_REQUEST);
+    const hasError410 = useIsStageIncluded(Stages.REQUEST_TO_LOGIN_PREAUTH_TIMEOUT);
     const hasError422 = useIsStageIncluded(Stages.REQUEST_TO_LOGIN_UNACTIVATED_ACCOUNT);
     const isLoginFailed = useIsStageIncluded(Stages.LOGIN_FAILURE);
     const isLoginSuccess = useIsStageIncluded(Stages.REQUEST_TO_LOGIN_SUCCESS);
@@ -97,12 +98,17 @@ const ConfirmOTP = ({
 
     return (
         <div className={styles.otpWrapper}>
-            {(hasError400 || hasError422) && (
+            {(hasError400 || hasError410 || hasError422) && (
                 <Box sx={flasherBoxSx}>
                     <Flasher
                         severity='error'
                         stage={Stages.REQUEST_TO_LOGIN_BAD_REQUEST}
                         message={`login-page.login-response-error-400-by-${formData[LoginFormFieldNames.EmailAddress].value ? 'email' : 'phone'}`}
+                    />
+                    <Flasher
+                        severity='error'
+                        stage={Stages.REQUEST_TO_LOGIN_PREAUTH_TIMEOUT}
+                        message='login-page.login-response-error-410'
                     />
                     <Flasher
                         severity='error'

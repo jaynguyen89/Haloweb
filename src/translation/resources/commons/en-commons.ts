@@ -9,7 +9,7 @@ const enCommons: TTranslationMap = {
         update: 'Update',
         delete: 'Delete',
         remove: 'Remove',
-        'view-details': 'View Details',
+        'view-details': 'See Details',
     },
     labels: {
         loading: 'Loading...',

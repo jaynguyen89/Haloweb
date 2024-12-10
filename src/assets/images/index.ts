@@ -11,6 +11,12 @@ import TwitterLogoSvg from 'src/assets/images/logos/logo-twitter.svg';
 import MicrosoftMailLogoSvg from 'src/assets/images/logos/logo-microsoft-exchange.svg';
 import LinkedInLogoSvg from 'src/assets/images/logos/logo-linkedin.svg';
 import AwsLogoSvg from 'src/assets/images/logos/logo-aws.svg';
+import AfterpayLogoImg from 'src/assets/images/logos/afterpay.jpg';
+import AlipayLogoImg from 'src/assets/images/logos/alipay.png';
+import BankCardLogoImg from 'src/assets/images/logos/bank-card.png';
+import PaypalLogoImg from 'src/assets/images/logos/paypal.jpg';
+import ZalopayLogoImg from 'src/assets/images/logos/zalopay.png';
+import ZippayLogoImg from 'src/assets/images/logos/zippay.png';
 
 export {
     AvatarPlaceholderImg,
@@ -26,4 +32,10 @@ export {
     MicrosoftMailLogoSvg,
     LinkedInLogoSvg,
     AwsLogoSvg,
+    AfterpayLogoImg,
+    AlipayLogoImg,
+    BankCardLogoImg,
+    PaypalLogoImg,
+    ZalopayLogoImg,
+    ZippayLogoImg,
 };

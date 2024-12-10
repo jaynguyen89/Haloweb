@@ -17,6 +17,7 @@ import FaIcon from 'src/components/atoms/FaIcon';
 import MessageCaption from 'src/components/atoms/MessageCaption';
 import Recaptcha from 'src/components/atoms/Recaptcha';
 import Flasher from 'src/components/molecules/StatusIndicators/Flasher';
+import Loading from 'src/components/molecules/StatusIndicators/Loading/Loading';
 import { useDebounce } from 'src/hooks/eventForger';
 import { useIsStageIncluded } from 'src/hooks/useStage';
 import Stages from 'src/models/enums/stage';
@@ -69,11 +70,13 @@ const AccountRegistration = ({
     const recaptchaRef = React.createRef<LegacyRef<ReCAPTCHA> | undefined>();
     const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
 
+    const isFormSubmitted = useIsStageIncluded(Stages.REQUEST_TO_REGISTER_ACCOUNT_BEGIN);
     const isError400FromServer = useIsStageIncluded(Stages.REGISTER_ACCOUNT_BAD_REQUEST_INVALID_DATA);
     const isError409FromServer = useIsStageIncluded(Stages.REGISTER_ACCOUNT_CONFLICT_EMAIL_ADDRESS_OR_PHONE_NUMBER);
 
     useEffect(() => {
         return () => batch(() => {
+            surrogate(dispatch, removeStage(Stages.REQUEST_TO_REGISTER_ACCOUNT_BEGIN));
             surrogate(dispatch, removeStage(Stages.REGISTER_ACCOUNT_BAD_REQUEST_INVALID_DATA));
             surrogate(dispatch, removeStage(Stages.REGISTER_ACCOUNT_CONFLICT_EMAIL_ADDRESS_OR_PHONE_NUMBER));
             surrogate(dispatch, removeStage(Stages.REQUEST_TO_REGISTER_ACCOUNT_SUCCESS));
@@ -259,6 +262,7 @@ const AccountRegistration = ({
                     <Trans i18nKey='registration-page.subtitle'>
                         Already have account? <Link to='/login'>Login here</Link>.
                     </Trans>
+                    <Loading stage={Stages.REQUEST_TO_REGISTER_ACCOUNT_BEGIN} />
                 </Typography>
 
                 <Grid container spacing={2} sx={registrationFormSx}>
@@ -374,7 +378,7 @@ const AccountRegistration = ({
                         <Button
                             variant='contained'
                             className={styles.submitButton}
-                            disabled={!formValidation.isValid}
+                            disabled={!formValidation.isValid || isFormSubmitted}
                             onClick={!formValidation.isValid ? undefined : handleFormSubmit}
                         >
                             {t('buttons.submit')}&nbsp;

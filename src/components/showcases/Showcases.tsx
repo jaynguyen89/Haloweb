@@ -37,6 +37,7 @@ const CountryFlagsShowcase = lazy(() => import('src/components/showcases/compone
 const SocialIconsShowcase = lazy(() => import('src/components/showcases/components/SocialIconsShowcase'));
 const NumberCellShowcase = lazy(() => import('src/components/showcases/components/PinCellShowcase'));
 import CountDownShowcase from 'src/components/showcases/components/CountDownShowcase';
+import VerticalDrawerShowcase from 'src/components/showcases/components/VerticalDrawerShowcase';
 
 const components = [
     {
@@ -88,6 +89,11 @@ const components = [
         key: 'count-down',
         label: 'Count Down',
         showcase: <CountDownShowcase duration={300} />,
+    },
+    {
+        key: 'vertical-drawer',
+        label: 'Vertical Drawer',
+        showcase: <VerticalDrawerShowcase />,
     },
 ];
 

@@ -61,11 +61,14 @@ export const sendRequestToRegisterAccount = (registrationData: IRegistrationData
     const result = await request.send(dispatch);
     const isSuccess = result && isSuccessStatusCode(result.status);
 
-    isSuccess && surrogate(dispatch, setStageByName(Stages.REQUEST_TO_REGISTER_ACCOUNT_SUCCESS));
+    batch(() => {
+        surrogate(dispatch, removeStage(Stages.REQUEST_TO_REGISTER_ACCOUNT_BEGIN));
+        isSuccess && surrogate(dispatch, setStageByName(Stages.REQUEST_TO_REGISTER_ACCOUNT_SUCCESS));
 
-    surrogate(dispatch, {
-        type: isSuccess ? authenticationConstants.REGISTER_ACCOUNT_SUCCESS : authenticationConstants.REGISTER_ACCOUNT_FAILED,
-        payload: isSuccess ? undefined : result?.data,
+        surrogate(dispatch, {
+            type: isSuccess ? authenticationConstants.REGISTER_ACCOUNT_SUCCESS : authenticationConstants.REGISTER_ACCOUNT_FAILED,
+            payload: isSuccess ? undefined : result?.data,
+        });
     });
 };
 
@@ -153,12 +156,14 @@ export const sendRequestToActivateAccount = (accountId: string, body: ITokenData
     const result = await request.send(dispatch);
     const isSuccess = result && isSuccessStatusCode(result.status);
 
-    surrogate(dispatch, removeStage(Stages.REQUEST_TO_ACTIVATE_ACCOUNT_BEGIN));
-    isSuccess && surrogate(dispatch, setStageByName(Stages.REQUEST_TO_ACTIVATE_ACCOUNT_SUCCESS));
+    batch(() => {
+        surrogate(dispatch, removeStage(Stages.REQUEST_TO_ACTIVATE_ACCOUNT_BEGIN));
+        isSuccess && surrogate(dispatch, setStageByName(Stages.REQUEST_TO_ACTIVATE_ACCOUNT_SUCCESS));
 
-    surrogate(dispatch, {
-        type: isSuccess ? authenticationConstants.ACTIVATE_ACCOUNT_SUCCESS : authenticationConstants.ACTIVATE_ACCOUNT_FAILED,
-        payload: isSuccess ? undefined : result?.data,
+        surrogate(dispatch, {
+            type: isSuccess ? authenticationConstants.ACTIVATE_ACCOUNT_SUCCESS : authenticationConstants.ACTIVATE_ACCOUNT_FAILED,
+            payload: isSuccess ? undefined : result?.data,
+        });
     });
 };
 

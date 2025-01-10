@@ -160,7 +160,7 @@ const english: ITranslation = {
             'secret-code-caption-by-phone-number': 'The secret code has been sent to your phone number just now, please check your phone number.',
             'request-to-get-secret-code-unnecessary': 'The secret code is not required. Please proceed to the step as shown on the page.',
             'request-to-get-secret-code-invalid-destination': 'Invalid destination: no account with such data existed.',
-            'request-to-get-secret-code-no-pending-activation-found': 'Invalid destination: no account with such data to be activated.`',
+            'request-to-get-secret-code-no-pending-activation-found': 'Invalid destination: no account with such data to be activated.',
             'request-to-get-secret-code-activation-time-elapsed': 'The time to activate your account has elapsed. Please request another activation instruction instead.',
             'request-another-activation-email-button': 'Request Another Activation Instruction',
             'activate-account-response-error-400': 'The secret code is missing while it is required to activate your account.',

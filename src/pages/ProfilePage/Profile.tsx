@@ -30,7 +30,7 @@ const Profile = () => {
         const pageId = pageRef.slice(1);
 
         const menu = setActiveMenuItem(profileMenu, pageId, 'link');
-        let component: null | React.Component = null;
+        let component: null | React.JSX.Element = null;
 
         switch (pageId) {
             case ProfileContents.ProfileDetails:

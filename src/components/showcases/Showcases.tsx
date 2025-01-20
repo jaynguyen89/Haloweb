@@ -88,7 +88,7 @@ const components = [
     {
         key: 'count-down',
         label: 'Count Down',
-        showcase: <CountDownShowcase duration={300} />,
+        showcase: <CountDownShowcase />,
     },
     {
         key: 'vertical-drawer',

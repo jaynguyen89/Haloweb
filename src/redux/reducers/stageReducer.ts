@@ -3,6 +3,7 @@ import produce from 'immer';
 import * as stageConstants from 'src/redux/constants/stageConstants';
 import { AnyAction } from 'redux';
 import _remove from 'lodash/remove';
+import { ISiteWideMessage } from 'src/commons/interfaces';
 
 export interface IStage {
     name: string,
@@ -14,7 +15,7 @@ export interface IStage {
 
 export interface IStageStore {
     stages: Array<IStage>,
-    storageMessageKey?: string,
+    siteWideMessage?: ISiteWideMessage,
 }
 
 const initialState: IStageStore = {
@@ -43,11 +44,11 @@ const reducer = produce((state: IStageStore, action: AnyAction) => {
         case stageConstants.DANGEROUSLY_CLEAR_ALL_STAGE:
             state.stages = new Array<IStage>();
             return;
-        case stageConstants.SET_STORAGE_MESSAGE_KEY:
-            state.storageMessageKey = action.payload;
+        case stageConstants.SET_SITEWIDE_MESSAGE:
+            state.siteWideMessage = action.payload;
             return;
-        case stageConstants.REMOVE_STORAGE_MESSAGE_KEY:
-            state.storageMessageKey = undefined;
+        case stageConstants.REMOVE_SITEWIDE_MESSAGE:
+            state.siteWideMessage = undefined;
             return;
         default:
             return;

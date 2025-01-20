@@ -1,4 +1,3 @@
-import React from 'react';
 import { ITranslation } from 'src/commons/interfaces';
 import enCommons from 'src/translation/resources/commons/en-commons';
 
@@ -6,6 +5,7 @@ const english: ITranslation = {
     translation: {
         ...enCommons,
         'recaptcha-intro': 'This site is protected by reCAPTCHA, and the Google <1>Privacy Policy</1> and <3>Terms of Service</3> apply.',
+        'unauthorized-page-access': 'You\'re not authorized to access the resource. Please log in first.',
         navMenu: {
             search: 'Search',
             'my-feeds': 'My Feeds',
@@ -91,6 +91,7 @@ const english: ITranslation = {
             'social-login-text': 'A quicker way, login with social networks',
             'login-response-error-400-by-email': 'The format of your email address seems to be invalid.',
             'login-response-error-400-by-phone': 'The format of your phone number seems to be invalid.',
+            'login-response-error-404': 'No account matches your login information.',
             'login-response-error-410': 'Your pre-authenticated information has become invalid due to long inactivity. Please try to login again.',
             'login-response-error-422': 'Your account has not been activated. Please activate your account first.',
             'failure-message-1': 'You have made {{count}} failed login attempt{{plural}}, ',
@@ -173,6 +174,7 @@ const english: ITranslation = {
         'profile-page': {
             'profile-details': {
                 heading: 'Profile details',
+                'basic-information': 'Basic information',
                 'given-name-label': 'Given Name',
                 'middle-name-label': 'Middle name',
                 'family-name-label': 'Family name',
@@ -181,12 +183,17 @@ const english: ITranslation = {
                 'preferred-name-label': 'Preferred name',
                 'dob-label': 'Birthday',
                 'ethnicity-label': 'Ethnicity',
-                'work-interest-hoppies': 'Work, interest & hoppies',
                 'company-label': 'Company',
+                'occupation-label': 'Occupation',
                 'job-title-label': 'Job Title',
                 'interest-hoppies-label': 'Interest & hoppies',
                 'website-name-label': 'Website name',
                 'websites-label': 'Websites',
+            },
+            'interests-hobbies': {
+                heading: 'Interests & hobbies',
+                'interests-label': 'Interests',
+                'hobbies-label': 'Hobbies',
             },
             'address-book': {
                 heading: 'Address book',

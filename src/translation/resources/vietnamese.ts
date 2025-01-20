@@ -5,6 +5,7 @@ const vietnamese: ITranslation = {
     translation: {
         ...viCommons,
         'recaptcha-intro': 'Trang này được bảo vệ bởi reCAPTCHA, các <1>Chính sách riêng tư</1> và <3>Điều khoản dịch vụ</3> của Google được áp dụng.',
+        'unauthorized-page-access': 'Bạn cần đăng nhập để có quyền truy cập trang.',
         navMenu: {
             search: 'Tìm Kiếm',
             'my-feeds': 'Tin Nổi Bật',
@@ -90,6 +91,7 @@ const vietnamese: ITranslation = {
             'social-login-text': 'Để nhanh chóng hơn, bạn có thể đăng nhập bằng tài khoản mạng xã hội',
             'login-response-error-400-by-email': 'Định dạng địa chỉ email không hợp lệ.',
             'login-response-error-400-by-phone': 'Định dạng số điện thoại không hợp lệ.',
+            'login-response-error-404': 'Không tìm thấy tài khoản tương ứng với thông tin đăng nhập.',
             'login-response-error-410': 'Thông tin đăng nhập của bạn đã quá hạn do quá thời gian xác nhận OTP. Vui lòng đăng nhập lại từ đầu.',
             'login-response-error-422': 'Tài khoản của bạn chưa được kích hoạt. Vui lòng kích hoạt tài khoản trước khi đăng nhập.',
             'failure-message-1': 'Bạn đã đăng nhập thất bại {{count}} lần, ',

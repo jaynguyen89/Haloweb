@@ -27,7 +27,7 @@ export const mockPublicData: IPublicData = {
     birthFormats: [{ display: '' }],
     unitSystems: [{ display: '' }],
     careerFormats: [{ display: '' }],
-    visibilityFormats: [{ display: '' }],
+    visibilities: [{ display: '' }],
     countries: [{
         name: '',
         isoCode2Char: '',

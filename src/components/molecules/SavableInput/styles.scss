@@ -1,0 +1,19 @@
+.wrapper {
+  position: relative;
+
+  .save-btn {
+    position: absolute;
+    right: 10px;
+    top: 8px;
+
+    &:hover {
+      background-color: lighten(lightgrey, 7%);
+    }
+  }
+
+  .status {
+    position: absolute;
+    right: 20px;
+    top: 17px;
+  }
+}

@@ -7,10 +7,12 @@ import { faLaptop } from '@fortawesome/free-solid-svg-icons/faLaptop';
 import { faListCheck } from '@fortawesome/free-solid-svg-icons/faListCheck';
 import { faCreditCard } from '@fortawesome/free-solid-svg-icons/faCreditCard';
 import { faShieldHalved } from '@fortawesome/free-solid-svg-icons/faShieldHalved';
+import { faUserAstronaut } from '@fortawesome/free-solid-svg-icons/faUserAstronaut';
 import { TVerticalDrawerMenu } from 'src/components/compounds/VerticalDrawer/utilities';
 
 export enum ProfileContents {
     ProfileDetails = 'profile-details',
+    InterestsHobbies = 'interests-hobbies',
     AddressBook = 'address-book',
     PaymentMethods = 'payment-methods',
     LoginCredentials = 'login-credentials',
@@ -29,6 +31,11 @@ export const profileMenu: Array<TVerticalDrawerMenu> = [
                 text: 'Profile details',
                 icon: faIdCard,
                 link: `#${ProfileContents.ProfileDetails}`,
+            },
+            {
+                text: 'Interests & Hobbies',
+                icon: faUserAstronaut,
+                link: `#${ProfileContents.InterestsHobbies}`,
             },
             {
                 text: 'Address book',

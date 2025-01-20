@@ -2,7 +2,7 @@ import { HttpStatusCode } from 'axios';
 import * as authenticationConstants from 'src/redux/constants/authenticationConstants';
 import produce from 'immer';
 import { AnyAction } from 'redux';
-import { IAuthorization } from 'src/models/Authentication';
+import { IAuthorization, IAuthorizationData } from 'src/models/Authentication';
 
 interface IAuthenticationStore {
     accountActivation: {
@@ -84,6 +84,7 @@ const reducer = produce((state: IAuthenticationStore, action: AnyAction) => {
             return;
         case authenticationConstants.AUTHENTICATION_VOID:
             state.authorization = null;
+            state.authorizationData = null;
             return;
         case authenticationConstants.ACTIVATE_ACCOUNT_SECRET_CODE_SENT:
             state.accountActivation.isSecretCodeSent = true;

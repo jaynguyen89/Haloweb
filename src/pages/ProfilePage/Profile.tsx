@@ -18,7 +18,8 @@ const VisibilitySettings = lazy(() => import('src/pages/ProfilePage/PrivacySetti
 const AddressBook = lazy(() => import('src/pages/ProfilePage/ProfileSettings/AddressBook'));
 const PaymentMethods = lazy(() => import('src/pages/ProfilePage/ProfileSettings/PaymentMethods'));
 const Preferences = lazy(() => import('src/pages/ProfilePage/PrivacySettings/Preferences'));
-const ProfileDetails = lazy(() => import('src/pages/ProfilePage/ProfileSettings/ProfileDetails'));
+const ProfileDetails = lazy(() => import('src/pages/ProfilePage/ProfileSettings/ProfileDetails/ProfileDetails'));
+const InterestsHobbies = lazy(() => import('src/pages/ProfilePage/ProfileSettings/InterestsHobbies/InterestsHobbies'));
 
 const Profile = () => {
     const commonStyles = useCommonStyles();
@@ -35,6 +36,9 @@ const Profile = () => {
         switch (pageId) {
             case ProfileContents.ProfileDetails:
                 component = <ProfileDetails id={pageId} />;
+                break;
+            case ProfileContents.InterestsHobbies:
+                component = <InterestsHobbies id={pageId} />;
                 break;
             case ProfileContents.AddressBook:
                 component = <AddressBook id={pageId} />;

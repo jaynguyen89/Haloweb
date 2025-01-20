@@ -36,8 +36,7 @@ export interface IRequestResult<T> {
     data?: object | T,
 }
 
-export interface IStorageMessage {
-    storageKey: string,
+export interface ISiteWideMessage {
     targetPage: string,
     messageKey: string,
     messageParams?: object,

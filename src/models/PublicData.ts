@@ -18,7 +18,7 @@ interface IPublicData {
     birthFormats: Array<TPublicDataFormat>,
     unitSystems: Array<TPublicDataFormat>,
     careerFormats: Array<TPublicDataFormat>,
-    visibilityFormats: Array<TPublicDataFormat>,
+    visibilities: Array<TPublicDataFormat>,
     countries: Array<{
         name: string,
         isoCode2Char: string,
@@ -26,6 +26,9 @@ interface IPublicData {
         telephoneCode: string,
     }>,
     supportedSocialAccounts: Array<string>,
+    socialMedias: Array<TPublicDataFormat>,
+    localityRegions: Array<TPublicDataFormat>,
+    ethnicities: Array<TPublicDataFormat>,
 }
 
 export default IPublicData;

@@ -22,7 +22,7 @@ const initialState: IPublicDataStore = {
         birthFormats: [],
         unitSystems: [],
         careerFormats: [],
-        visibilityFormats: [],
+        visibilities: [],
         countries: [],
         supportedSocialAccounts: [],
     },

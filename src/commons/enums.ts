@@ -48,14 +48,14 @@ export enum HttpHeaderKeys {
     AUTHORIZATION = 'Authorization',
 }
 
-export enum TokenDestination { SMS, EMAIL}
+export enum TokenDestination { SMS, EMAIL }
 
 export enum StorageKeys {
     AUTHORIZATION = 'authorization',
+    AUTHENTICATED_USER = 'authenticatedUser',
     DEFAULT_THEME_INDEX = 'defaultTheme',
     DEFAULT_SITE_LANGUAGE = 'defaultSiteLanguage',
     PUBLIC_DATA = 'sitePublicData',
-    ACCOUNT_ACTIVATION_SUCCESS_STORAGE_KEY = 'accountActivationSuccessMessage',
 }
 
 // Order of the formats must exactly match server side

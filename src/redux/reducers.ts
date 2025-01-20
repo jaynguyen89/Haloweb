@@ -4,6 +4,7 @@ import stageStore from 'src/redux/reducers/stageReducer';
 import languageStore from 'src/redux/reducers/languageReducer';
 import publicDataStore from 'src/redux/reducers/publicDataReducer';
 import authenticationStore from 'src/redux/reducers/authenticationReducer';
+import accountStore from 'src/redux/reducers/accountReducer';
 
 const reducers = combineReducers({
     themeStore,
@@ -11,6 +12,7 @@ const reducers = combineReducers({
     languageStore,
     publicDataStore,
     authenticationStore,
+    accountStore,
 });
 
 export type TRootState = ReturnType<typeof reducers>;

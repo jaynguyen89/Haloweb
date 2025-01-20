@@ -7,13 +7,12 @@ import { useIsStageIncluded } from 'src/hooks/useStage';
 import Stages from 'src/models/enums/stage';
 import React, { LegacyRef, useEffect, useMemo, useState } from 'react';
 import ReCAPTCHA from 'react-google-recaptcha';
-import { setStorageMessage, surrogate } from 'src/utilities/otherUtilities';
-import { removeStage, setStageByName } from 'src/redux/actions/stageActions';
+import { surrogate } from 'src/utilities/otherUtilities';
+import { removeStage, setSiteWideMessage, setStageByName } from 'src/redux/actions/stageActions';
 import { sendRequestToActivateAccount, sendRequestToGetSecretCode } from 'src/redux/actions/authenticationActions';
-import { StorageKeys, TokenDestination } from 'src/commons/enums';
+import { TokenDestination } from 'src/commons/enums';
 import configs from 'src/commons/configs';
 import { loginPageName } from 'src/pages/LoginPage/LoginPage';
-import { IStorageMessage } from 'src/commons/interfaces';
 import Loading from 'src/components/molecules/StatusIndicators/Loading/Loading';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -143,11 +142,11 @@ const ActivateAccount = ({
 
     useEffect(() => {
         if (activationSuccess) {
-            setStorageMessage(dispatch, {
-                storageKey: StorageKeys.ACCOUNT_ACTIVATION_SUCCESS_STORAGE_KEY,
+            //alert(t('activate-account-page.activate-account-success'));
+            surrogate(dispatch, setSiteWideMessage({
                 targetPage: loginPageName,
                 messageKey: 'activate-account-page.activate-account-success',
-            } as IStorageMessage);
+            }));
 
             navigate('/login');
         }

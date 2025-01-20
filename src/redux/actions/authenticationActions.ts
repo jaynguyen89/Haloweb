@@ -11,7 +11,8 @@ import {
 } from 'src/commons/enums';
 import RequestBuilder from 'src/fetcher/RequestBuilder';
 import {
-    IAuthenticationData, IAuthorization,
+    IAuthenticationData,
+    IAuthorization,
     ILoginInformation,
     IRegistrationData,
     ITokenData,
@@ -177,6 +178,10 @@ export const sendRequestToLoginByCredentials = (
         {
             stage: Stages.REQUEST_TO_LOGIN_BAD_REQUEST,
             statusCode: HttpStatusCode.BadRequest,
+        },
+        {
+            stage: Stages.REQUEST_TO_LOGIN_UNMATCHED,
+            statusCode: HttpStatusCode.NotFound,
         },
         {
             stage: Stages.REQUEST_TO_LOGIN_UNACTIVATED_ACCOUNT,

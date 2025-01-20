@@ -2,7 +2,7 @@ import { ThemeProvider } from '@mui/material';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BrowserRouter } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import DimOverlay from 'src/components/atoms/DimOverlay';
 import Flasher from 'src/components/molecules/StatusIndicators/Flasher';
 import Loading from 'src/components/molecules/StatusIndicators/Loading/Loading';
@@ -18,17 +18,51 @@ import 'src/foundation/app.scss';
 import { useIsStageIncluded } from 'src/hooks/useStage';
 import Stages from 'src/models/enums/stage';
 import { surrogate } from 'src/utilities/otherUtilities';
+import { loginPageName } from 'src/pages/LoginPage/LoginPage';
+import { setSiteWideMessage } from '../redux/actions/stageActions';
 
-const App = () => {
+const mapStateToProps = (state: TRootState) => ({
+    authorization: state.authenticationStore.authorization,
+});
+
+const App = ({
+    authorization,
+}: ReturnType<typeof mapStateToProps>) => {
     const { t, i18n } = useTranslation();
     const dispatch = useDispatch();
 
     const defaultTheme = useSelector((state: TRootState) => (state.themeStore as IThemeStore).defaultTheme);
     const shouldHideHeader = useIsStageIncluded(Stages.HIDE_SITE_HEADER);
-    const shouldShowLoading = useIsStageIncluded(Stages.PREFETCH_SITE_PUBLIC_DATA_ONGOING);
+    const isFetchingPublicData = useIsStageIncluded(Stages.PREFETCH_SITE_PUBLIC_DATA_ONGOING);
+    const isFetchingAuthUserInfo =  useIsStageIncluded(Stages.GET_AUTHENTICATED_USER_INFO_BEGIN);
+    const shouldShowLoading = isFetchingPublicData || isFetchingAuthUserInfo;
+
+    // Todo: handle background service errors
+    // const hasBackgroundError = useIsStageIncluded(Stages.GET_AUTHENTICATED_USER_INFO_FAILED);
 
     useEffect(() => {
         surrogate(dispatch, prefetchLanguageOnLaunch(i18n));
+
+        if (!Boolean(authorization)) {
+            const path = window.location.pathname;
+            const publicPaths = [
+                '/',
+                '/login',
+                '/register-account',
+                '/forgot-password',
+                '/activate-account',
+            ];
+
+            if (!publicPaths.includes(path)) {
+                //alert(t('unauthorized-page-access'));
+                surrogate(dispatch, setSiteWideMessage({
+                    targetPage: loginPageName,
+                    messageKey: 'unauthorized-page-access',
+                }));
+
+                window.location.href = '/login';
+            }
+        }
     }, []);
 
     return (
@@ -59,4 +93,4 @@ const App = () => {
     );
 };
 
-export default App;
+export default connect(mapStateToProps)(App);

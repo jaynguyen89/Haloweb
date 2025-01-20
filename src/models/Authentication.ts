@@ -37,3 +37,11 @@ export interface IAuthorization {
     validityDuration: number,
     twoFactorConfirmed: boolean | null,
 }
+
+export interface IAuthenticatedUser extends ILoginInformation {
+    accountId: string,
+    profileId: string,
+    username: string,
+    roles: Array<Roles>,
+    fullName?: string,
+}

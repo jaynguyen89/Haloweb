@@ -4,7 +4,7 @@ import useStyles from 'src/components/atoms/CountDown/styles';
 
 type TCountDownProps = {
     duration: number; // seconds
-    display: 'text' | 'box',
+    display?: 'text' | 'box',
 };
 
 /* Count down is limited within 60 minutes. */
@@ -27,13 +27,13 @@ const CountDown = ({ duration, display = 'text' }: TCountDownProps) => {
     if (display === 'text')
         return (
             <span className={styles.text}>
-                {`${Math.floor(time / 60)}`.padStart(2, 0)}:{`${time % 60}`.padStart(2, 0)}
+                {`${Math.floor(time / 60)}`.padStart(2, '')}:{`${time % 60}`.padStart(2, '')}
             </span>
         );
 
     return (
         <Box className={styles.box}>
-            {`${Math.floor(time / 60)}`.padStart(2, 0)}:{`${time % 60}`.padStart(2, 0)}
+            {`${Math.floor(time / 60)}`.padStart(2, '')}:{`${time % 60}`.padStart(2, '')}
         </Box>
     );
 };

@@ -29,7 +29,7 @@ import Recaptcha from 'src/components/atoms/Recaptcha';
 import AuthSocialAccounts from 'src/components/compounds/AuthSocialAccounts/AuthSocialAccounts';
 import Loading from 'src/components/molecules/StatusIndicators/Loading/Loading';
 import { useDebounce } from 'src/hooks/eventForger';
-import { useIsStageIncluded } from 'src/hooks/useStage';
+import { useIsStageIncluded, useSiteWideMessage } from 'src/hooks/useStage';
 import { RegistrationFormFieldNames } from 'src/pages/AccountRegistration/utilities';
 import LoginFailureMessage from 'src/pages/LoginPage/LoginFailureMessage/LoginFailureMessage';
 import useStyles, { flasherBoxSx, helpBoxSx, loginBoxSx, loginFormSx } from 'src/pages/LoginPage/styles';
@@ -43,7 +43,10 @@ import {
     loginValidatorOptionsMapFn,
     TLoginFieldKey,
 } from 'src/pages/LoginPage/utilities';
-import { sendRequestToLoginByCredentials, sendRequestToLoginByOtp } from 'src/redux/actions/authenticationActions';
+import {
+    sendRequestToLoginByCredentials,
+    sendRequestToLoginByOtp,
+} from 'src/redux/actions/authenticationActions';
 import { removeStage } from 'src/redux/actions/stageActions';
 import { TRootState } from 'src/redux/reducers';
 import { batch, connect, useDispatch } from 'react-redux';
@@ -53,8 +56,7 @@ import {
     TFormDataState,
 } from 'src/utilities/data-validators/dataValidators';
 import FieldsMediator, { TFieldMediatorOptions, TFormResult, TValidationResult } from 'src/utilities/data-validators/fieldsMediator';
-import { readStorageMessage, surrogate } from 'src/utilities/otherUtilities';
-import { StorageKeys } from 'src/commons/enums';
+import { surrogate } from 'src/utilities/otherUtilities';
 import Flasher from 'src/components/molecules/StatusIndicators/Flasher';
 import Stages from 'src/models/enums/stage';
 
@@ -80,10 +82,10 @@ const LoginPage = ({
     const recaptchaRef = React.createRef<LegacyRef<ReCAPTCHA> | undefined>();
     const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
 
-    const accountActivationMessage = readStorageMessage(dispatch, StorageKeys.ACCOUNT_ACTIVATION_SUCCESS_STORAGE_KEY);
-
+    const siteWideMessage = useSiteWideMessage();
     const isLoginProcessing = useIsStageIncluded(Stages.REQUEST_TO_LOGIN_BEGIN);
     const hasError400 = useIsStageIncluded(Stages.REQUEST_TO_LOGIN_BAD_REQUEST);
+    const hasError404 = useIsStageIncluded(Stages.REQUEST_TO_LOGIN_UNMATCHED);
     const hasError422 = useIsStageIncluded(Stages.REQUEST_TO_LOGIN_UNACTIVATED_ACCOUNT);
     const isLoginFailed = useIsStageIncluded(Stages.LOGIN_FAILURE);
     const isLoginSuccess = useIsStageIncluded(Stages.REQUEST_TO_LOGIN_SUCCESS);
@@ -176,21 +178,26 @@ const LoginPage = ({
                 <meta name='description' content='Sign in with email address or phone number, or using social media accounts' />
             </Helmet>
 
-            {accountActivationMessage && accountActivationMessage.targetPage === LoginPage.name && (
+            {siteWideMessage && siteWideMessage.targetPage === LoginPage.name && (
                 <Box sx={flasherBoxSx}>
                     <Flasher
-                        stage={Stages.REQUEST_TO_ACTIVATE_ACCOUNT_SUCCESS}
-                        message={accountActivationMessage.messageKey}
+                        stage={Stages.SHOWCASE}
+                        message={siteWideMessage.messageKey}
                     />
                 </Box>
             )}
 
-            {(hasError400 || hasError422) && (
+            {(hasError400 || hasError404 || hasError422) && (
                 <Box sx={flasherBoxSx}>
                     <Flasher
                         severity='error'
                         stage={Stages.REQUEST_TO_LOGIN_BAD_REQUEST}
                         message={`login-page.login-response-error-400-by-${formData[LoginFormFieldNames.EmailAddress].value ? 'email' : 'phone'}`}
+                    />
+                    <Flasher
+                        severity='error'
+                        stage={Stages.REQUEST_TO_LOGIN_UNMATCHED}
+                        message='login-page.login-response-error-404'
                     />
                     <Flasher
                         severity='error'
@@ -208,7 +215,7 @@ const LoginPage = ({
                 </Typography>
 
                 <Grid container spacing={2} sx={loginFormSx}>
-                    {isLoginFailed && (
+                    {isLoginFailed && !hasError400 && !hasError404 && !hasError422 && (
                         <Grid item xs={12}>
                             <LoginFailureMessage />
                         </Grid>

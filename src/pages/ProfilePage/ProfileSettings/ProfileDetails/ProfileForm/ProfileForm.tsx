@@ -1,16 +1,13 @@
 import React from 'react';
 import Grid from '@mui/material/Grid';
-import { useTheme } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import FaIcon from 'src/components/atoms/FaIcon';
 import { faMinus } from '@fortawesome/free-solid-svg-icons/faMinus';
-import IconButton from '@mui/material/IconButton';
-import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
-import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes';
 import { useTranslation } from 'react-i18next';
 import SavableInput from 'src/components/molecules/SavableInput/SavableInput';
 import SavableSelect from 'src/components/molecules/SavableSelect/SavableSelect';
 import { IProfileDetails } from 'src/models/Profile';
+import Websites from './Websites';
 
 type TProfileFormProps = {
     id: string,
@@ -20,7 +17,6 @@ const ProfileForm = ({
     id,
 }: TProfileFormProps) => {
     const { t } = useTranslation();
-    const theme = useTheme();
 
     const [profileDetails, setProfileDetails] = React.useState<IProfileDetails>();
 
@@ -108,34 +104,7 @@ const ProfileForm = ({
                         style={{width: '100%'}}
                     />
                 </Grid>
-                <Grid item xs={12}>
-                    <h4>
-                        {t(`profile-page.${id}.websites-label`)}
-                        <IconButton>
-                            <FaIcon wrapper='fa' t='obj' ic={faPlus}/>
-                        </IconButton>
-                    </h4>
-
-                    <Grid container spacing={2}>
-                        <Grid item md={1} sm={1} xs={1}>
-                            <IconButton style={{verticalAlign: 'text-top'}}>
-                                <FaIcon wrapper='fa' t='obj' ic={faTimes} color={theme.palette.error.main}/>
-                            </IconButton>
-                        </Grid>
-                        <Grid item md={3} sm={4} xs={4}>
-                            <SavableInput
-                                label={t(`profile-page.${id}.website-name-label`)}
-                                style={{width: '100%'}}
-                            />
-                        </Grid>
-                        <Grid item md={8} sm={7} xs={7}>
-                            <SavableInput
-                                label={t(`profile-page.${id}.websites-label`)}
-                                style={{width: '100%'}}
-                            />
-                        </Grid>
-                    </Grid>
-                </Grid>
+                <Websites id={id} />
             </Grid>
         </div>
     );

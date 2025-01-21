@@ -1,6 +1,27 @@
 import vars from 'src/commons/variables/cssVariables.scss';
-import { Theme } from '@mui/material';
+import { SxProps, Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import { IMixins } from './interfaces';
+
+export const modalBoxSx: SxProps<Theme> = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: {
+        xs: vars.tinyWidth,
+        sm: vars.smallWidth,
+        md: vars.mediumWidth,
+    },
+    backgroundColor: (theme) => theme.palette.common.white,
+    border: (theme) => `${vars.xmicro} solid ${theme.palette.primary.dark}}`,
+    borderRadius: vars.micro,
+    boxShadow: (theme) => (theme.mixins as IMixins).shadowDark,
+    padding: vars.xtiny,
+    '& .modal-wrapper': {
+        padding: `${vars.micro} ${vars.tiny}`,
+    },
+};
 
 const useCommonStyles = makeStyles((theme: Theme) => ({
     noPadding: {

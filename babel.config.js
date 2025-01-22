@@ -13,7 +13,7 @@ module.exports = {
         '@babel/plugin-transform-react-jsx',
         new ForkTsCheckerWebpackPlugin({
             typescript: {
-                memoryLimit: 4096,
+                memoryLimit: 8192,
             },
         }),
     ],

@@ -3,7 +3,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import useStyles from 'src/pages/ProfilePage/styles';
 import ProfileAvatar from 'src/pages/ProfilePage/ProfileSettings/ProfileDetails/ProfileAvatar/ProfileAvatar';
-import ProfileForm from 'src/pages/ProfilePage/ProfileSettings/ProfileDetails/ProfileForm/ProfileForm';
+import BasicInformation from 'src/pages/ProfilePage/ProfileSettings/ProfileDetails/ProfileForm/BasicInformation';
 
 type TProfileDetailsProps = {
     id: string,
@@ -24,7 +24,7 @@ const ProfileDetails = ({
                     <ProfileAvatar />
                 </Grid>
                 <Grid item md={12} lg={8}>
-                    <ProfileForm id={id} />
+                    <BasicInformation id={id} />
                 </Grid>
             </Grid>
         </div>

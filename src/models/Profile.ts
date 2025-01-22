@@ -20,7 +20,7 @@ export interface IProfileDetails {
     fullName?: string,
     nickName?: string,
     gender: Gender,
-    dateOfBirth?: Date,
+    dateOfBirth?: string,
     ethnicity: Ethnicity,
     workInfo: IWorkInfo,
 }
@@ -32,7 +32,7 @@ interface IWorkInfo {
     profileLinks?: Array<IProfileLink>,
 }
 
-interface IProfileLink {
+export interface IProfileLink {
     linkType: SocialMedia,
     linkHref: string,
 }

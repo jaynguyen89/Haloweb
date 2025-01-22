@@ -15,6 +15,7 @@ export enum RequestMethods {
 
 export enum RequestHeaderKeys {
     AccountId = 'AccountId',
+    ProfileId = 'ProfileId',
     RecaptchaToken = 'RecaptchaToken',
     TwoFactorToken = 'TwoFactorToken',
     OTP = 'OneTimePassword',
@@ -38,6 +39,7 @@ export enum ControllerEndpoints {
     ACCOUNT = 'account',
     PROFILE = 'profile',
     PUBLIC_DATA = 'public-data',
+    OCCUPATION = 'occupations',
 }
 
 export enum HttpHeaderKeys {
@@ -56,6 +58,9 @@ export enum StorageKeys {
     DEFAULT_THEME_INDEX = 'defaultTheme',
     DEFAULT_SITE_LANGUAGE = 'defaultSiteLanguage',
     PUBLIC_DATA = 'sitePublicData',
+    PROFILE_DETAILS = 'profileDetails',
+    OCCUPATION_ITEMS = 'occupationItems',
+    OCCUPATIONS = 'occupations',
 }
 
 // Order of the formats must exactly match server side

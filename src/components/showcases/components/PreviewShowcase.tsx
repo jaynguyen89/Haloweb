@@ -2,7 +2,7 @@ import { Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import React from 'react';
-import { CircularSkeleton, RectangularSkeleton, RoundedSkeleton, TextSkeleton } from 'src/components/atoms/Skeletons';
+import { CircularSkeleton, RectangularSkeleton, RoundedSkeleton, TextSkeleton } from 'src/components/atoms/Skeletons/Skeletons';
 import useStyles from 'src/components/showcases/styles';
 
 const PreviewShowcase = () => {

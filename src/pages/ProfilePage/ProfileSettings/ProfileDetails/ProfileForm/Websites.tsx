@@ -15,13 +15,16 @@ import {
 } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import HaloModal from 'src/components/molecules/HaloModal';
+import { IProfileLink } from 'src/models/Profile';
 
 type TWebsitesProps = {
     id: string,
+    links: Array<IProfileLink> | null,
 };
 
 const Websites = ({
     id,
+    links,
 }: TWebsitesProps) => {
     const { t } = useTranslation();
 

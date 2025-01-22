@@ -5,7 +5,7 @@ import 'src/components/molecules/SavableInput/styles.scss';
 import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons/faFloppyDisk';
 
 type SavableInputProps = TextFieldProps & {
-    oldValue?: string,
+    oldValue?: string | null,
     onClickSaveBtn?: () => void,
     status?: {
         saving: boolean,

@@ -6,7 +6,7 @@ import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons/faFloppyDisk';
 
 type SavableSelectProps = SelectProps & PropsWithChildren & {
     id?: string,
-    oldValue?: string,
+    oldValue?: string | null,
     onClickSaveBtn?: () => void,
     status?: {
         saving: boolean,

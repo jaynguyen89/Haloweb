@@ -189,6 +189,7 @@ const english: ITranslation = {
                 'interest-hoppies-label': 'Interest & hoppies',
                 'website-name-label': 'Website name',
                 'websites-label': 'Websites',
+                'get-profile-details-error': 'An issue happened while fetching your profile details. Please refresh page to try again.',
             },
             'interests-hobbies': {
                 heading: 'Interests & hobbies',

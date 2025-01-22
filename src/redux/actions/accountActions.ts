@@ -1,11 +1,6 @@
-import { HttpStatusCode } from 'axios';
-import { batch } from 'react-redux';
 import { Dispatch } from 'redux';
 import { IAuthenticatedUser, IAuthorization } from 'src/models/Authentication';
-import * as accountConstants from 'src/redux/constants/accountConstants';
-import { setStageByName, removeStage } from 'src/redux/actions/stageActions';
-import { isSuccessStatusCode, surrogate } from 'src/utilities/otherUtilities';
-import Stages from 'src/models/enums/stage';
+import { isSuccessStatusCode } from 'src/utilities/otherUtilities';
 import RequestBuilder from 'src/fetcher/RequestBuilder';
 import { ControllerEndpoints, RequestMethods } from 'src/commons/enums';
 
@@ -19,7 +14,8 @@ export const sendRequestToGetAuthenticatedUserInfo = async (
         .build(authorization);
 
     const response = await request.send(dispatch);
+
     const isSuccess = response && isSuccessStatusCode(response.status);
-    if (isSuccess) return new Promise(() => response?.data);
-    else return null;
+    if (isSuccess) return response?.data;
+    return null;
 };

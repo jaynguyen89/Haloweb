@@ -41,13 +41,8 @@ const SavableCalendar = ({
                 disablePast={disablePast}
                 minDate={disablePast ? undefined : minDate}
                 maxDate={disableFuture ? undefined : maxDate}
-                label={label}
+                label={`${label} (${format?.toLowerCase()})`}
                 views={['year', 'month', 'day']}
-                slotProps={{
-                    textField: {
-                        helperText: format?.toUpperCase(),
-                    },
-                }}
                 format={format}
                 onChange={(value) => {
                     const prev = oldValue ? DateTime.fromISO(oldValue).toFormat(format) : null;

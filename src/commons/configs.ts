@@ -69,6 +69,12 @@ const configs = {
     otpMaxLength: process.env.REACT_APP_OTP_MAX_LENGTH === undefined
         ? 15
         : +process.env.REACT_APP_OTP_MAX_LENGTH,
+    minAge: process.env.REACT_APP_MIN_AGE === undefined
+        ? 100
+        : +process.env.REACT_APP_MIN_AGE,
+    maxAge: process.env.REACT_APP_MAX_AGE === undefined
+        ? 10
+        : +process.env.REACT_APP_MAX_AGE,
 };
 
 export default configs;

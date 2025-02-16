@@ -33,6 +33,7 @@ const enCommons: TTranslationMap = {
         'input-numbers-only': 'Input should only contain numbers.',
         'input-alphabets-only': 'Input should only contain alphabet letters.',
         'input-alphanumeric': 'Input should only contain number and alphabet letters.',
+        'input-pattern': 'Input should only contain the following special characters: {{chars}}',
         'input-before-date': 'The selected date should be before {{date}}',
         'input-after-date': 'The selected date should be after {{date}}',
         'input-between-dates': 'The selected date should be between {{afterDate}} and {{beforeDate}}',

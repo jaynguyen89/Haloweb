@@ -2,6 +2,8 @@ import IPublicData from 'src/models/PublicData';
 import { TFieldResult } from 'src/utilities/data-validators/fieldsMediator';
 import { TDateFormat } from 'src/commons/types';
 import { format } from 'src/utilities/timeUtilities';
+import { DateTime } from 'luxon';
+import { DateFormats } from 'src/commons/enums';
 
 export type TRangeOption = {
     // If true, treat the input value as number, otherwise, string by default
@@ -26,11 +28,11 @@ export type TRangeOption = {
 
 export type TDateOption = {
     // If specified, data must be before (lower than) this date
-    beforeDate?: Date,
+    beforeDate?: DateTime,
     // If Specified, data must be after (greater than) this date
-    afterDate?: Date,
+    afterDate?: DateTime,
     // If specified, ignore all other options, check if data occurs in an array
-    among?: Array<Date>,
+    among?: Array<DateTime>,
 };
 
 export type TSpecialOption = TRangeOption & {
@@ -140,6 +142,10 @@ export class RangeValidator<T extends string> {
         if (this.options.alphanumeric) alphanumericValidity = /^[\w\u00C0-\u00FF]+$/.test(data as string);
         if (!alphanumericValidity) messages.set('messages.input-alphanumeric', undefined);
 
+        let patternValidity = true;
+        if (this.options.pattern) patternValidity = new RegExp(`/^${this.options.pattern}$/`, 'gi').test(data as string);
+        if (!patternValidity) messages.set('messages.input-pattern', { chars: this.options.pattern });
+
         const isValid =
             minValidity &&
             maxValidity &&
@@ -147,7 +153,8 @@ export class RangeValidator<T extends string> {
             amongValidity &&
             numbersOnlyValidity &&
             alphabetsOnlyValidity &&
-            alphanumericValidity;
+            alphanumericValidity &&
+            patternValidity;
 
         if (isValid) messages = undefined;
         return { isValid, messages } as TFieldResult;
@@ -176,13 +183,13 @@ export class DateValidator<T extends Date> {
 
         let afterDateValidity = true;
         if (this.options.afterDate) {
-            afterDateValidity = data > this.options.afterDate;
+            afterDateValidity = DateTime.fromFormat(data, DateFormats.DDMMYYYYS) > this.options.afterDate;
             if (!afterDateValidity) messages.set('messages.input-after-date', { date: format(this.options.afterDate, this.formats) });
         }
 
         let beforeDateValidity = true;
         if (this.options.beforeDate) {
-            beforeDateValidity = data < this.options.beforeDate;
+            beforeDateValidity = DateTime.fromFormat(data, DateFormats.DDMMYYYYS) < this.options.beforeDate;
             if (!beforeDateValidity) messages.set('messages.input-before-date', { date: format(this.options.beforeDate, this.formats) });
         }
 
@@ -499,7 +506,7 @@ export type TValidatorOptionsMapFn<T> = (
 
 export type TFormDataState<T> = {
     [key in keyof T]: {
-        value: string | Date | File | FileList | undefined;
+        value: string | Date | DateTime | File | FileList | undefined;
         caption?: string | undefined;
     };
 };

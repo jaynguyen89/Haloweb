@@ -6,6 +6,7 @@ import 'src/components/molecules/SavableCalendar/styles.scss';
 import { IconButton, useTheme } from '@mui/material';
 import FaIcon from '../../atoms/FaIcon';
 import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons/faFloppyDisk';
+import { DateFormats } from 'src/commons/enums';
 
 type TDatePickerProps = DatePickerProps & {
     label: string,
@@ -26,7 +27,8 @@ const SavableCalendar = ({
     disablePast,
     minDate = DateTime.now().minus({ year: 100 }),
     maxDate = DateTime.now().plus({ year: 1 }),
-    format = 'dd/MM/yyyy',
+    format = DateFormats.DDMMYYYYS,
+    onChange,
     ...props
 }: TDatePickerProps) => {
     const theme = useTheme();
@@ -48,6 +50,7 @@ const SavableCalendar = ({
                     const prev = oldValue ? DateTime.fromISO(oldValue).toFormat(format) : null;
                     const current = value?.toFormat(format) ?? null;
                     setChanged(prev !== current);
+                    onChange(value);
                 }}
                 {...props}
             />

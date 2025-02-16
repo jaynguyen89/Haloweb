@@ -65,14 +65,14 @@ export enum StorageKeys {
 
 // Order of the formats must exactly match server side
 export enum DateFormats {
-    DDMMMYYYY = 'dd LL yyyy',
-    WDDMMMYYYY = 'ccc, dd LLL yyyy',
-    DDMMYYYYS = 'dd/LL/yyyy',
-    WDDMMYYYYS = 'ccc, dd/LL/yyyy',
-    DDMMYYYYD = 'dd-LL-yyyy',
-    WDDMMYYYYD = 'ccc, dd-LL-yyyy',
-    YYYYMMDDS = 'yyyy/LL/dd',
-    YYYYMMDDD = 'yyyy-LL-dd',
+    DDMMMYYYY = 'dd MMM yyyy', // default display
+    WDDMMMYYYY = 'ddd, dd MMM yyyy',
+    DDMMYYYYS = 'dd/MM/yyyy', // default logical
+    WDDMMYYYYS = 'ddd, dd/MM/yyyy',
+    DDMMYYYYD = 'dd-MM-yyyy',
+    WDDMMYYYYD = 'ddd, dd-MM-yyyy',
+    YYYYMMDDS = 'yyyy/MM/dd', // client iso
+    YYYYMMDDD = 'yyyy-MM-dd',
 }
 
 // Order of the formats must exactly match server side

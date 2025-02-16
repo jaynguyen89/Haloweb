@@ -15,7 +15,7 @@ export type TDateFormat = {
     dateOnly?: true,
     timeOnly?: true,
     formats: {
-        date?: number,
-        time?: number,
+        date?: string,
+        time?: string,
     },
 };

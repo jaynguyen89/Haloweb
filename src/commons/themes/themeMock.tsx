@@ -57,6 +57,7 @@ export const MockTheme = ({ children }: { children: React.ReactElement }) => {
     const themeMock = createTheme({
         mixins: {
             toolbar: { width: '100%' },
+            // @ts-ignore
             shadowLight: '0 3px 6px rgba(255,255,255,0.16), 0 3px 6px rgba(255,255,255,0.23)',
             shadowDark: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
             shadowLightUp: '0 -3px 6px rgba(255,255,255,0.2)',

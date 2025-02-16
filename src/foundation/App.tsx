@@ -46,14 +46,13 @@ const App = ({
         if (!Boolean(authorization)) {
             const path = window.location.pathname;
             const publicPaths = [
-                '/',
                 '/login',
                 '/register-account',
                 '/forgot-password',
                 '/activate-account',
             ];
 
-            if (!publicPaths.includes(path)) {
+            if (path !== '/' && !publicPaths.some(x => path.includes(x))) {
                 //alert(t('unauthorized-page-access'));
                 surrogate(dispatch, setSiteWideMessage({
                     targetPage: loginPageName,

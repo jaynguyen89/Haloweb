@@ -3,7 +3,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import useStyles from 'src/pages/ProfilePage/styles';
 import ProfileAvatar from 'src/pages/ProfilePage/ProfileSettings/ProfileDetails/ProfileAvatar/ProfileAvatar';
-import BasicInformation from 'src/pages/ProfilePage/ProfileSettings/ProfileDetails/ProfileForm/BasicInformation';
+import BasicInformation from 'src/pages/ProfilePage/ProfileSettings/ProfileDetails/ProfileInformation/BasicInformation';
 
 type TProfileDetailsProps = {
     id: string,

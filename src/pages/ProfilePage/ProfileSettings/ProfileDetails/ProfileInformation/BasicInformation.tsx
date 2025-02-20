@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import Grid from '@mui/material/Grid';
 import { useTranslation } from 'react-i18next';
 import { IProfileDetails } from 'src/models/Profile';
-import Websites from './Websites';
+import Websites from 'src/pages/ProfilePage/ProfileSettings/ProfileDetails/ProfileInformation/Websites/Websites';
 import useAuthorization from 'src/hooks/useAuthorization';
 import { useDispatch } from 'react-redux';
 import { sendRequestToGetProfileDetails } from 'src/redux/actions/profileActions';
@@ -10,7 +10,7 @@ import Flasher from 'src/components/molecules/StatusIndicators/Flasher';
 import Stages from 'src/models/enums/stage';
 import FormSkeleton from 'src/components/atoms/Skeletons/FormSkeleton';
 import TableSkeleton from 'src/components/atoms/Skeletons/TableSkeleton';
-import ProfileForm from './ProfileForm';
+import ProfileForm from 'src/pages/ProfilePage/ProfileSettings/ProfileDetails/ProfileInformation/ProfileForm/ProfileForm';
 
 type TBasicInfoProps = {
     id: string,

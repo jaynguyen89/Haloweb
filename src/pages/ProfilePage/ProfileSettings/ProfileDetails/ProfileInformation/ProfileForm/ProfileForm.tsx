@@ -19,7 +19,7 @@ import {
     getProfileFormData,
     TProfileFormStatus,
     defaultProfileFormStatus,
-} from 'src/pages/ProfilePage/ProfileSettings/ProfileDetails/ProfileForm/utilities';
+} from 'src/pages/ProfilePage/ProfileSettings/ProfileDetails/ProfileInformation/ProfileForm/utilities';
 import { useDebounce } from 'src/hooks/eventForger';
 import configs from 'src/commons/configs';
 import {

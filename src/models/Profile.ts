@@ -1,4 +1,5 @@
 import { Ethnicity, Gender, SocialMedia } from 'src/models/enums/apiEnums';
+import { IValueData } from 'src/models/IValueData';
 
 export interface IRegistrationProfileData {
     gender?: number,
@@ -16,7 +17,7 @@ export interface IRegionalizedPhoneNumber {
 export interface IProfileDetails {
     givenName?: string,
     middleName?: string,
-    familyName?: string,
+    lastName?: string,
     fullName?: string,
     nickName?: string,
     gender: Gender,
@@ -35,4 +36,8 @@ interface IWorkInfo {
 export interface IProfileLink {
     linkType: SocialMedia,
     linkHref: string,
+}
+
+export interface IProfileUpdateData extends IValueData {
+    fieldName: string,
 }

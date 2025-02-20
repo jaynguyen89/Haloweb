@@ -6,6 +6,7 @@ import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons/faFloppyDisk';
 
 type SavableInputProps = TextFieldProps & {
     oldValue?: string | null,
+    disableSaveBtn?: boolean,
     onClickSaveBtn?: () => void,
     status?: {
         saving: boolean,
@@ -15,6 +16,7 @@ type SavableInputProps = TextFieldProps & {
 
 const SavableInput = ({
     oldValue,
+    disableSaveBtn,
     onClickSaveBtn,
     status,
     ...textFieldProps
@@ -23,31 +25,42 @@ const SavableInput = ({
     const { saving, success } = status ?? {};
 
     return (
-        <div className='wrapper'>
+        <div className='savable-input'>
             <TextField {...textFieldProps} />
 
             {oldValue !== textFieldProps.value && status === undefined && (
-                <IconButton className='save-btn' onClick={onClickSaveBtn}>
-                    <FaIcon wrapper='fa' t='obj' ic={faFloppyDisk} />
+                <IconButton
+                    className='save-btn'
+                    onClick={onClickSaveBtn}
+                    disabled={disableSaveBtn}
+                >
+                    <FaIcon
+                        wrapper='fa' t='obj' ic={faFloppyDisk}
+                        color={disableSaveBtn ? theme.palette.primary.dark : theme.palette.info.main}
+                    />
                 </IconButton>
             )}
 
-            {status !== undefined && saving && (
-                <div className='status'>
-                    <FaIcon wrapper='i' ic='circle-notch' animation='spin' color={theme.palette.secondary.main} />
-                </div>
-            )}
+            {status && (
+                <>
+                    {saving && (
+                        <div className='status' style={{top: '20px'}}>
+                            <FaIcon wrapper='i' ic='circle-notch' animation='spin' color={theme.palette.secondary.main} />
+                        </div>
+                    )}
 
-            {status !== undefined && success && !saving && (
-                <div className='status'>
-                    <FaIcon wrapper='i' ic='check-double' color={theme.palette.success.main} />
-                </div>
-            )}
+                    {!saving && success && (
+                        <div className='status'>
+                            <FaIcon wrapper='i' ic='check-double' color={theme.palette.success.main} />
+                        </div>
+                    )}
 
-            {status !== undefined && !success && !saving && (
-                <div className='status'>
-                    <FaIcon wrapper='i' ic='circle-xmark' color={theme.palette.error.main} />
-                </div>
+                    {!saving && !success && (
+                        <div className='status'>
+                            <FaIcon wrapper='i' ic='circle-xmark' color={theme.palette.error.main} />
+                        </div>
+                    )}
+                </>
             )}
         </div>
     );

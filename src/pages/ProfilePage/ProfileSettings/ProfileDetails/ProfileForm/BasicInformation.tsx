@@ -35,6 +35,13 @@ const BasicInformation = ({
         }
     }, [profileDetails, profileId, authorization]);
 
+    const reloadProfileDetails = () => {
+        sendRequestToGetProfileDetails(dispatch, authorization, profileId).then(data => {
+            if (!data) setError([ ...error, `profile-page.${id}.get-profile-details-error` ]);
+            else setProfileDetails(data);
+        });
+    };
+
     return (
         <div className='profile-form'>
             {error.length !== 0 && errors.map((error, i) => (
@@ -47,7 +54,7 @@ const BasicInformation = ({
 
             <Grid container spacing={2}>
                 {(profileDetails && (
-                    <ProfileForm id={id} profileDetails={profileDetails} />
+                    <ProfileForm id={id} profileDetails={profileDetails} onProfileDetailsUpdated={reloadProfileDetails} />
                 )) || (
                     <FormSkeleton />
                 )}

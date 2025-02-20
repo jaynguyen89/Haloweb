@@ -20,6 +20,7 @@ type SavableAutocompleteProps = {
         success: boolean,
     },
     asCheckbox?: true,
+    disableSaveBtn?: boolean,
     onClickSaveBtn?: () => void,
     textFieldProps?: TextFieldProps,
     autocompleteProps: Omit<
@@ -32,6 +33,7 @@ const SavableAutocomplete = ({
     changed = false,
     status,
     asCheckbox,
+    disableSaveBtn,
     onClickSaveBtn,
     textFieldProps,
     autocompleteProps,
@@ -61,8 +63,15 @@ const SavableAutocomplete = ({
             />
 
             {changed && status === undefined && (
-                <IconButton className='save-btn' onClick={onClickSaveBtn}>
-                    <FaIcon wrapper='fa' t='obj' ic={faFloppyDisk} />
+                <IconButton
+                    className='save-btn'
+                    onClick={onClickSaveBtn}
+                    disabled={disableSaveBtn}
+                >
+                    <FaIcon
+                        wrapper='fa' t='obj' ic={faFloppyDisk}
+                        color={disableSaveBtn ? theme.palette.primary.dark : theme.palette.info.main}
+                    />
                 </IconButton>
             )}
 

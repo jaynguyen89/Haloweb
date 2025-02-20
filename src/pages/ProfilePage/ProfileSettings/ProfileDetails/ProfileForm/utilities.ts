@@ -14,7 +14,7 @@ import { IProfileDetails } from 'src/models/Profile';
 export enum ProfileFormFields {
     GivenName = 'GivenName',
     MiddleName = 'MiddleName',
-    FamilyName = 'FamilyName',
+    FamilyName = 'LastName',
     FullName = 'FullName',
     Gender = 'Gender',
     NickName = 'NickName',
@@ -50,31 +50,32 @@ export const profileFormValidatorOptionsMapFn: TValidatorOptionsMapFn<TProfileFo
     [ProfileFormFields.GivenName]: {
         min: 1,
         max: 65,
-        pattern: '\'.- ',
+        pattern: '\'.\\- ',
     } as TRangeOption,
     [ProfileFormFields.MiddleName]: {
         min: 1,
         max: 65,
-        pattern: '\'.- ',
+        pattern: '\'.\\- ',
     } as TRangeOption,
     [ProfileFormFields.FamilyName]: {
         min: 1,
         max: 65,
-        pattern: '\'.- ',
+        pattern: '\'.\\- ',
     } as TRangeOption,
     [ProfileFormFields.FullName]: {
         min: 1,
         max: 65,
-        pattern: '\'.- ',
+        pattern: '\'.\\- ',
     } as TRangeOption,
     [ProfileFormFields.Gender]: {
         min: 0,
         max: Object.keys(Gender).length - 1,
+        asNumber: true,
     } as TRangeOption,
     [ProfileFormFields.NickName]: {
         min: 1,
         max: 65,
-        pattern: '\'.- ',
+        pattern: '\'.\\- ',
     } as TRangeOption,
     [ProfileFormFields.DateOfBirth]: {
         beforeDate: DateTime.now().minus({ year: configs.minAge }),
@@ -83,11 +84,12 @@ export const profileFormValidatorOptionsMapFn: TValidatorOptionsMapFn<TProfileFo
     [ProfileFormFields.Ethnicity]: {
         min: 0,
         max: Object.keys(Ethnicity).length - 1,
+        asNumber: true,
     } as TRangeOption,
     [ProfileFormFields.Company]: {
         min: 1,
         max: 65,
-        pattern: '_\'.- ',
+        pattern: '_\'.\\- ',
     } as TRangeOption,
     [ProfileFormFields.OccupationId]: {
         among: extra as Array<string>,
@@ -95,7 +97,7 @@ export const profileFormValidatorOptionsMapFn: TValidatorOptionsMapFn<TProfileFo
     [ProfileFormFields.JobTitle]: {
         min: 1,
         max: 65,
-        pattern: '_\'.- ',
+        pattern: '_\'.\\- ',
     } as TRangeOption,
 });
 
@@ -107,7 +109,7 @@ export const getProfileFormData: TFormDataState<TProfileFormFieldKeys> = (profil
         value: profileDetails.middleName,
     },
     [ProfileFormFields.FamilyName]: {
-        value: profileDetails.familyName,
+        value: profileDetails.lastName,
     },
     [ProfileFormFields.FullName]: {
         value: profileDetails.fullName,
@@ -134,3 +136,24 @@ export const getProfileFormData: TFormDataState<TProfileFormFieldKeys> = (profil
         value: profileDetails.workInfo.jobTitle,
     },
 });
+
+export type TProfileFormStatus = {
+    [key: keyof TProfileFormFieldKeys]: {
+        saving: boolean,
+        success: boolean,
+    } | undefined,
+};
+
+export const defaultProfileFormStatus: TProfileFormStatus = {
+    [ProfileFormFields.GivenName]: undefined,
+    [ProfileFormFields.MiddleName]: undefined,
+    [ProfileFormFields.FamilyName]: undefined,
+    [ProfileFormFields.FullName]: undefined,
+    [ProfileFormFields.Gender]: undefined,
+    [ProfileFormFields.NickName]: undefined,
+    [ProfileFormFields.DateOfBirth]: undefined,
+    [ProfileFormFields.Ethnicity]: undefined,
+    [ProfileFormFields.Company]: undefined,
+    [ProfileFormFields.OccupationId]: undefined,
+    [ProfileFormFields.JobTitle]: undefined,
+};

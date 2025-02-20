@@ -1,9 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import Grid from '@mui/material/Grid';
 import SavableInput from 'src/components/molecules/SavableInput/SavableInput';
 import SavableSelect from 'src/components/molecules/SavableSelect/SavableSelect';
 import MenuItem from '@mui/material/MenuItem';
-import { IProfileDetails } from 'src/models/Profile';
+import { IProfileDetails, IProfileUpdateData } from 'src/models/Profile';
 import { useTranslation } from 'react-i18next';
 import { TRootState } from 'src/redux/reducers';
 import SavableCalendar from 'src/components/molecules/SavableCalendar/SavableCalendar';
@@ -12,8 +12,13 @@ import { toOccupationItemsGroup } from 'src/models/Occupation';
 import FaIcon from 'src/components/atoms/FaIcon';
 import { faMinus } from '@fortawesome/free-solid-svg-icons/faMinus';
 import {
-    ProfileFormFields, TProfileFormFieldKeys,
-    profileFormValidatorOptionsMapFn, profileFormFieldValidatorMap, getProfileFormData,
+    ProfileFormFields,
+    TProfileFormFieldKeys,
+    profileFormValidatorOptionsMapFn,
+    profileFormFieldValidatorMap,
+    getProfileFormData,
+    TProfileFormStatus,
+    defaultProfileFormStatus,
 } from 'src/pages/ProfilePage/ProfileSettings/ProfileDetails/ProfileForm/utilities';
 import { useDebounce } from 'src/hooks/eventForger';
 import configs from 'src/commons/configs';
@@ -22,13 +27,20 @@ import {
     TFieldToValidatorMap,
     TFormDataState,
 } from 'src/utilities/data-validators/dataValidators';
-import { connect } from 'react-redux';
+import { batch, connect, useDispatch } from 'react-redux';
 import { DateFormats } from 'src/commons/enums';
 import MessageCaption from 'src/components/atoms/MessageCaption';
+import { sendRequestToUpdateProfileDetails } from 'src/redux/actions/profileActions';
+import useAuthorization from 'src/hooks/useAuthorization';
+import { useIsStageIncluded } from 'src/hooks/useStage';
+import Stages from 'src/models/enums/stage';
+import { useTheme } from '@mui/material';
+import { DateTime } from 'luxon';
 
 type TProfileFormProps = {
     id: string,
     profileDetails: IProfileDetails,
+    onProfileDetailsUpdated: () => void,
 };
 
 const mapStateToProps = (state: TRootState) => ({
@@ -39,13 +51,25 @@ const ProfileForm = ({
     id,
     profileDetails,
     publicData,
+    onProfileDetailsUpdated,
 }: ReturnType<typeof mapStateToProps> & TProfileFormProps) => {
+    const theme = useTheme();
     const { t } = useTranslation();
+    const dispatch = useDispatch();
+    const { authorization, profileId } = useAuthorization();
     const occupations = useOccupationItems();
 
     const occupationGroups = Boolean(occupations) ? toOccupationItemsGroup(occupations) : [];
     const [fieldValues, setFieldValues] = useState<TFormDataState<TProfileFormFieldKeys>>(getProfileFormData(profileDetails));
     const [updatedField, setUpdatedField] = useState<string | null>(null);
+
+    const [result, setResult] = useState<true | string | undefined>(undefined);
+    const isSaving = useIsStageIncluded(Stages.REQUEST_TO_UPDATE_PROFILE_INFO_BEGIN);
+    const [status, setStatus] = useState<TProfileFormStatus>(defaultProfileFormStatus);
+
+    useEffect(() => {
+        setFieldValues(getProfileFormData(profileDetails));
+    }, [profileDetails]);
 
     const validators: TFieldToValidatorMap<TProfileFormFieldKeys> = useMemo(() => {
         const tempValidators: TFieldToValidatorMap<TProfileFormFieldKeys> = {};
@@ -78,14 +102,42 @@ const ProfileForm = ({
     }, [configs.debounceWaitDuration]);
 
     const handleFieldChange = (key: keyof TProfileFormFieldKeys, value: string | number) => {
-        console.log(value);
-        setFieldValues({ ...fieldValues, [key]: { value } });
-        setUpdatedField(key);
+        batch(() => {
+            setFieldValues({ ...getProfileFormData(profileDetails), [key]: { value } });
+            setUpdatedField(key);
+            setResult(undefined);
+        });
     };
 
     useEffect(() => {
         if (updatedField && fieldValues[updatedField].value) validateFieldValueWithDebounce(updatedField);
-    }, [updatedField]);
+    }, [updatedField, fieldValues]);
+
+    const updateProfile = useCallback(async () => {
+        const data: IProfileUpdateData = {
+            fieldName: updatedField,
+            strValue: `${fieldValues[updatedField].value}`,
+            intValue: +fieldValues[updatedField].value,
+        };
+
+        const result = await sendRequestToUpdateProfileDetails(dispatch, authorization, profileId, data);
+        setResult(result);
+    }, [authorization, profileId, updatedField, fieldValues]);
+
+    useEffect(() => {
+        if (result === true) onProfileDetailsUpdated();
+    }, [result]);
+
+    useEffect(() => {
+        const status = {
+            [updatedField]: result !== undefined ? {
+                isSaving,
+                success:  typeof result !== 'string',
+            } : undefined,
+        };
+
+        setStatus({...defaultProfileFormStatus, ...status});
+    }, [isSaving, result, updatedField]);
 
     return (
         <>
@@ -96,6 +148,9 @@ const ProfileForm = ({
                     oldValue={profileDetails.givenName ?? ''}
                     value={fieldValues[ProfileFormFields.GivenName].value ?? ''}
                     onChange={(e) => handleFieldChange(ProfileFormFields.GivenName, e.target.value)}
+                    disableSaveBtn={Boolean(fieldValues[ProfileFormFields.GivenName].caption)}
+                    onClickSaveBtn={updateProfile}
+                    status={status[ProfileFormFields.GivenName]}
                 />
                 {fieldValues[ProfileFormFields.GivenName].caption && (
                     <MessageCaption message={fieldValues[ProfileFormFields.GivenName].caption} />
@@ -108,6 +163,9 @@ const ProfileForm = ({
                     oldValue={profileDetails.middleName ?? ''}
                     value={fieldValues[ProfileFormFields.MiddleName].value ?? ''}
                     onChange={(e) => handleFieldChange(ProfileFormFields.MiddleName, e.target.value)}
+                    disableSaveBtn={Boolean(fieldValues[ProfileFormFields.MiddleName].caption)}
+                    onClickSaveBtn={updateProfile}
+                    status={status[ProfileFormFields.MiddleName]}
                 />
                 {fieldValues[ProfileFormFields.MiddleName].caption && (
                     <MessageCaption message={fieldValues[ProfileFormFields.MiddleName].caption} />
@@ -117,9 +175,12 @@ const ProfileForm = ({
                 <SavableInput
                     label={t(`profile-page.${id}.family-name-label`)}
                     style={{width: '100%'}}
-                    oldValue={profileDetails.familyName ?? ''}
+                    oldValue={profileDetails.lastName ?? ''}
                     value={fieldValues[ProfileFormFields.FamilyName].value ?? ''}
                     onChange={(e) => handleFieldChange(ProfileFormFields.FamilyName, e.target.value)}
+                    disableSaveBtn={Boolean(fieldValues[ProfileFormFields.FamilyName].caption)}
+                    onClickSaveBtn={updateProfile}
+                    status={status[ProfileFormFields.FamilyName]}
                 />
                 {fieldValues[ProfileFormFields.FamilyName].caption && (
                     <MessageCaption message={fieldValues[ProfileFormFields.FamilyName].caption} />
@@ -132,6 +193,9 @@ const ProfileForm = ({
                     oldValue={profileDetails.fullName ?? ''}
                     value={fieldValues[ProfileFormFields.FullName].value ?? ''}
                     onChange={(e) => handleFieldChange(ProfileFormFields.FullName, e.target.value)}
+                    disableSaveBtn={Boolean(fieldValues[ProfileFormFields.FullName].caption)}
+                    onClickSaveBtn={updateProfile}
+                    status={status[ProfileFormFields.FullName]}
                 />
                 {fieldValues[ProfileFormFields.FullName].caption && (
                     <MessageCaption message={fieldValues[ProfileFormFields.FullName].caption} />
@@ -145,6 +209,9 @@ const ProfileForm = ({
                     oldValue={profileDetails.gender}
                     value={fieldValues[ProfileFormFields.Gender].value}
                     onChange={(e) => handleFieldChange(ProfileFormFields.Gender, +e.target.value)}
+                    disableSaveBtn={Boolean(fieldValues[ProfileFormFields.Gender].caption)}
+                    onClickSaveBtn={updateProfile}
+                    status={status[ProfileFormFields.Gender]}
                 >
                     {(publicData?.genders ?? []).map((gender, i) => (
                         <MenuItem key={`${i}_${gender.index}`} value={`${gender.index}`}>
@@ -163,6 +230,9 @@ const ProfileForm = ({
                     oldValue={profileDetails.nickName ?? ''}
                     value={fieldValues[ProfileFormFields.NickName].value ?? ''}
                     onChange={(e) => handleFieldChange(ProfileFormFields.NickName, e.target.value)}
+                    disableSaveBtn={Boolean(fieldValues[ProfileFormFields.NickName].caption)}
+                    onClickSaveBtn={updateProfile}
+                    status={status[ProfileFormFields.NickName]}
                 />
                 {fieldValues[ProfileFormFields.NickName].caption && (
                     <MessageCaption message={fieldValues[ProfileFormFields.NickName].caption} />
@@ -172,8 +242,11 @@ const ProfileForm = ({
                 <SavableCalendar
                     label={t(`profile-page.${id}.dob-label`)}
                     oldValue={profileDetails.dateOfBirth}
-                    value={profileDetails.dateOfBirth}
-                    onChange={(val) => handleFieldChange(ProfileFormFields.DateOfBirth, val?.toFormat(DateFormats.DDMMYYYYS))}
+                    defaultValue={DateTime.fromISO(fieldValues[ProfileFormFields.DateOfBirth].value)}
+                    onDatePicked={(val) => handleFieldChange(ProfileFormFields.DateOfBirth, val)}
+                    disableSaveBtn={Boolean(fieldValues[ProfileFormFields.DateOfBirth].caption)}
+                    onClickSaveBtn={updateProfile}
+                    status={status[ProfileFormFields.DateOfBirth]}
                 />
                 {fieldValues[ProfileFormFields.DateOfBirth].caption && (
                     <MessageCaption message={fieldValues[ProfileFormFields.DateOfBirth].caption} />
@@ -187,6 +260,9 @@ const ProfileForm = ({
                     oldValue={profileDetails.ethnicity}
                     value={fieldValues[ProfileFormFields.Ethnicity].value}
                     onChange={(e) => handleFieldChange(ProfileFormFields.Ethnicity, +e.target.value)}
+                    disableSaveBtn={Boolean(fieldValues[ProfileFormFields.Ethnicity].caption)}
+                    onClickSaveBtn={updateProfile}
+                    status={status[ProfileFormFields.Ethnicity]}
                 >
                     {(publicData?.ethnicities ?? []).map((ethnicity, i) => (
                         <MenuItem key={`${i}_${ethnicity.index}`} value={`${ethnicity.index}`}>
@@ -205,6 +281,9 @@ const ProfileForm = ({
                     oldValue={profileDetails.workInfo.company ?? ''}
                     value={fieldValues[ProfileFormFields.Company].value ?? ''}
                     onChange={(e) => handleFieldChange(ProfileFormFields.Company, e.target.value)}
+                    disableSaveBtn={Boolean(fieldValues[ProfileFormFields.Company].caption)}
+                    onClickSaveBtn={updateProfile}
+                    status={status[ProfileFormFields.Company]}
                 />
                 {fieldValues[ProfileFormFields.Company].caption && (
                     <MessageCaption message={fieldValues[ProfileFormFields.Company].caption} />
@@ -219,6 +298,9 @@ const ProfileForm = ({
                     oldValue={profileDetails.workInfo.occupationId ?? ''}
                     value={fieldValues[ProfileFormFields.OccupationId].value ?? ''}
                     onChange={(e) => handleFieldChange(ProfileFormFields.OccupationId, e.target.value)}
+                    disableSaveBtn={Boolean(fieldValues[ProfileFormFields.OccupationId].caption)}
+                    onClickSaveBtn={updateProfile}
+                    status={status[ProfileFormFields.OccupationId]}
                 >
                     <option key={0} value=''>
                         <FaIcon wrapper='fa' t='obj' ic={faMinus} />
@@ -242,6 +324,9 @@ const ProfileForm = ({
                     oldValue={profileDetails.workInfo.jobTitle ?? ''}
                     value={fieldValues[ProfileFormFields.JobTitle].value ?? ''}
                     onChange={(e) => handleFieldChange(ProfileFormFields.JobTitle, e.target.value)}
+                    disableSaveBtn={Boolean(fieldValues[ProfileFormFields.JobTitle].caption)}
+                    onClickSaveBtn={updateProfile}
+                    status={status[ProfileFormFields.JobTitle]}
                 />
                 {fieldValues[ProfileFormFields.JobTitle].caption && (
                     <MessageCaption message={fieldValues[ProfileFormFields.JobTitle].caption} />

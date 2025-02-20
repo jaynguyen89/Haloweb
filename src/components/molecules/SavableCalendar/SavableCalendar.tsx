@@ -7,10 +7,14 @@ import { IconButton, useTheme } from '@mui/material';
 import FaIcon from '../../atoms/FaIcon';
 import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons/faFloppyDisk';
 import { DateFormats } from 'src/commons/enums';
+import configs from 'src/commons/configs';
 
-type TDatePickerProps = DatePickerProps & {
+/* eslint-disable-next-line  @typescript-eslint/no-explicit-any */
+type TDatePickerProps = DatePickerProps<any> & {
     label: string,
     oldValue?: string | null,
+    onDatePicked: (date: DateTime) => void,
+    disableSaveBtn?: boolean,
     onClickSaveBtn?: () => void,
     status?: {
         saving: boolean,
@@ -21,14 +25,15 @@ type TDatePickerProps = DatePickerProps & {
 const SavableCalendar = ({
     label,
     oldValue,
+    disableSaveBtn,
     onClickSaveBtn,
     status,
     disableFuture,
     disablePast,
-    minDate = DateTime.now().minus({ year: 100 }),
-    maxDate = DateTime.now().plus({ year: 1 }),
+    minDate = DateTime.now().minus({ year: configs.maxAge }),
+    maxDate = DateTime.now().minus({ year: configs.minAge }),
     format = DateFormats.DDMMYYYYS,
-    onChange,
+    onDatePicked,
     ...props
 }: TDatePickerProps) => {
     const theme = useTheme();
@@ -37,7 +42,7 @@ const SavableCalendar = ({
     const [changed, setChanged] = React.useState(false);
 
     return (
-        <div className='wrapper'>
+        <div className='savable-calendar'>
             <Calendar
                 disableFuture={disableFuture}
                 disablePast={disablePast}
@@ -46,37 +51,48 @@ const SavableCalendar = ({
                 label={`${label} (${format?.toLowerCase()})`}
                 views={['year', 'month', 'day']}
                 format={format}
-                onChange={(value) => {
+                onChange={(value: DateTime) => {
                     const prev = oldValue ? DateTime.fromISO(oldValue).toFormat(format) : null;
-                    const current = value?.toFormat(format) ?? null;
+                    const current = value.toFormat(format) ?? null;
                     setChanged(prev !== current);
-                    onChange(value);
+                    onDatePicked(value.toFormat(format));
                 }}
                 {...props}
             />
 
-            {changed && status === undefined && (
-                <IconButton className='save-btn' onClick={onClickSaveBtn}>
-                    <FaIcon wrapper='fa' t='obj' ic={faFloppyDisk} />
+            {changed && (
+                <IconButton
+                    className='save-btn'
+                    onClick={onClickSaveBtn}
+                    disabled={disableSaveBtn}
+                >
+                    <FaIcon
+                        wrapper='fa' t='obj' ic={faFloppyDisk}
+                        color={disableSaveBtn ? theme.palette.primary.dark : theme.palette.info.main}
+                    />
                 </IconButton>
             )}
 
-            {status !== undefined && saving && (
-                <div className='status'>
-                    <FaIcon wrapper='i' ic='circle-notch' animation='spin' color={theme.palette.secondary.main} />
-                </div>
-            )}
+            {status && (
+                <>
+                    {saving && (
+                        <div className='status' style={{top: '20px'}}>
+                            <FaIcon wrapper='i' ic='circle-notch' animation='spin' color={theme.palette.secondary.main} />
+                        </div>
+                    )}
 
-            {status !== undefined && success && !saving && (
-                <div className='status'>
-                    <FaIcon wrapper='i' ic='check-double' color={theme.palette.success.main} />
-                </div>
-            )}
+                    {success && !saving && (
+                        <div className='status'>
+                            <FaIcon wrapper='i' ic='check-double' color={theme.palette.success.main} />
+                        </div>
+                    )}
 
-            {status !== undefined && !success && !saving && (
-                <div className='status'>
-                    <FaIcon wrapper='i' ic='circle-xmark' color={theme.palette.error.main} />
-                </div>
+                    {!success && !saving && (
+                        <div className='status'>
+                            <FaIcon wrapper='i' ic='circle-xmark' color={theme.palette.error.main} />
+                        </div>
+                    )}
+                </>
             )}
         </div>
     );

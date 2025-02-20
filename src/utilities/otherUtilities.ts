@@ -29,6 +29,8 @@ export const readLocalStorage = <T>(key: string, remove?: true): T | null => {
     return null;
 };
 
+export const removeLocalStorage = (key: string) => localStorage.removeItem(key);
+
 // Todo: In later expansions, add 1 more param `target = InterceptorTarget.RESPONSE` to support creating request interceptors
 export const createInterceptors = (data: Array<TStatusInterceptorParams>) =>
     data.map(params => new StatusNxxInterceptor(params).get());

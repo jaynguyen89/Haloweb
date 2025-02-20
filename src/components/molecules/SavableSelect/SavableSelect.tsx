@@ -7,6 +7,7 @@ import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons/faFloppyDisk';
 type SavableSelectProps = SelectProps & PropsWithChildren & {
     id?: string,
     oldValue?: string | number | null,
+    disableSaveBtn?: boolean,
     onClickSaveBtn?: () => void,
     status?: {
         saving: boolean,
@@ -17,6 +18,7 @@ type SavableSelectProps = SelectProps & PropsWithChildren & {
 const SavableSelect = ({
     id,
     oldValue,
+    disableSaveBtn,
     onClickSaveBtn,
     status,
     children,
@@ -26,34 +28,45 @@ const SavableSelect = ({
     const { saving, success } = status ?? {};
 
     return (
-        <div className='wrapper'>
+        <div className='savable-select'>
             <FormControl fullWidth>
                 <InputLabel id={id}>{selectProps.label}</InputLabel>
                 <Select labelId={id} {...selectProps}>{children}</Select>
             </FormControl>
 
-            {oldValue !== selectProps.value && status === undefined && (
-                <IconButton className='save-btn' onClick={onClickSaveBtn}>
-                    <FaIcon wrapper='fa' t='obj' ic={faFloppyDisk} />
+            {oldValue !== selectProps.value && (
+                <IconButton
+                    className='save-btn'
+                    onClick={onClickSaveBtn}
+                    disabled={disableSaveBtn}
+                >
+                    <FaIcon
+                        wrapper='fa' t='obj' ic={faFloppyDisk}
+                        color={disableSaveBtn ? theme.palette.primary.dark : theme.palette.info.main}
+                    />
                 </IconButton>
             )}
 
-            {status !== undefined && saving && (
-                <div className='status'>
-                    <FaIcon wrapper='i' ic='circle-notch' animation='spin' color={theme.palette.secondary.main} />
-                </div>
-            )}
+            {status && (
+                <>
+                    {saving && (
+                        <div className='status' style={{top: '20px'}}>
+                            <FaIcon wrapper='i' ic='circle-notch' animation='spin' color={theme.palette.secondary.main} />
+                        </div>
+                    )}
 
-            {status !== undefined && success && !saving && (
-                <div className='status'>
-                    <FaIcon wrapper='i' ic='check-double' color={theme.palette.success.main} />
-                </div>
-            )}
+                    {success && !saving && (
+                        <div className='status'>
+                            <FaIcon wrapper='i' ic='check-double' color={theme.palette.success.main} />
+                        </div>
+                    )}
 
-            {status !== undefined && !success && !saving && (
-                <div className='status'>
-                    <FaIcon wrapper='i' ic='circle-xmark' color={theme.palette.error.main} />
-                </div>
+                    {!success && !saving && (
+                        <div className='status'>
+                            <FaIcon wrapper='i' ic='circle-xmark' color={theme.palette.error.main} />
+                        </div>
+                    )}
+                </>
             )}
         </div>
     );

@@ -79,8 +79,8 @@ class Request<T> {
 
             return {
                 status: (error.response?.data as any)?.status,
-                statusCodeName: (error.response?.data as any)?.statusCodeName,
-                data: (error.response?.data as any)?.value,
+                statusCodeName: (error.response?.data as any)?.title,
+                data: JSON.parse(error.response?.config?.data ?? '{}'),
             };
         }
 

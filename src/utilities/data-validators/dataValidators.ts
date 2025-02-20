@@ -143,7 +143,7 @@ export class RangeValidator<T extends string> {
         if (!alphanumericValidity) messages.set('messages.input-alphanumeric', undefined);
 
         let patternValidity = true;
-        if (this.options.pattern) patternValidity = new RegExp(`/^${this.options.pattern}$/`, 'gi').test(data as string);
+        if (this.options.pattern) patternValidity = !(new RegExp(`[^${this.options.pattern}a-zA-Z]`, 'gi').test(data as string));
         if (!patternValidity) messages.set('messages.input-pattern', { chars: this.options.pattern });
 
         const isValid =

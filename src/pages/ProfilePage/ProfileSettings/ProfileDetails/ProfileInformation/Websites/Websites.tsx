@@ -168,6 +168,9 @@ const Websites = ({
                 </IconButton>
             </h4>
 
+            {sectionError && (
+                <MessageCaption message={sectionError} type='error' />
+            )}
             <Table size='small'>
                 <TableBody>
                     {(links === null && (

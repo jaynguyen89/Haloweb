@@ -60,7 +60,7 @@ const BasicInformation = ({
                 )}
 
                 {(profileDetails && (
-                    <Websites id={id} links={profileDetails.workInfo.profileLinks} />
+                    <Websites id={id} links={profileDetails.workInfo.profileLinks} onLinkAdded={reloadProfileDetails} />
                 )) || (
                     <TableSkeleton />
                 )}

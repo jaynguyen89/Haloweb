@@ -12,6 +12,7 @@ type THaloModalProps = PropsWithChildren & {
     modal: {
         open: boolean,
         setOpen: (open: boolean) => void,
+        onClose?: () => void,
         label: string,
         description: string,
     },
@@ -38,7 +39,10 @@ const HaloModal = ({
     return (
         <Modal
             open={modal.open}
-            onClose={() => modal.setOpen(false)}
+            onClose={() => {
+                modal.setOpen(false);
+                modal.onClose && modal.onClose();
+            }}
             aria-labelledby={modal.label}
             aria-describedby={modal.description}
         >

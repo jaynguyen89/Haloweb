@@ -1,3 +1,9 @@
+export enum ActionType {
+    Add,
+    Update,
+    Remove,
+}
+
 export enum Roles {
     Customer,
     StoreOwner,

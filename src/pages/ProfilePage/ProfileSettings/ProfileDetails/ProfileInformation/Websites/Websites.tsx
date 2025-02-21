@@ -1,126 +1,318 @@
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import IconButton from '@mui/material/IconButton';
 import FaIcon from 'src/components/atoms/FaIcon';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import Grid from '@mui/material/Grid';
 import { useTranslation } from 'react-i18next';
 import {
-    Chip, FormControl, InputLabel,
+    Chip,
+    FormControl,
+    InputLabel,
     Select,
     Table,
     TableBody,
     TableCell,
-    TableRow, TextField,
+    TableRow,
+    TextField,
     useTheme,
 } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import HaloModal from 'src/components/molecules/HaloModal';
 import { IProfileLink } from 'src/models/Profile';
+import Flasher from 'src/components/molecules/StatusIndicators/Flasher';
+import Stages from 'src/models/enums/stage';
+import { TRootState } from 'src/redux/reducers';
+import { batch, connect, useDispatch } from 'react-redux';
+import { ActionType, SocialMedia } from 'src/models/enums/apiEnums';
+import { TPublicDataFormat } from 'src/models/PublicData';
+import md5 from 'md5';
+import { InputData, RangeValidator, TRangeOption } from 'src/utilities/data-validators/dataValidators';
+import MessageCaption from 'src/components/atoms/MessageCaption';
+import useAuthorization from 'src/hooks/useAuthorization';
+import { sendRequestToUpdateProfileDetails } from 'src/redux/actions/profileActions';
 
 type TWebsitesProps = {
     id: string,
     links: Array<IProfileLink> | null,
+    onLinkAdded: () => void,
 };
+
+enum ModalTask {
+    Create = 'Create',
+    Update = 'Update',
+}
+
+const mapStateToProps = (state: TRootState) => ({
+    publicData: state.publicDataStore.publicData,
+});
 
 const Websites = ({
     id,
     links,
-}: TWebsitesProps) => {
+    publicData,
+    onLinkAdded,
+}: ReturnType<typeof mapStateToProps> & TWebsitesProps) => {
     const { t } = useTranslation();
+    const dispatch = useDispatch();
+    const { authorization, profileId } = useAuthorization();
 
     const [openModal, setOpenModal] = React.useState(false);
+    const [modalTask, setModalTask] = React.useState<ModalTask | null>(null);
+    const [originalLink, setOriginalLink] = React.useState<IProfileLink | null>(null);
+    const [linkData, setLinkData] = React.useState<IProfileLink>({ linkType: SocialMedia.Facebook, linkHref: '' });
+    const [modalError, setModalError] = React.useState<string | null>(null);
+    const [sectionError, setSectionError] = React.useState<string | null>(null);
+
+    const handleModal = (task: ModalTask) => {
+        setOpenModal(!openModal);
+        setModalTask(task);
+    };
+
+    const addOrUpdateLink = useCallback(async () => {
+        const validator = new RangeValidator(
+            new InputData(linkData.linkHref), {
+                pattern: '(https?:\\/\\/(?:www\\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|www\\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\\.[^\\s]{2,}|https?:\\/\\/(?:www\\.|(?!www))[a-zA-Z0-9]+\\.[^\\s]{2,}|www\\.[a-zA-Z0-9]+\\.[^\\s]{2,})',
+                wholePattern: true,
+            } as TRangeOption);
+
+        const validation = validator.validate();
+        if (validation.isValid) {
+            if ((links ?? []).some(link => link.linkHref === linkData.linkHref)) {
+                setModalError(t(`profile-page.${id}.modal-link-duplicate`));
+                return;
+            }
+
+            let actionType = ActionType.Add;
+            let values = [];
+            if (modalTask === ModalTask.Create)
+                values = [{
+                    key: linkData.linkType,
+                    value: linkData.linkHref,
+                }];
+
+            if (modalTask === ModalTask.Update) {
+                actionType = ActionType.Update;
+
+                const unchangedLinks = (links ?? []).filter(link =>
+                    link.linkHref === originalLink!.linkHref &&
+                    link.linkType === originalLink!.linkType,
+                );
+                const allLinks = [...unchangedLinks, {...linkData}];
+                values = allLinks.map(link => ({ key: link.linkType, value: link.linkHref }));
+            }
+
+            const data = {
+                fieldName: 'Websites',
+                actionType: actionType,
+                intValueList: values,
+            };
+            const result = await sendRequestToUpdateProfileDetails(dispatch, authorization, profileId, data);
+
+            if (result === true) {
+                batch(() => {
+                    setLinkData({linkType: SocialMedia.Facebook, linkHref: ''});
+                    setOriginalLink(null);
+                    setOpenModal(false);
+                    setModalTask(null);
+                    setModalError(null);
+                });
+                onLinkAdded();
+            }
+            else
+                setModalError(t(`profile-page.${id}.modal-link-error`));
+
+            return;
+        }
+
+        setModalError(t(validation.messages.entries().next().value[0], validation.messages.entries().next().value[1]));
+    }, [linkData, modalTask, originalLink]);
+
+    useEffect(() => {
+        if (Boolean(originalLink) && modalTask === null && !openModal) {
+            if (!confirm(t(`profile-page.${id}.link-removal-confirmation`, {href: originalLink!.linkHref}))) {
+                batch(() => {
+                    setOriginalLink(null);
+                    setSectionError(null);
+                });
+                return;
+            }
+
+            const data = {
+                fieldName: 'Websites',
+                actionType: ActionType.Remove,
+                intValueList: [{
+                    key: originalLink!.linkType,
+                    value: originalLink!.linkHref,
+                }],
+            };
+
+            sendRequestToUpdateProfileDetails(dispatch, authorization, profileId, data).then(result => {
+                if (result === true) setOriginalLink(null);
+                else setSectionError(t(`profile-page.${id}.link-removal-error`));
+            });
+        }
+    }, [originalLink, modalTask, openModal]);
 
     return (
         <Grid item xs={12}>
             <h4>
                 {t(`profile-page.${id}.websites-label`)}
-                <IconButton>
-                    <FaIcon wrapper='fa' t='obj' ic={faPlus}/>
+                <IconButton onClick={() => batch(() => {
+                        handleModal(ModalTask.Create);
+                        setLinkData({ linkType: SocialMedia.Facebook, linkHref: '' });
+                        setModalError(null);
+                        setSectionError(null);
+                    })
+                }>
+                    <FaIcon wrapper='fa' t='obj' ic={faPlus} />
                 </IconButton>
             </h4>
 
-            <WebsiteItem id={id} key='some' setOpenModal={setOpenModal} />
+            <Table size='small'>
+                <TableBody>
+                    {(links === null && (
+                        <TableRow>
+                            <TableCell style={{border: 'none'}} colSpan={2}>
+                                <Flasher
+                                    showAction={false}
+                                    stage={Stages.SHOWCASE}
+                                    message={t(`profile-page.${id}.website-none`)}
+                                />
+                            </TableCell>
+                        </TableRow>
+                    )) || (
+                        <>
+                            {links.map((link, i) => (
+                                <WebsiteItem
+                                    id={id}
+                                    key={md5(`${i}_${link.linkType}_${link.linkHref}`)}
+                                    link={link}
+                                    setData={setLinkData}
+                                    linkTypes={publicData.socialMedias}
+                                    handleModal={handleModal}
+                                    setModalError={setModalError}
+                                    setOriginalLink={setOriginalLink}
+                                    setSectionError={setSectionError}
+                                />
+                            ))}
+                        </>
+                    )}
+                </TableBody>
+            </Table>
 
             <HaloModal
                 modal={{
                     open: openModal,
                     setOpen: setOpenModal,
-                    label: '',
-                    description: '',
+                    onClose: () => {
+                        setModalTask(null);
+                        setOriginalLink(null);
+                    },
                 }}
                 heading={{
-                    icon: 'pencil',
-                    text: 'Update Website',
+                    icon: modalTask === ModalTask.Create ? 'link' : 'pen-nib',
+                    text: modalTask === ModalTask.Create
+                        ? t(`profile-page.${id}.modal-create`)
+                        : t(`profile-page.${id}.modal-update`),
                 }}
                 button={{
-                    icon: 'paper-plane',
-                    text: 'Done',
-                    onClick: () => console.log('clicked'),
+                    text: modalTask === ModalTask.Create ? t('buttons.add') : t('buttons.update'),
+                    onClick: addOrUpdateLink,
                 }}
             >
                 <Grid container spacing={2} style={{marginBottom: '0.5rem'}}>
                     <Grid item md={4} sm={6} xs={12}>
                         <FormControl fullWidth>
-                            <InputLabel id='google'>Edit</InputLabel>
+                            <InputLabel id='link-type'>{t(`profile-page.${id}.modal-link-type`)}</InputLabel>
                             <Select
-                                id='google'
-                                label='Edit'
+                                id='link-type'
+                                label={t(`profile-page.${id}.modal-link-type`)}
                                 variant='outlined'
+                                value={linkData.linkType}
+                                onChange={(e) => setLinkData({...linkData, linkType: e.target.value})}
                             >
-                                <MenuItem key='male' value='male'>Male</MenuItem>
-                                <MenuItem key='female' value='female'>Female</MenuItem>
+                                {publicData.socialMedias.map(item => (
+                                    <MenuItem key={item.index} value={item.index}>
+                                        {item.display}
+                                    </MenuItem>
+                                ))}
                             </Select>
                         </FormControl>
                     </Grid>
                     <Grid item md={8} sm={6} xs={12}>
-                        <TextField fullWidth label='Name' />
+                        <TextField
+                            fullWidth
+                            label={t(`profile-page.${id}.modal-link-text`)}
+                            value={linkData.linkHref}
+                            onChange={(e) => setLinkData({...linkData, linkHref: e.target.value})}
+                        />
                     </Grid>
+                    {modalError && (
+                        <Grid item xs={12}>
+                            <MessageCaption message={modalError} type='error' />
+                        </Grid>
+                    )}
                 </Grid>
             </HaloModal>
         </Grid>
     );
 };
 
-export default Websites;
+export default connect(mapStateToProps)(Websites);
 
 type TWebsiteItemProps = {
     id: string,
     key: string,
-    setOpenModal: (open: boolean) => void,
+    link: IProfileLink,
+    linkTypes: Array<TPublicDataFormat>,
+    setData: (link: IProfileLink) => void,
+    handleModal: (open: boolean) => void,
+    setModalError: (error: string | null) => void,
+    setOriginalLink: (link: IProfileLink | null) => void,
+    setSectionError: (error: string | null) => void,
 };
 
 const WebsiteItem = ({
     id,
     key,
-                         setOpenModal,
+    link,
+    linkTypes,
+    setData,
+    handleModal,
+    setModalError,
+    setOriginalLink,
+    setSectionError,
 }: TWebsiteItemProps) => {
     const theme = useTheme();
+    const linkType = linkTypes.find(linkType => linkType.index === link.linkType);
 
     return (
-        <Table size='small'>
-            <TableBody>
-                <TableRow>
-                    <TableCell>
-                        <Chip label='Google' size='small' color='info' />
-                        <span
-                            style={{marginLeft: '10px'}}
-                            className='link'
-                        >https://google.com</span>
-                    </TableCell>
-                    <TableCell align='right'>
-                        <IconButton
-                            style={{marginRight: '10px'}}
-                            size='small'
-                            onClick={() => setOpenModal(true)}
-                        >
-                            <FaIcon wrapper='i' ic='pencil' size='sm' color={theme.palette.secondary.main} />
-                        </IconButton>
-                        <IconButton size='small'>
-                            <FaIcon wrapper='i' ic='xmark' color={theme.palette.error.main} />
-                        </IconButton>
-                    </TableCell>
-                </TableRow>
-            </TableBody>
-        </Table>
+        <TableRow>
+            <TableCell>
+                <Chip label={linkType.display} size='small' color='info' />
+                <span
+                    style={{marginLeft: '10px'}}
+                    className='link'
+                >{link.linkHref}</span>
+            </TableCell>
+            <TableCell align='right'>
+                <IconButton
+                    style={{marginRight: '10px'}}
+                    size='small'
+                    onClick={() => batch(() => {
+                        setData({...link});
+                        setOriginalLink({...link});
+                        handleModal(ModalTask.Update);
+                        setModalError(null);
+                        setSectionError(null);
+                    })}
+                >
+                    <FaIcon wrapper='i' ic='pencil' size='sm' color={theme.palette.secondary.main} />
+                </IconButton>
+                <IconButton size='small' onClick={() => setOriginalLink({...link})}>
+                    <FaIcon wrapper='i' ic='xmark' color={theme.palette.error.main} />
+                </IconButton>
+            </TableCell>
+        </TableRow>
     );
 };

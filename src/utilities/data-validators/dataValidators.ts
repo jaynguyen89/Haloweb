@@ -24,6 +24,8 @@ export type TRangeOption = {
     alphanumeric?: true,
     // If specified, input will be validated by Regex against this pattern.
     pattern?: string,
+    // If specified, the above pattern is the complete pattern to validate against.
+    wholePattern?: true,
 };
 
 export type TDateOption = {
@@ -143,7 +145,11 @@ export class RangeValidator<T extends string> {
         if (!alphanumericValidity) messages.set('messages.input-alphanumeric', undefined);
 
         let patternValidity = true;
-        if (this.options.pattern) patternValidity = !(new RegExp(`[^${this.options.pattern}a-zA-Z]`, 'gi').test(data as string));
+        if (this.options.pattern) {
+            patternValidity = !Boolean(this.options.wholePattern)
+                ? !(new RegExp(`[^${this.options.pattern}a-zA-Z]`, 'gi').test(data as string))
+                : new RegExp(`${this.options.pattern}`, 'gi').test(data as string);
+        }
         if (!patternValidity) messages.set('messages.input-pattern', { chars: this.options.pattern });
 
         const isValid =

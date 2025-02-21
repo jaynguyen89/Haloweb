@@ -14,6 +14,7 @@ export type TFlasher = CollapseProps & AlertProps & {
     message?: string,
     messageParams?: object,
     onClose?: () => void,
+    showAction?: boolean,
 };
 
 const Flasher = ({
@@ -27,11 +28,12 @@ const Flasher = ({
         mb: 2,
     },
     onClose,
+    showAction = true,
 }: TFlasher) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const theme = useTheme();
-    const visible = stage === 'showcase' || useIsStageIncluded(stage);
+    const visible = stage === Stages.SHOWCASE || useIsStageIncluded(stage);
     const stageFromStore = useGetStageByName(stage);
 
     message = useMemo(() => {
@@ -54,14 +56,14 @@ const Flasher = ({
         <Collapse in={visible} orientation={orientation}>
             <Alert
                 action={
-                    <IconButton
+                    showAction ?<IconButton
                         aria-label='close'
                         color='inherit'
                         size='small'
                         onClick={() => stage !== 'showcase' && handleHideFlasher()}
                     >
                         <CloseIcon fontSize='inherit' />
-                    </IconButton>
+                    </IconButton> : undefined
                 }
                 sx={sx}
                 severity={severity}

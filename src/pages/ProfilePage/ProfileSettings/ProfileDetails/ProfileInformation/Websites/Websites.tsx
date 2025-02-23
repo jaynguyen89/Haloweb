@@ -34,7 +34,7 @@ import { sendRequestToUpdateProfileDetails } from 'src/redux/actions/profileActi
 type TWebsitesProps = {
     id: string,
     links: Array<IProfileLink> | null,
-    onLinkAdded: () => void,
+    onLinksChanged: () => void,
 };
 
 enum ModalTask {
@@ -50,7 +50,7 @@ const Websites = ({
     id,
     links,
     publicData,
-    onLinkAdded,
+    onLinksChanged,
 }: ReturnType<typeof mapStateToProps> & TWebsitesProps) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
@@ -116,7 +116,7 @@ const Websites = ({
                     setModalTask(null);
                     setModalError(null);
                 });
-                onLinkAdded();
+                onLinksChanged();
             }
             else
                 setModalError(t(`profile-page.${id}.modal-link-error`));
@@ -147,7 +147,10 @@ const Websites = ({
             };
 
             sendRequestToUpdateProfileDetails(dispatch, authorization, profileId, data).then(result => {
-                if (result === true) setOriginalLink(null);
+                if (result === true) {
+                    setOriginalLink(null);
+                    onLinksChanged();
+                }
                 else setSectionError(t(`profile-page.${id}.link-removal-error`));
             });
         }

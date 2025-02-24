@@ -23,6 +23,7 @@ export interface IProfileDetails {
     gender: Gender,
     dateOfBirth?: string,
     ethnicity: Ethnicity,
+    avatarName?: string,
     workInfo: IWorkInfo,
 }
 

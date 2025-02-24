@@ -80,7 +80,9 @@ class Request<T> {
             return {
                 status: (error.response?.data as any)?.status,
                 statusCodeName: (error.response?.data as any)?.title,
-                data: JSON.parse(error.response?.config?.data ?? '{}'),
+                data: typeof error.response?.config?.data === 'string'
+                    ? JSON.parse(error.response?.config?.data ?? '{}')
+                    : undefined,
             };
         }
 

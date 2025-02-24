@@ -33,8 +33,8 @@ export const sendRequestToGetProfileDetails = async (
 
     const isSuccess = response && isSuccessStatusCode(response.status);
     if (isSuccess) {
-        setLocalStorage(StorageKeys.PROFILE_DETAILS, response?.data);
-        return response?.data;
+        setLocalStorage(StorageKeys.PROFILE_DETAILS, response?.data as object);
+        return response?.data as IProfileDetails;
     }
 
     return null;
@@ -73,5 +73,84 @@ export const sendRequestToUpdateProfileDetails = async (
         return true;
     }
 
-    return response.data.fieldName;
+    return (response?.data as object)?.fieldName;
+};
+
+export const sendRequestToChangeAvatar = async (
+    dispatch: Dispatch,
+    authorization: IAuthorization,
+    profileId: string,
+    avatarFile: File,
+): Promise<boolean | string> => {
+    surrogate(dispatch, setStageByName(Stages.REQUEST_TO_CHANGE_AVATAR_BEGIN));
+
+    const responseInterceptors = createInterceptors([
+        {
+            stage: Stages.REQUEST_TO_CHANGE_AVATAR_FAILED,
+            statusCode: HttpStatusCode.BadRequest,
+        },
+        {
+            stage: Stages.REQUEST_TO_CHANGE_AVATAR_FAILED,
+            statusCode: HttpStatusCode.Gone,
+        },
+        {
+            stage: Stages.REQUEST_TO_CHANGE_AVATAR_FAILED,
+            statusCode: HttpStatusCode.Conflict,
+        },
+    ]);
+
+    const request = new RequestBuilder<string>()
+        .withMethod(RequestMethods.POST)
+        .withHeader(RequestHeaderKeys.ProfileId, profileId)
+        .withEndpoint(`${ControllerEndpoints.PROFILE}/save-profile-photo`)
+        .withResponseInterceptors(responseInterceptors)
+        .withFormPart('photo', avatarFile)
+        .withBodyPart('isAvatar', 'true')
+        .build(authorization);
+
+    const response = await request.send(dispatch);
+
+    const isSuccess = response && isSuccessStatusCode(response.status);
+    surrogate(dispatch, removeStage(Stages.REQUEST_TO_CHANGE_AVATAR_BEGIN));
+
+    if (isSuccess) {
+        removeLocalStorage(StorageKeys.PROFILE_DETAILS);
+        return response?.data as string;
+    }
+
+    return false;
+};
+
+export const sendRequestToRemoveAvatar = async (
+    dispatch: Dispatch,
+    authorization: IAuthorization,
+    profileId: string,
+): Promise<boolean | string> => {
+    surrogate(dispatch, setStageByName(Stages.REQUEST_TO_REMOVE_AVATAR_BEGIN));
+
+    const responseInterceptors = createInterceptors([
+        {
+            stage: Stages.REQUEST_TO_REMOVE_AVATAR_FAILED,
+            statusCode: HttpStatusCode.BadRequest,
+        },
+    ]);
+
+    const request = new RequestBuilder<string>()
+        .withMethod(RequestMethods.POST)
+        .withHeader(RequestHeaderKeys.ProfileId, profileId)
+        .withEndpoint(`${ControllerEndpoints.PROFILE}/delete-profile-photo/1`)
+        .withResponseInterceptors(responseInterceptors)
+        .build(authorization);
+
+    const response = await request.send(dispatch);
+
+    const isSuccess = response && isSuccessStatusCode(response.status);
+    surrogate(dispatch, removeStage(Stages.REQUEST_TO_REMOVE_AVATAR_BEGIN));
+
+    if (isSuccess) {
+        removeLocalStorage(StorageKeys.PROFILE_DETAILS);
+        return true;
+    }
+
+    return false;
 };

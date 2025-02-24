@@ -410,7 +410,7 @@ export class FileValidator<T extends File | Blob> {
         let maxSizeValidity = true;
         if (this.options.maxSize) {
             maxSizeValidity = data.size <= this.options.maxSize;
-            if (!maxSizeValidity) messages.set('messages.input-file-max-size', { size: this.options.maxSize / 1000 });
+            if (!maxSizeValidity) messages.set('messages.input-file-max-size', { size: this.options.maxSize / 1000000 });
         }
 
         let acceptedFormatsValidity = true;

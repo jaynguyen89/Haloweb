@@ -1,6 +1,7 @@
 import vars from 'src/commons/variables/cssVariables.scss';
 import { Theme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import { IMixins } from 'src/commons/interfaces';
 
 const useStyles = makeStyles((theme: Theme) => ({
     profileWrapper: {
@@ -25,8 +26,10 @@ const useStyles = makeStyles((theme: Theme) => ({
                 width: `calc(2 * ${vars.xh3})`,
                 height: `calc(2 * ${vars.xh3})`,
                 borderRadius: '50%',
+                borderColor: theme.palette.info.main,
                 border: `${vars.micro} solid ${theme.palette.primary.dark}`,
                 marginTop: vars.xxsmall,
+                boxShadow: (theme.mixins as IMixins).shadowDark,
             },
         },
         '& .profile-form': {

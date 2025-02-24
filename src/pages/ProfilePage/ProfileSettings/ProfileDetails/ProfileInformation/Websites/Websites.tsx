@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect } from 'react';
 import IconButton from '@mui/material/IconButton';
+import WebsiteItem from 'src/pages/ProfilePage/ProfileSettings/ProfileDetails/ProfileInformation/Websites/WebsiteItem';
 import FaIcon from 'src/components/atoms/FaIcon';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import Grid from '@mui/material/Grid';
 import { useTranslation } from 'react-i18next';
 import {
-    Chip,
     FormControl,
     InputLabel,
     Select,
@@ -14,7 +14,6 @@ import {
     TableCell,
     TableRow,
     TextField,
-    useTheme,
 } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import HaloModal from 'src/components/molecules/HaloModal';
@@ -24,7 +23,6 @@ import Stages from 'src/models/enums/stage';
 import { TRootState } from 'src/redux/reducers';
 import { batch, connect, useDispatch } from 'react-redux';
 import { ActionType, SocialMedia } from 'src/models/enums/apiEnums';
-import { TPublicDataFormat } from 'src/models/PublicData';
 import md5 from 'md5';
 import { InputData, RangeValidator, TRangeOption } from 'src/utilities/data-validators/dataValidators';
 import MessageCaption from 'src/components/atoms/MessageCaption';
@@ -190,7 +188,6 @@ const Websites = ({
                         <>
                             {links.map((link, i) => (
                                 <WebsiteItem
-                                    id={id}
                                     key={md5(`${i}_${link.linkType}_${link.linkHref}`)}
                                     link={link}
                                     setData={setLinkData}
@@ -265,60 +262,3 @@ const Websites = ({
 };
 
 export default connect(mapStateToProps)(Websites);
-
-type TWebsiteItemProps = {
-    id: string,
-    key: string,
-    link: IProfileLink,
-    linkTypes: Array<TPublicDataFormat>,
-    setData: (link: IProfileLink) => void,
-    handleModal: (open: boolean) => void,
-    setModalError: (error: string | null) => void,
-    setOriginalLink: (link: IProfileLink | null) => void,
-    setSectionError: (error: string | null) => void,
-};
-
-const WebsiteItem = ({
-    id,
-    key,
-    link,
-    linkTypes,
-    setData,
-    handleModal,
-    setModalError,
-    setOriginalLink,
-    setSectionError,
-}: TWebsiteItemProps) => {
-    const theme = useTheme();
-    const linkType = linkTypes.find(linkType => linkType.index === link.linkType);
-
-    return (
-        <TableRow>
-            <TableCell>
-                <Chip label={linkType.display} size='small' color='info' />
-                <span
-                    style={{marginLeft: '10px'}}
-                    className='link'
-                >{link.linkHref}</span>
-            </TableCell>
-            <TableCell align='right'>
-                <IconButton
-                    style={{marginRight: '10px'}}
-                    size='small'
-                    onClick={() => batch(() => {
-                        setData({...link});
-                        setOriginalLink({...link});
-                        handleModal(ModalTask.Update);
-                        setModalError(null);
-                        setSectionError(null);
-                    })}
-                >
-                    <FaIcon wrapper='i' ic='pencil' size='sm' color={theme.palette.secondary.main} />
-                </IconButton>
-                <IconButton size='small' onClick={() => setOriginalLink({...link})}>
-                    <FaIcon wrapper='i' ic='xmark' color={theme.palette.error.main} />
-                </IconButton>
-            </TableCell>
-        </TableRow>
-    );
-};

@@ -75,6 +75,14 @@ const configs = {
     maxAge: process.env.REACT_APP_MAX_AGE === undefined
         ? 10
         : +process.env.REACT_APP_MAX_AGE,
+    mediaBasePath: process.env.REACT_APP_MEDIA_BASE_PATH ?? 'http://localhost:89/halocake/assets',
+    avatarDir: process.env.REACT_APP_MEDIA_AVATAR_DIR ?? 'avatars',
+    coverDir: process.env.REACT_APP_MEDIA_COVER_DIR ?? 'covers',
+    attachmentDir: process.env.REACT_APP_MEDIA_ATTACHMENT_DIR ?? 'attachments',
+    photoMaxSize: process.env.REACT_APP_PHOTO_MAX_SIZE === undefined
+        ? 2000000
+        : +process.env.REACT_APP_PHOTO_MAX_SIZE,
+    photoAcceptedFormats: process.env.REACT_APP_PHOTO_ACCEPTED_FORMATS?.split(',') ?? ['jpg', 'jpeg', 'png', 'gif'],
 };
 
 export default configs;

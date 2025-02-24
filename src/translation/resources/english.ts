@@ -199,6 +199,9 @@ const english: ITranslation = {
                 'link-removal-confirmation': 'Are you sure to delete this link? {{href}}',
                 'link-removal-error': 'Something went wrong while removing the link. Please try again later.',
                 'get-profile-details-error': 'An issue happened while fetching your profile details. Please refresh page to try again.',
+                'change-avatar-failed': 'Something went wrong while updating Profile Photo. Please try again later.',
+                'remove-avatar-confirmation': 'Are you sure to delete your Profile Photo?',
+                'remove-avatar-failed': 'Something went wrong while removing Profile Photo. Please try again later.',
             },
             'interests-hobbies': {
                 heading: 'Interests & hobbies',

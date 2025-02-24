@@ -10,6 +10,7 @@ const viCommons: TTranslationMap = {
         delete: 'Xoá',
         remove: 'Loại Bỏ',
         add: 'Thêm Vào',
+        change: 'Thay Đổi',
         'view-details': 'Chi Tiết',
     },
     labels: {

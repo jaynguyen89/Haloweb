@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         },
         '& .avatar-wrapper': {
             textAlign: 'center',
+            position: 'relative',
             '& img': {
                 width: `calc(2 * ${vars.xh3})`,
                 height: `calc(2 * ${vars.xh3})`,
@@ -30,6 +31,11 @@ const useStyles = makeStyles((theme: Theme) => ({
                 border: `${vars.micro} solid ${theme.palette.primary.dark}`,
                 marginTop: vars.xxsmall,
                 boxShadow: (theme.mixins as IMixins).shadowDark,
+            },
+            '& button': {
+                position: 'absolute',
+                bottom: 0,
+                right: 0,
             },
         },
         '& .profile-form': {

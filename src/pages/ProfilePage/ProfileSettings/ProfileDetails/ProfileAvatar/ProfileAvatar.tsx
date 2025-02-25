@@ -17,6 +17,9 @@ import { sendRequestToChangeAvatar, sendRequestToRemoveAvatar } from 'src/redux/
 import useAuthorization from 'src/hooks/useAuthorization';
 import { useDispatch } from 'react-redux';
 import MessageCaption from 'src/components/atoms/MessageCaption';
+import Loading from 'src/components/molecules/StatusIndicators/Loading/Loading';
+import Stages from 'src/models/enums/stage';
+import { useIsStageIncluded } from 'src/hooks/useStage';
 
 const mediaPath = `${configs.mediaBasePath}/${configs.avatarDir}`;
 
@@ -49,6 +52,7 @@ const ProfileAvatar = ({
     const { authorization, profileId, username } = useAuthorization();
 
     const [errors, setErrors] = useState<Array<string>>([]);
+    const isLoading = useIsStageIncluded(Stages.REQUEST_TO_REMOVE_AVATAR_BEGIN);
     const [avatarMenuAnchor, setAvatarMenuAnchor] = useState<null | SVGSVGElement>(null);
     const open = !!avatarMenuAnchor;
 
@@ -101,6 +105,7 @@ const ProfileAvatar = ({
                         onClick={e => setAvatarMenuAnchor(e.currentTarget)}
                     />
                 </IconButton>
+                {isLoading && (<Loading stage={Stages.SHOWCASE} />)}
                 {errors.length !== 0 && errors.map((error) => <MessageCaption message={error} type='error' />)}
             </div>
             <Menu

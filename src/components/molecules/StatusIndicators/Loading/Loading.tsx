@@ -1,6 +1,7 @@
 import React from 'react';
 import 'src/components/molecules/StatusIndicators/Loading/loading.scss';
 import { useIsStageIncluded } from 'src/hooks/useStage';
+import Stages from 'src/models/enums/stage';
 
 export const variants = {
     falling: 'dot-falling',
@@ -23,7 +24,7 @@ const Loading = ({
     stage,
     variant = 'elastic',
 }: TLoading) => {
-    const visible = stage === 'showcase' || useIsStageIncluded(stage);
+    const visible = stage === Stages.SHOWCASE || useIsStageIncluded(stage);
     if (!visible) return null;
 
     return (

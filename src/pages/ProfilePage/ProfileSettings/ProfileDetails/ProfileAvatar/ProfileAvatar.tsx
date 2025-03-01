@@ -3,14 +3,7 @@ import { AvatarPlaceholderImg } from 'src/assets/images';
 import IconButton from '@mui/material/IconButton';
 import FaIcon from 'src/components/atoms/FaIcon';
 import { faPenToSquare } from '@fortawesome/free-solid-svg-icons/faPenToSquare';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import { faPenClip } from '@fortawesome/free-solid-svg-icons/faPenClip';
-import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
-import { useTheme } from '@mui/material';
 import configs from 'src/commons/configs';
-import { styled } from '@mui/material/styles';
-import Button from '@mui/material/Button';
 import { useTranslation } from 'react-i18next';
 import { FileValidator, InputData, TFileOption } from 'src/utilities/data-validators/dataValidators';
 import { sendRequestToChangeAvatar, sendRequestToRemoveAvatar } from 'src/redux/actions/profileActions';
@@ -20,6 +13,7 @@ import MessageCaption from 'src/components/atoms/MessageCaption';
 import Loading from 'src/components/molecules/StatusIndicators/Loading/Loading';
 import Stages from 'src/models/enums/stage';
 import { useIsStageIncluded } from 'src/hooks/useStage';
+import PhotoMenu from 'src/pages/ProfilePage/ProfileSettings/ProfileDetails/ProfileAvatar/PhotoMenu';
 
 const mediaPath = `${configs.mediaBasePath}/${configs.avatarDir}`;
 
@@ -29,18 +23,6 @@ type TProfileAvatarProps = {
     onAvatarChanged: () => void,
 };
 
-const VisuallyHiddenInput = styled('input')({
-    clip: 'rect(0 0 0 0)',
-    clipPath: 'inset(50%)',
-    height: 1,
-    overflow: 'hidden',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    whiteSpace: 'nowrap',
-    width: 1,
-});
-
 const ProfileAvatar = ({
     id,
     avatarName,
@@ -48,7 +30,6 @@ const ProfileAvatar = ({
 }: TProfileAvatarProps) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const theme = useTheme();
     const { authorization, profileId, username } = useAuthorization();
 
     const [errors, setErrors] = useState<Array<string>>([]);
@@ -108,51 +89,13 @@ const ProfileAvatar = ({
                 {isLoading && (<Loading stage={Stages.SHOWCASE} />)}
                 {errors.length !== 0 && errors.map((error) => <MessageCaption message={error} type='error' />)}
             </div>
-            <Menu
-                id='avatar-menu'
-                anchorEl={avatarMenuAnchor}
+            <PhotoMenu
                 open={open}
-                onClose={() => setAvatarMenuAnchor(null)}
-                MenuListProps={{
-                    'aria-labelledby': 'avatar-menu',
-                }}
-                anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                }}
-                transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                }}
-            >
-                <MenuItem>
-                    <Button
-                        component='label'
-                        role={undefined}
-                        variant='contained'
-                        tabIndex={-1}
-                        startIcon={<FaIcon wrapper='fa' t='obj' ic={faPenClip} color={theme.palette.warning.main} />}
-                    >
-                        {t('buttons.change')}
-                        <VisuallyHiddenInput
-                            type='file'
-                            onChange={(e) => handleChangeAvatar(e.target.files)}
-                        />
-                    </Button>
-                </MenuItem>
-                <MenuItem>
-                    <Button
-                        component='label'
-                        role={undefined}
-                        variant='contained'
-                        tabIndex={-1}
-                        startIcon={<FaIcon wrapper='fa' t='obj' ic={faTrash} color={theme.palette.error.main} />}
-                        onClick={() => handleRemoveAvatar()}
-                    >
-                        {t('buttons.remove')}
-                    </Button>
-                </MenuItem>
-            </Menu>
+                menuAnchor={avatarMenuAnchor}
+                setMenuAnchor={setAvatarMenuAnchor}
+                handleChangeAvatar={handleChangeAvatar}
+                handleRemoveAvatar={handleRemoveAvatar}
+            />
         </>
     );
 };

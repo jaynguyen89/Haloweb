@@ -40,6 +40,7 @@ export enum ControllerEndpoints {
     PROFILE = 'profile',
     PUBLIC_DATA = 'public-data',
     OCCUPATION = 'occupations',
+    INTEREST = 'interests',
 }
 
 export enum HttpHeaderKeys {
@@ -61,6 +62,8 @@ export enum StorageKeys {
     PROFILE_DETAILS = 'profileDetails',
     OCCUPATION_ITEMS = 'occupationItems',
     OCCUPATIONS = 'occupations',
+    INTEREST_ITEMS = 'interestItems',
+    INTERESTS = 'interests',
 }
 
 // Order of the formats must exactly match server side

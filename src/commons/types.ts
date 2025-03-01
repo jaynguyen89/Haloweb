@@ -19,3 +19,17 @@ export type TDateFormat = {
         time?: string,
     },
 };
+
+/* This type is generic for any data to be used for Autocomplete input with Category.
+* The key `parent` can take value of parent name or ID, depending on whichever exists in the type <T>. */
+export type GroupLikeOf<T> = {
+    parent: string,
+} & Omit<T, 'parent' | 'parentId'>;
+
+/* This type represents a single group of generic items <T>, use it as Array<GroupOf<T>>.*/
+export type GroupOf<T> = Partial<{
+    id: string,
+    name: string,
+}> & {
+    items: Omit<T, 'parent' | 'parentId'>,
+};

@@ -11,14 +11,11 @@ import {
 } from '@mui/material';
 import FaIcon from '../../atoms/FaIcon';
 import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons/faFloppyDisk';
-import { GroupLikeOf } from 'src/commons/types';
+import { GroupLikeOf, SavableStatus } from 'src/commons/types';
 
 type SavableAutocompleteProps<T> = {
     changed?: boolean,
-    status?: {
-        saving: boolean,
-        success: boolean,
-    },
+    status?: SavableStatus,
     asCheckbox?: true,
     disableSaveBtn?: boolean,
     onClickSaveBtn?: () => void,
@@ -42,7 +39,7 @@ const SavableAutocomplete = ({
     const { saving, success } = status ?? {};
 
     return (
-        <div className='wrapper'>
+        <div className='autocomplete'>
             <Autocomplete
                 multiple
                 filterSelectedOptions

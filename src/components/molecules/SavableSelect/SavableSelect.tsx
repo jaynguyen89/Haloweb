@@ -3,16 +3,14 @@ import 'src/components/molecules/SavableSelect/styles.scss';
 import { FormControl, IconButton, InputLabel, Select, SelectProps, useTheme } from '@mui/material';
 import FaIcon from '../../atoms/FaIcon';
 import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons/faFloppyDisk';
+import { SavableStatus } from 'src/commons/types';
 
 type SavableSelectProps = SelectProps & PropsWithChildren & {
     id?: string,
     oldValue?: string | number | null,
     disableSaveBtn?: boolean,
     onClickSaveBtn?: () => void,
-    status?: {
-        saving: boolean,
-        success: boolean,
-    },
+    status?: SavableStatus,
 };
 
 const SavableSelect = ({

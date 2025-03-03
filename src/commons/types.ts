@@ -33,3 +33,8 @@ export type GroupOf<T> = Partial<{
 }> & {
     items: Omit<T, 'parent' | 'parentId'>,
 };
+
+export type SavableStatus = {
+    saving: boolean,
+    success: boolean,
+};

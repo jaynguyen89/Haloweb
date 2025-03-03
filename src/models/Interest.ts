@@ -56,7 +56,9 @@ export const separateInterestsAndHobbiesAsGroupLike = (items: Array<IInterest>):
 export const getDefaultGroupLikeItems = (
     ids: Array<string>,
     items: Array<GroupLikeOf<IInterest>>,
-): Array<GroupLikeOf<IInterest>> => items.filter(item => ids.includes(item.id));
+): Array<GroupLikeOf<IInterest>> =>  items.filter(item => {
+    if (ids.some(id => id === item.id)) return item;
+});
 
 export const getItemsToRemoveOrAdd = (
     picks: Array<GroupLikeOf<IInterest>>,

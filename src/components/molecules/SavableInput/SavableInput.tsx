@@ -3,15 +3,13 @@ import { IconButton, TextField, TextFieldProps, useTheme } from '@mui/material';
 import FaIcon from '../../atoms/FaIcon';
 import 'src/components/molecules/SavableInput/styles.scss';
 import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons/faFloppyDisk';
+import { SavableStatus } from 'src/commons/types';
 
 type SavableInputProps = TextFieldProps & {
     oldValue?: string | null,
     disableSaveBtn?: boolean,
     onClickSaveBtn?: () => void,
-    status?: {
-        saving: boolean,
-        success: boolean,
-    },
+    status?: SavableStatus,
 };
 
 const SavableInput = ({

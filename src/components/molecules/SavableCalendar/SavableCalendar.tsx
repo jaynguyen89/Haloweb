@@ -8,6 +8,7 @@ import FaIcon from '../../atoms/FaIcon';
 import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons/faFloppyDisk';
 import { DateFormats } from 'src/commons/enums';
 import configs from 'src/commons/configs';
+import { SavableStatus } from 'src/commons/types';
 
 /* eslint-disable-next-line  @typescript-eslint/no-explicit-any */
 type TDatePickerProps = DatePickerProps<any> & {
@@ -16,10 +17,7 @@ type TDatePickerProps = DatePickerProps<any> & {
     onDatePicked: (date: DateTime) => void,
     disableSaveBtn?: boolean,
     onClickSaveBtn?: () => void,
-    status?: {
-        saving: boolean,
-        success: boolean,
-    },
+    status?: SavableStatus,
 };
 
 const SavableCalendar = ({

@@ -1,4 +1,4 @@
-import { GroupLikeOf } from 'src/commons/types';
+import { GroupLikeOf, SavableStatus } from 'src/commons/types';
 import { IInterest } from 'src/models/Interest';
 import SavableAutocomplete from 'src/components/molecules/SavableAutocomplete/SavableAutocomplete';
 import Grid from '@mui/material/Grid';
@@ -16,6 +16,8 @@ type TItemSelectorProps = {
         value: AutocompleteValue<GroupLikeOf<IInterest>, true, true, true>,
     ) => void,
     changed: boolean,
+    onSave: () => void,
+    status?: SavableStatus,
 };
 
 const GroupHeader = styled('div')(({ theme }) => ({
@@ -34,7 +36,14 @@ const GroupItems = styled('ul')({
     padding: 0,
 });
 
-const ItemSelector = ({ items, id, values, onItemSelected, changed }: TItemSelectorProps) => {
+const ItemSelector = ({
+    items,
+    id,
+    values,
+    onItemSelected,
+    changed,
+    onSave,
+}: TItemSelectorProps) => {
     const { t } = useTranslation();
 
     const sortedItems = items.sort((former, latter) => former.parent.localeCompare(latter.parent));
@@ -44,6 +53,7 @@ const ItemSelector = ({ items, id, values, onItemSelected, changed }: TItemSelec
             <SavableAutocomplete
                 changed={changed}
                 asCheckbox
+                onClickSaveBtn={onSave}
                 textFieldProps={{
                     fullWidth: true,
                     label: t(`profile-page.${id}.interests-label`),
@@ -51,7 +61,7 @@ const ItemSelector = ({ items, id, values, onItemSelected, changed }: TItemSelec
                 autocompleteProps={{
                     id: 'interests',
                     options: sortedItems,
-                    getOptionLabel: (option) => option?.name,
+                    getOptionLabel: (option) => option.name,
                     groupBy: (option) => option.parent,
                     renderGroup: (params) => (
                         <li key={params.key}>

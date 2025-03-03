@@ -208,6 +208,7 @@ const english: ITranslation = {
                 'interests-label': 'Interests',
                 'hobbies-label': 'Hobbies',
                 'interest-list-loading-failed': 'Something went wrong. Please reload page to try again.',
+                'interest-saving-failed': 'Some data have not been saved successfully. Please try again.',
             },
             'address-book': {
                 heading: 'Address book',

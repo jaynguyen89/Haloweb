@@ -1,4 +1,4 @@
-import { Ethnicity, Gender, SocialMedia } from 'src/models/enums/apiEnums';
+import { ActionType, Ethnicity, Gender, SocialMedia } from 'src/models/enums/apiEnums';
 import { IValueData } from 'src/models/IValueData';
 
 export interface IRegistrationProfileData {
@@ -41,4 +41,5 @@ export interface IProfileLink {
 
 export interface IProfileUpdateData extends IValueData {
     fieldName: string,
+    actionType: ActionType,
 }

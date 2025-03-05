@@ -3,7 +3,9 @@ import { faPenClip } from '@fortawesome/free-solid-svg-icons/faPenClip';
 import { faPlus } from '@fortawesome/free-solid-svg-icons/faPlus';
 import { faTrash } from '@fortawesome/free-solid-svg-icons/faTrash';
 import { faTruck } from '@fortawesome/free-solid-svg-icons/faTruck';
-import { LocalShippingRounded, OtherHousesRounded } from '@mui/icons-material';
+import LocalShippingRounded from '@mui/icons-material/LocalShippingRounded';
+import OtherHousesRounded from '@mui/icons-material/OtherHousesRounded';
+import RepartitionRoundedIcon from '@mui/icons-material/RepartitionRounded';
 import { Chip, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, useTheme } from '@mui/material';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -30,9 +32,9 @@ const AddressBook = ({
         <div className={styles.addressBook}>
             <h2>{t(`profile-page.${id}.heading`)}</h2>
             <Grid container spacing={2}>
-                <Grid item md={6} sm={6} xs={12}>
+                <Grid item lg={4} md={6} sm={6} xs={12}>
                     <Chip
-                        icon={<LocalShippingRounded/>}
+                        icon={<LocalShippingRounded />}
                         label={t(`profile-page.${id}.shipping-label`)}
                         color='secondary'
                     />
@@ -40,11 +42,22 @@ const AddressBook = ({
                     <p className='addressText'>SOMEWHERE, 3000</p>
                     <p className='addressText'>Australia</p>
                 </Grid>
-                <Grid item md={6} sm={6} xs={12}>
+                <Grid item lg={4} md={6} sm={6} xs={12}>
                     <Chip
-                        icon={<OtherHousesRounded/>}
+                        icon={<OtherHousesRounded />}
                         label={t(`profile-page.${id}.delivery-label`)}
                         color='info'
+                    />
+                    <p className='addressText'>Creek 75, 131/1A2 To Hien Thanh ST.</p>
+                    <p className='addressText'>Group 2, Ward 9, District 10</p>
+                    <p className='addressText'>Saigon City</p>
+                    <p className='addressText'>Vietnam</p>
+                </Grid>
+                <Grid item lg={4} md={6} sm={6} xs={12}>
+                    <Chip
+                        icon={<RepartitionRoundedIcon />}
+                        label={t(`profile-page.${id}.return-label`)}
+                        color='warning'
                     />
                     <p className='addressText'>Creek 75, 131/1A2 To Hien Thanh ST.</p>
                     <p className='addressText'>Group 2, Ward 9, District 10</p>
@@ -72,10 +85,13 @@ const AddressBook = ({
                                     <TableCell>BO Box 123456-789012, Sunshine PO, 23 Gengala RD., Sunshine West 3020</TableCell>
                                     <TableCell>
                                         <IconButton>
-                                            <FaIcon wrapper='fa' size='xs' t='obj' ic={faTruck} color={theme.palette.secondary.main} />
+                                            <LocalShippingRounded color='secondary' />
                                         </IconButton>
                                         <IconButton>
-                                            <FaIcon wrapper='fa' size='xs' t='obj' ic={faHouse} color={theme.palette.info.main} />
+                                            <OtherHousesRounded color='info' />
+                                        </IconButton>
+                                        <IconButton>
+                                            <RepartitionRoundedIcon color='warning' />
                                         </IconButton>
                                     </TableCell>
                                     <TableCell>
@@ -91,10 +107,13 @@ const AddressBook = ({
                                     <TableCell>BO Box 123456-789012, Sunshine PO, 23 Gengala RD., Sunshine West 3020</TableCell>
                                     <TableCell>
                                         <IconButton>
-                                            <FaIcon wrapper='fa' size='xs' t='obj' ic={faTruck} color={theme.palette.secondary.main} />
+                                            <LocalShippingRounded color='secondary' />
                                         </IconButton>
                                         <IconButton>
-                                            <FaIcon wrapper='fa' size='xs' t='obj' ic={faHouse} color={theme.palette.info.main} />
+                                            <OtherHousesRounded color='info' />
+                                        </IconButton>
+                                        <IconButton>
+                                            <RepartitionRoundedIcon color='warning' />
                                         </IconButton>
                                     </TableCell>
                                     <TableCell>

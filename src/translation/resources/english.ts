@@ -214,6 +214,7 @@ const english: ITranslation = {
                 heading: 'Address book',
                 'delivery-label': 'Delivery address',
                 'shipping-label': 'Shipping address',
+                'return-label': 'Return address',
                 'other-addresses': 'Other addresses',
                 'table-address': 'Address',
                 'table-setas': 'Set as',

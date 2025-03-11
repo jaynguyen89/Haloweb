@@ -1,4 +1,5 @@
 import { Dispatch } from 'redux';
+import { batch } from 'react-redux';
 import { IAuthorization } from 'src/models/Authentication';
 import { IInterest, IInterestItem } from 'src/models/Interest';
 import { isSuccessStatusCode, surrogate } from 'src/utilities/otherUtilities';
@@ -7,7 +8,6 @@ import Stages from 'src/models/enums/stage';
 import { ControllerEndpoints, RequestHeaderKeys, RequestMethods } from 'src/commons/enums';
 import RequestBuilder from 'src/fetcher/RequestBuilder';
 import * as interestConstants from 'src/redux/constants/interestConstants';
-import { batch } from 'react-redux';
 
 export const sendRequestToGetProfileInterests = (
     authorization: IAuthorization,

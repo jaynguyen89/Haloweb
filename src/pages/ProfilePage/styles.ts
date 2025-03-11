@@ -63,7 +63,13 @@ const useStyles = makeStyles((theme: Theme) => ({
             fontWeight: vars.thick,
             '& button': {
                 float: 'right',
+                backgroundColor: theme.palette.primary.main,
             },
+        },
+        '& .address-cell': {
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
         },
     },
     paymentMethods: {

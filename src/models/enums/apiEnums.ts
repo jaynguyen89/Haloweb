@@ -1,7 +1,13 @@
 export enum ActionType {
+    // Common
     Add,
     Update,
     Remove,
+
+    // AddressBook
+    SetAsForShipping,
+    SetAsForDelivery,
+    SetAsForReturn,
 }
 
 export enum Roles {
@@ -51,4 +57,23 @@ export enum SocialMedia {
     Youtube,
     Personal,
     Business,
+}
+
+export enum AddressVariant {
+    Western,
+    Eastern,
+}
+
+export enum LocalityRegion {
+    Asia,
+    Africa,
+    Europe,
+    NorthAmerica,
+    Oceania,
+    SouthAmerica,
+}
+
+export enum DivisionType {
+    State,
+    Province,
 }

@@ -41,6 +41,7 @@ export enum ControllerEndpoints {
     PUBLIC_DATA = 'public-data',
     OCCUPATION = 'occupations',
     INTEREST = 'interests',
+    ADDRESS = 'addresses',
 }
 
 export enum HttpHeaderKeys {

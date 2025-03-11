@@ -39,7 +39,7 @@ enum ItemType {
 export const InterestsHobbies = ({
     id,
     profileInterests,
-}: TInterestsHobbiesProps) => {
+}: ReturnType<typeof mapStateToProps> & TInterestsHobbiesProps) => {
     const dispatch = useDispatch();
     const { t } = useTranslation();
     const { authorization, profileId } = useAuthorization();

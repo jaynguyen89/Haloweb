@@ -13,6 +13,8 @@ export const modalBoxSx: SxProps<Theme> = {
         sm: vars.smallWidth,
         md: vars.mediumWidth,
     },
+    maxHeight: '700px',
+    overflowY: 'scroll',
     backgroundColor: (theme) => theme.palette.common.white,
     border: (theme) => `${vars.xmicro} solid ${theme.palette.primary.dark}}`,
     borderRadius: vars.micro,

@@ -8,6 +8,7 @@ import accountStore from 'src/redux/reducers/accountReducer';
 import profileStore from 'src/redux/reducers/profileReducer';
 import occupationStore from 'src/redux/reducers/occupationReducer';
 import interestStore from 'src/redux/reducers/interestReducer';
+import addressStore from 'src/redux/reducers/addressReducer';
 
 const reducers = combineReducers({
     themeStore,
@@ -19,6 +20,7 @@ const reducers = combineReducers({
     profileStore,
     occupationStore,
     interestStore,
+    addressStore,
 });
 
 export type TRootState = ReturnType<typeof reducers>;

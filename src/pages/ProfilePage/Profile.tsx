@@ -15,7 +15,7 @@ const SecurityQuestions = lazy(() => import('src/pages/ProfilePage/AccountSettin
 const TwoFactor = lazy(() => import('src/pages/ProfilePage/AccountSettings/TwoFactor'));
 const TrustedDevices = lazy(() => import('src/pages/ProfilePage/AccountSettings/TrustedDevices'));
 const VisibilitySettings = lazy(() => import('src/pages/ProfilePage/PrivacySettings/VisibilitySettings'));
-const AddressBook = lazy(() => import('src/pages/ProfilePage/ProfileSettings/AddressBook'));
+const AddressBook = lazy(() => import('src/pages/ProfilePage/ProfileSettings/AddressBook/AddressBookPage'));
 const PaymentMethods = lazy(() => import('src/pages/ProfilePage/ProfileSettings/PaymentMethods'));
 const Preferences = lazy(() => import('src/pages/ProfilePage/PrivacySettings/Preferences'));
 const ProfileDetails = lazy(() => import('src/pages/ProfilePage/ProfileSettings/ProfileDetails/ProfileDetails'));

@@ -13,3 +13,16 @@ export interface IDivision {
     divisionType: DivisionType,
     abbreviation?: string,
 }
+
+export interface ICountryData extends ICountry{
+    isoCode2Char: string,
+    isoCode3Char: string,
+    telephoneCode?: string,
+    primaryCurrencyId?: string,
+    secondaryCurrencyId?: string,
+}
+
+export interface ILocality {
+    country: ICountryData,
+    divisions: Array<IDivision>,
+}

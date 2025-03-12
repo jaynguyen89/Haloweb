@@ -8,6 +8,7 @@ import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mu
 import _cloneDeep from 'lodash/cloneDeep';
 import WesternAddressForm from 'src/pages/ProfilePage/ProfileSettings/AddressBook/AddressForm/WesternAddressForm';
 import EasternAddressForm from 'src/pages/ProfilePage/ProfileSettings/AddressBook/AddressForm/EasternAddressForm';
+import { connect, useDispatch } from 'react-redux';
 
 type TAddressFormProps = {
     id: string,
@@ -21,6 +22,7 @@ const AddressForm = ({
     address,
 }: TAddressFormProps) => {
     const { t } = useTranslation();
+    const dispatch = useDispatch();
     const [formData, setFormData] = useState<IUnifiedAddress>(defaultAddress);
 
     useEffect(() => {
@@ -48,7 +50,9 @@ const AddressForm = ({
             {action === ActionType.Add && (
                 <Grid item xs={12}>
                     <FormControl fullWidth>
-                        <FormLabel id='address-variant-select'>{t(`profile-page.${id}.address-form.variant-radio-label`)}</FormLabel>
+                        <FormLabel id='address-variant-select'>
+                            {t(`profile-page.${id}.address-form.variant-radio-label`)}
+                        </FormLabel>
                         <RadioGroup
                             row
                             name='address-variant'

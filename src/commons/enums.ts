@@ -42,6 +42,7 @@ export enum ControllerEndpoints {
     OCCUPATION = 'occupations',
     INTEREST = 'interests',
     ADDRESS = 'addresses',
+    LOCALITY = 'locality',
 }
 
 export enum HttpHeaderKeys {

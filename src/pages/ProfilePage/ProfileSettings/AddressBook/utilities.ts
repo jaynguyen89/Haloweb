@@ -1,40 +1,193 @@
 import { IEasternAddress, IUnifiedAddress, IWesternAddress } from 'src/models/Address';
 import { AddressVariant } from 'src/models/enums/apiEnums';
+import {
+    TFormDataState,
+    TValidatorOption,
+    TValidatorOptionsMapFn,
+    ValidatorNames,
+} from 'src/utilities/data-validators/dataValidators';
+import IPublicData from 'src/models/PublicData';
+import { toPascalCase } from 'src/utilities/stringUtilities';
 
-export const defaultAddress: IUnifiedAddress = {
-    variant: AddressVariant.Western,
-    streetAddress: '',
-    divisionId: '',
-    countryId: '',
+export enum WesternAddressFormFields {
+    Variant = 'Variant',
+    BuildingName = 'BuildingName',
+    PoBoxNumber = 'PoBoxNumber',
+    StreetAddress = 'StreetAddress',
+    Suburb = 'Suburb',
+    Postcode = 'Postcode',
+    DivisionId = 'DivisionId',
+    CountryId = 'CountryId',
+}
+
+export enum EasternAddressFormFields {
+    Variant = 'Variant',
+    BuildingName = 'BuildingName',
+    PoBoxNumber = 'PoBoxNumber',
+    StreetAddress = 'StreetAddress',
+    Lane = 'Lane',
+    Group = 'Group',
+    Quarter = 'Quarter',
+    Hamlet = 'Hamlet',
+    Commute = 'Commute',
+    Ward = 'Ward',
+    District = 'District',
+    Town = 'Town',
+    City = 'City',
+    DivisionId = 'DivisionId',
+    CountryId = 'CountryId',
+}
+
+export type TWesternAddressFormKeys = Omit<typeof WesternAddressFormFields, 'Variant'>;
+export type TEasternAddressFormKeys = Omit<typeof EasternAddressFormFields, 'Variant'>;
+
+export const initialWesternAddressFormState: TFormDataState<TWesternAddressFormKeys> = {
+    [WesternAddressFormFields.BuildingName]: {
+        value: undefined,
+        caption: undefined,
+    },
+    [WesternAddressFormFields.PoBoxNumber]: {
+        value: undefined,
+        caption: undefined,
+    },
+    [WesternAddressFormFields.StreetAddress]: {
+        value: undefined,
+        caption: undefined,
+    },
+    [WesternAddressFormFields.Suburb]: {
+        value: undefined,
+        caption: undefined,
+    },
+    [WesternAddressFormFields.Postcode]: {
+        value: undefined,
+        caption: undefined,
+    },
+    [WesternAddressFormFields.DivisionId]: {
+        value: undefined,
+        caption: undefined,
+    },
+    [WesternAddressFormFields.CountryId]: {
+        value: undefined,
+        caption: undefined,
+    },
 };
 
-export const getDefaultUnifiedAddress = (address: IEasternAddress | IWesternAddress): IUnifiedAddress =>
-    address.variant === AddressVariant.Eastern
-        ? {
-            variant: address.variant,
-            buildingName: address.buildingName ?? undefined,
-            poBoxNumber: address.poBoxNumber ?? undefined,
-            streetAddress: address.streetAddress,
-            lane: (address as IEasternAddress).lane ?? undefined,
-            group: (address as IEasternAddress).group ?? undefined,
-            quarter: (address as IEasternAddress).quarter ?? undefined,
-            hamlet: (address as IEasternAddress).hamlet ?? undefined,
-            commute: (address as IEasternAddress).commute ?? undefined,
-            ward: (address as IEasternAddress).ward ?? undefined,
-            district: (address as IEasternAddress).district ?? undefined,
-            town: (address as IEasternAddress).town ?? undefined,
-            city: (address as IEasternAddress).city ?? undefined,
-            divisionId: address.division.id,
-            countryId: address.country.id,
-        }
-        : {
-            variant: address.variant,
-            buildingName: address.buildingName ?? undefined,
-            poBoxNumber: address.poBoxNumber ?? undefined,
-            streetAddress: address.streetAddress,
-            suburb: (address as IWesternAddress).suburb,
-            postcode: (address as IWesternAddress).postcode,
-            divisionId: address.division.id,
-            countryId: address.country.id,
-        };
+export const initialEasternAddressFormState: TFormDataState<TEasternAddressFormKeys> = {
+    [EasternAddressFormFields.BuildingName]: {
+        value: undefined,
+        caption: undefined,
+    },
+    [EasternAddressFormFields.PoBoxNumber]: {
+        value: undefined,
+        caption: undefined,
+    },
+    [EasternAddressFormFields.StreetAddress]: {
+        value: undefined,
+        caption: undefined,
+    },
+    [EasternAddressFormFields.Lane]: {
+        value: undefined,
+        caption: undefined,
+    },
+    [EasternAddressFormFields.Group]: {
+        value: undefined,
+        caption: undefined,
+    },
+    [EasternAddressFormFields.Quarter]: {
+        value: undefined,
+        caption: undefined,
+    },
+    [EasternAddressFormFields.Hamlet]: {
+        value: undefined,
+        caption: undefined,
+    },
+    [EasternAddressFormFields.Commute]: {
+        value: undefined,
+        caption: undefined,
+    },
+    [EasternAddressFormFields.Ward]: {
+        value: undefined,
+        caption: undefined,
+    },
+    [EasternAddressFormFields.District]: {
+        value: undefined,
+        caption: undefined,
+    },
+    [EasternAddressFormFields.Town]: {
+        value: undefined,
+        caption: undefined,
+    },
+    [EasternAddressFormFields.City]: {
+        value: undefined,
+        caption: undefined,
+    },
+    [EasternAddressFormFields.DivisionId]: {
+        value: undefined,
+        caption: undefined,
+    },
+    [EasternAddressFormFields.CountryId]: {
+        value: undefined,
+        caption: undefined,
+    },
+};
 
+export const getDefaultWesternAddressData = (address: IWesternAddress): TFormDataState<TWesternAddressFormKeys> => {
+    const westernAddressData = {};
+    Object.keys(address).forEach(key => {
+        if (key !== 'variant') westernAddressData[toPascalCase(key)] = {
+            value: address[key],
+        };
+    });
+    
+    return westernAddressData;
+};
+
+export const getDefaultEasternAddressData = (address: IEasternAddress): TFormDataState<TEasternAddressFormKeys> => {
+    const easternAddressData = {};
+    Object.keys(address).forEach(key => {
+        if (key !== 'variant') easternAddressData[toPascalCase(key)] = {
+            value: address[key],
+        };
+    });
+
+    return easternAddressData;
+};
+
+export const westernAddressFormValidatorMap = {
+    [WesternAddressFormFields.BuildingName]: ValidatorNames.RangeValidator,
+    [WesternAddressFormFields.PoBoxNumber]: ValidatorNames.RangeValidator,
+    [WesternAddressFormFields.StreetAddress]: ValidatorNames.RangeValidator,
+    [WesternAddressFormFields.Suburb]: ValidatorNames.RangeValidator,
+    [WesternAddressFormFields.Postcode]: ValidatorNames.RangeValidator,
+    [WesternAddressFormFields.DivisionId]: ValidatorNames.RangeValidator,
+    [WesternAddressFormFields.CountryId]: ValidatorNames.RangeValidator,
+};
+
+export const easternAddressFormValidatorMap = {
+    [EasternAddressFormFields.BuildingName]: ValidatorNames.RangeValidator,
+    [EasternAddressFormFields.PoBoxNumber]: ValidatorNames.RangeValidator,
+    [EasternAddressFormFields.StreetAddress]: ValidatorNames.RangeValidator,
+    [EasternAddressFormFields.Lane]: ValidatorNames.RangeValidator,
+    [EasternAddressFormFields.Group]: ValidatorNames.RangeValidator,
+    [EasternAddressFormFields.Quarter]: ValidatorNames.RangeValidator,
+    [EasternAddressFormFields.Hamlet]: ValidatorNames.RangeValidator,
+    [EasternAddressFormFields.Commute]: ValidatorNames.RangeValidator,
+    [EasternAddressFormFields.Ward]: ValidatorNames.RangeValidator,
+    [EasternAddressFormFields.District]: ValidatorNames.RangeValidator,
+    [EasternAddressFormFields.Town]: ValidatorNames.RangeValidator,
+    [EasternAddressFormFields.City]: ValidatorNames.RangeValidator,
+    [EasternAddressFormFields.DivisionId]: ValidatorNames.RangeValidator,
+    [EasternAddressFormFields.CountryId]: ValidatorNames.RangeValidator,
+};
+
+export const westernAddressFormValidatorOptionsMapFn: TValidatorOptionsMapFn<TWesternAddressFormKeys> =
+    (publicData?: IPublicData, extra?: unknown): TValidatorOption<TWesternAddressFormKeys> =>
+({
+
+});
+
+export const easternAddressFormValidatorOptionsMapFn: TValidatorOptionsMapFn<TEasternAddressFormKeys> =
+    (publicData?: IPublicData, extra?: unknown): TValidatorOption<TEasternAddressFormKeys> =>
+({
+
+});

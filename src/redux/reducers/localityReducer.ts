@@ -1,22 +1,23 @@
 import produce from 'immer';
 import { AnyAction } from 'redux';
+import { ILocality } from 'src/models/Locality';
 import * as localityConstants from 'src/redux/constants/localityConstants';
 
 interface ILocalityStore {
-    locality: ILocality | null,
+    localities: Array<ILocality>,
 }
 
 const initialState: ILocalityStore = {
-    locality: null,
+    localities: [],
 };
 
 const reducer = produce((state: ILocalityStore, action: AnyAction) => {
     switch (action.type) {
         case localityConstants.GET_LOCALITY_DATA_SUCCESS:
-            state.locality = action.payload;
+            state.localities = action.payload;
             break;
         case localityConstants.GET_LOCALITY_DATA_FAILED:
-            state.locality = null;
+            state.localities = [];
             break;
         default:
             return;

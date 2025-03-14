@@ -44,7 +44,7 @@ const AddressList = ({
                                 <MoreHoriz color='primary.dark' />
                             </IconButton>
                         </TableCell>
-                        <TableCell>
+                        <TableCell className='actions-cell'>
                             <IconButton onClick={() => onActionClick(fineAddress.address.id, ActionType.Update)} disabled={actionDisabled}>
                                 <FaIcon wrapper='fa' size='xs' t='obj' ic={faPenClip} color={theme.palette.warning.main} />
                             </IconButton>

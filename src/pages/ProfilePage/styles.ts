@@ -71,6 +71,9 @@ const useStyles = makeStyles((theme: Theme) => ({
             flexDirection: 'row',
             justifyContent: 'space-between',
         },
+        '& .actions-cell': {
+            minWidth: vars.sh4,
+        },
     },
     paymentMethods: {
         '& h2': {

@@ -272,8 +272,9 @@ const LoginPage = ({
                         <Grid container spacing={1}>
                             <Grid item md={4} sm={3} xs={5}>
                                 <FormControl fullWidth>
-                                    <InputLabel
-                                        id='area-code-select-label'>{t('login-page.area-code-label')}</InputLabel>
+                                    <InputLabel id='area-code-select-label'>
+                                        {t('login-page.area-code-label')}
+                                    </InputLabel>
                                     <Select
                                         labelId='area-code-select-label'
                                         label={t('login-page.area-code-label')}

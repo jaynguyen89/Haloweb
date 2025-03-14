@@ -66,6 +66,7 @@ export enum StorageKeys {
     OCCUPATIONS = 'occupations',
     INTEREST_ITEMS = 'interestItems',
     INTERESTS = 'interests',
+    LOCALITIES = 'localities',
 }
 
 // Order of the formats must exactly match server side

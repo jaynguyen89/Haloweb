@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { IUnifiedAddress } from 'src/models/Address';
 import Grid from '@mui/material/Grid';
 import { FormControl, InputLabel, Select, TextField } from '@mui/material';
@@ -9,6 +9,7 @@ import FaIcon from 'src/components/atoms/FaIcon';
 import { faMinus } from '@fortawesome/free-solid-svg-icons/faMinus';
 import MenuItem from '@mui/material/MenuItem';
 import CountryFlag from 'src/components/atoms/CountryFlag/CountryFlag';
+import { EasternAddressFormFields } from 'src/pages/ProfilePage/ProfileSettings/AddressBook/utilities';
 
 type TEasternAddressFormProps = {
     id: string,
@@ -16,6 +17,7 @@ type TEasternAddressFormProps = {
     isLoadingData: boolean,
     divisions: Array<IDivision>,
     countries: Array<ICountryData>,
+    handleInput: (field: keyof typeof EasternAddressFormFields, value: string) => void,
 };
 
 const EasternAddressForm = ({
@@ -24,6 +26,7 @@ const EasternAddressForm = ({
     isLoadingData,
     divisions,
     countries,
+    handleInput,
 }: TEasternAddressFormProps) => {
     const { t } = useTranslation();
 
@@ -33,84 +36,96 @@ const EasternAddressForm = ({
                 <TextField
                     fullWidth
                     label={t(`profile-page.${id}.address-form.building-name-label`)}
-                    value={data.buildingName}
+                    value={data[EasternAddressFormFields.BuildingName].value}
+                    onChange={e => handleInput(EasternAddressFormFields.BuildingName, e.target.value)}
                 />
             </Grid>
             <Grid item sm={6} xs={12}>
                 <TextField
                     fullWidth
                     label={t(`profile-page.${id}.address-form.po-box-label`)}
-                    value={data.poBoxNumber}
+                    value={data[EasternAddressFormFields.PoBoxNumber].value}
+                    onChange={e => handleInput(EasternAddressFormFields.PoBoxNumber, e.target.value)}
                 />
             </Grid>
             <Grid item sm={6} xs={12}>
                 <TextField
                     fullWidth
                     label={t(`profile-page.${id}.address-form.street-address-label`)}
-                    value={data.streetAddress}
+                    value={data[EasternAddressFormFields.StreetAddress].value}
+                    onChange={e => handleInput(EasternAddressFormFields.StreetAddress, e.target.value)}
                 />
             </Grid>
             <Grid item sm={6} xs={12}>
                 <TextField
                     fullWidth
                     label={t(`profile-page.${id}.address-form.lane-label`)}
-                    value={data.lane}
+                    value={data[EasternAddressFormFields.Lane].value}
+                    onChange={e => handleInput(EasternAddressFormFields.Lane, e.target.value)}
                 />
             </Grid>
             <Grid item sm={6} xs={12}>
                 <TextField
                     fullWidth
                     label={t(`profile-page.${id}.address-form.group-label`)}
-                    value={data.group}
+                    value={data[EasternAddressFormFields.Group].value}
+                    onChange={e => handleInput(EasternAddressFormFields.Group, e.target.value)}
                 />
             </Grid>
             <Grid item sm={6} xs={12}>
                 <TextField
                     fullWidth
                     label={t(`profile-page.${id}.address-form.quarter-label`)}
-                    value={data.quarter}
+                    value={data[EasternAddressFormFields.Quarter].value}
+                    onChange={e => handleInput(EasternAddressFormFields.Quarter, e.target.value)}
                 />
             </Grid>
             <Grid item sm={6} xs={12}>
                 <TextField
                     fullWidth
                     label={t(`profile-page.${id}.address-form.hamlet-label`)}
-                    value={data.hamlet}
+                    value={data[EasternAddressFormFields.Hamlet].value}
+                    onChange={e => handleInput(EasternAddressFormFields.Hamlet, e.target.value)}
                 />
             </Grid>
             <Grid item sm={6} xs={12}>
                 <TextField
                     fullWidth
                     label={t(`profile-page.${id}.address-form.commute-label`)}
-                    value={data.commute}
+                    value={data[EasternAddressFormFields.Commute].value}
+                    onChange={e => handleInput(EasternAddressFormFields.Commute, e.target.value)}
                 />
             </Grid>
             <Grid item sm={6} xs={12}>
                 <TextField
                     fullWidth
                     label={t(`profile-page.${id}.address-form.ward-label`)}
-                    value={data.ward}
+                    value={data[EasternAddressFormFields.Ward].value}
+                    onChange={e => handleInput(EasternAddressFormFields.Ward, e.target.value)}
                 />
             </Grid>
             <Grid item sm={6} xs={12}>
                 <TextField
                     fullWidth
                     label={t(`profile-page.${id}.address-form.district-label`)}
-                    value={data.district}
+                    value={data[EasternAddressFormFields.District].value}
+                    onChange={e => handleInput(EasternAddressFormFields.District, e.target.value)}
                 />
             </Grid>
             <Grid item sm={6} xs={12}>
                 <TextField
                     fullWidth
                     label={t(`profile-page.${id}.address-form.town-label`)}
-                    value={data.town}
+                    value={data[EasternAddressFormFields.Town].value}
+                    onChange={e => handleInput(EasternAddressFormFields.Town, e.target.value)}
                 />
             </Grid>
             <Grid item sm={6} xs={12}>
                 <TextField
                     fullWidth
                     label={t(`profile-page.${id}.address-form.city-label`)}
-                    value={data.city}
+                    value={data[EasternAddressFormFields.City].value}
+                    onChange={e => handleInput(EasternAddressFormFields.City, e.target.value)}
                 />
             </Grid>
 
@@ -126,7 +141,8 @@ const EasternAddressForm = ({
                                 variant='outlined'
                                 labelId='province-select-label'
                                 label={t(`profile-page.${id}.address-form.province-label`)}
-                                value={data.divisionId}
+                                value={data[EasternAddressFormFields.DivisionId].value ?? ''}
+                                onChange={e => handleInput(EasternAddressFormFields.DivisionId, e.target.value)}
                             >
                                 <MenuItem key='none' value=''>
                                     <FaIcon wrapper='fa' t='obj' ic={faMinus} />
@@ -148,7 +164,8 @@ const EasternAddressForm = ({
                                 variant='outlined'
                                 labelId='country-select-label'
                                 label={t(`profile-page.${id}.address-form.country-label`)}
-                                value={data.countryId}
+                                value={data[EasternAddressFormFields.CountryId].value ?? ''}
+                                onChange={e => handleInput(EasternAddressFormFields.CountryId, e.target.value)}
                             >
                                 <MenuItem key='none' value=''>
                                     <FaIcon wrapper='fa' t='obj' ic={faMinus} />

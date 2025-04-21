@@ -9,6 +9,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FaIcon from 'src/components/atoms/FaIcon';
 import { faMinus } from '@fortawesome/free-solid-svg-icons/faMinus';
 import CountryFlag from 'src/components/atoms/CountryFlag/CountryFlag';
+import { WesternAddressFormFields } from 'src/pages/ProfilePage/ProfileSettings/AddressBook/utilities';
 
 type TWesternAddressFormProps = {
     id: string,
@@ -16,6 +17,7 @@ type TWesternAddressFormProps = {
     isLoadingData: boolean,
     divisions: Array<IDivision>,
     countries: Array<ICountryData>,
+    handleInput: (field: keyof typeof WesternAddressFormFields, value: string) => void,
 };
 
 const WesternAddressForm = ({
@@ -24,6 +26,7 @@ const WesternAddressForm = ({
     isLoadingData,
     divisions,
     countries,
+    handleInput,
 }: TWesternAddressFormProps) => {
     const { t } = useTranslation();
 
@@ -33,35 +36,40 @@ const WesternAddressForm = ({
                 <TextField
                     fullWidth
                     label={t(`profile-page.${id}.address-form.building-name-label`)}
-                    value={data.buildingName}
+                    value={data[WesternAddressFormFields.BuildingName].value}
+                    onChange={e => handleInput(WesternAddressFormFields.BuildingName, e.target.value)}
                 />
             </Grid>
             <Grid item sm={6} xs={12}>
                 <TextField
                     fullWidth
                     label={t(`profile-page.${id}.address-form.po-box-label`)}
-                    value={data.poBoxNumber}
+                    value={data[WesternAddressFormFields.PoBoxNumber].value}
+                    onChange={e => handleInput(WesternAddressFormFields.PoBoxNumber, e.target.value)}
                 />
             </Grid>
             <Grid item xs={12}>
                 <TextField
                     fullWidth
                     label={t(`profile-page.${id}.address-form.street-address-label`)}
-                    value={data.streetAddress}
+                    value={data[WesternAddressFormFields.StreetAddress].value}
+                    onChange={e => handleInput(WesternAddressFormFields.StreetAddress, e.target.value)}
                 />
             </Grid>
             <Grid item sm={6} xs={12}>
                 <TextField
                     fullWidth
                     label={t(`profile-page.${id}.address-form.suburb-label`)}
-                    value={data.suburb}
+                    value={data[WesternAddressFormFields.Suburb].value}
+                    onChange={e => handleInput(WesternAddressFormFields.Suburb, e.target.value)}
                 />
             </Grid>
             <Grid item sm={6} xs={12}>
                 <TextField
                     fullWidth
                     label={t(`profile-page.${id}.address-form.postcode-label`)}
-                    value={data.postcode}
+                    value={data[WesternAddressFormFields.Postcode].value}
+                    onChange={e => handleInput(WesternAddressFormFields.Postcode, e.target.value)}
                 />
             </Grid>
 
@@ -77,7 +85,8 @@ const WesternAddressForm = ({
                                 variant='outlined'
                                 labelId='province-select-label'
                                 label={t(`profile-page.${id}.address-form.state-label`)}
-                                value={data.divisionId}
+                                value={data[WesternAddressFormFields.DivisionId].value ?? ''}
+                                onChange={e => handleInput(WesternAddressFormFields.DivisionId, e.target.value)}
                             >
                                 <MenuItem key='none' value=''>
                                     <FaIcon wrapper='fa' t='obj' ic={faMinus} />
@@ -99,7 +108,8 @@ const WesternAddressForm = ({
                                 variant='outlined'
                                 labelId='country-select-label'
                                 label={t(`profile-page.${id}.address-form.country-label`)}
-                                value={data.countryId}
+                                value={data[WesternAddressFormFields.CountryId].value ?? ''}
+                                onChange={e => handleInput(WesternAddressFormFields.CountryId, e.target.value)}
                             >
                                 <MenuItem key='none' value=''>
                                     <FaIcon wrapper='fa' t='obj' ic={faMinus} />

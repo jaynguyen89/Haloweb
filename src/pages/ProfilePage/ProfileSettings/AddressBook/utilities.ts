@@ -1,4 +1,4 @@
-import { IEasternAddress, IUnifiedAddress, IWesternAddress } from 'src/models/Address';
+import { IEasternAddress, IWesternAddress } from 'src/models/Address';
 import { AddressVariant } from 'src/models/enums/apiEnums';
 import {
     TFormDataState,
@@ -8,6 +8,7 @@ import {
 } from 'src/utilities/data-validators/dataValidators';
 import IPublicData from 'src/models/PublicData';
 import { toPascalCase } from 'src/utilities/stringUtilities';
+import _cloneDeep from 'lodash/cloneDeep';
 
 export enum WesternAddressFormFields {
     Variant = 'Variant',
@@ -38,10 +39,8 @@ export enum EasternAddressFormFields {
     CountryId = 'CountryId',
 }
 
-export type TWesternAddressFormKeys = Omit<typeof WesternAddressFormFields, 'Variant'>;
-export type TEasternAddressFormKeys = Omit<typeof EasternAddressFormFields, 'Variant'>;
-
-export const initialWesternAddressFormState: TFormDataState<TWesternAddressFormKeys> = {
+export const initialWesternAddressFormState: TFormDataState<typeof WesternAddressFormFields> = {
+    [WesternAddressFormFields.Variant]: { value: AddressVariant.Western },
     [WesternAddressFormFields.BuildingName]: {
         value: undefined,
         caption: undefined,
@@ -72,7 +71,8 @@ export const initialWesternAddressFormState: TFormDataState<TWesternAddressFormK
     },
 };
 
-export const initialEasternAddressFormState: TFormDataState<TEasternAddressFormKeys> = {
+export const initialEasternAddressFormState: TFormDataState<typeof EasternAddressFormFields> = {
+    [EasternAddressFormFields.Variant]: { value: AddressVariant.Eastern },
     [EasternAddressFormFields.BuildingName]: {
         value: undefined,
         caption: undefined,
@@ -131,8 +131,8 @@ export const initialEasternAddressFormState: TFormDataState<TEasternAddressFormK
     },
 };
 
-export const getDefaultWesternAddressData = (address: IWesternAddress): TFormDataState<TWesternAddressFormKeys> => {
-    const westernAddressData = {};
+export const getDefaultWesternAddressData = (address: IWesternAddress): TFormDataState<typeof WesternAddressFormFields> => {
+    const westernAddressData = _cloneDeep(initialWesternAddressFormState);
     Object.keys(address).forEach(key => {
         if (key !== 'variant') westernAddressData[toPascalCase(key)] = {
             value: address[key],
@@ -142,8 +142,8 @@ export const getDefaultWesternAddressData = (address: IWesternAddress): TFormDat
     return westernAddressData;
 };
 
-export const getDefaultEasternAddressData = (address: IEasternAddress): TFormDataState<TEasternAddressFormKeys> => {
-    const easternAddressData = {};
+export const getDefaultEasternAddressData = (address: IEasternAddress): TFormDataState<typeof EasternAddressFormFields> => {
+    const easternAddressData = _cloneDeep(initialEasternAddressFormState);
     Object.keys(address).forEach(key => {
         if (key !== 'variant') easternAddressData[toPascalCase(key)] = {
             value: address[key],

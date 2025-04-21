@@ -1,20 +1,27 @@
-import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
+import React, { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { IEasternAddress, IUnifiedAddress, IWesternAddress } from 'src/models/Address';
 import { ActionType, AddressVariant } from 'src/models/enums/apiEnums';
 import Grid from '@mui/material/Grid';
 import { useTranslation } from 'react-i18next';
-import { defaultAddress, getDefaultUnifiedAddress } from 'src/pages/ProfilePage/ProfileSettings/AddressBook/utilities';
+import {
+    EasternAddressFormFields,
+    getDefaultEasternAddressData,
+    getDefaultWesternAddressData,
+    initialEasternAddressFormState,
+    initialWesternAddressFormState,
+    WesternAddressFormFields,
+} from 'src/pages/ProfilePage/ProfileSettings/AddressBook/utilities';
 import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material';
-import _cloneDeep from 'lodash/cloneDeep';
 import WesternAddressForm from 'src/pages/ProfilePage/ProfileSettings/AddressBook/AddressForm/WesternAddressForm';
 import EasternAddressForm from 'src/pages/ProfilePage/ProfileSettings/AddressBook/AddressForm/EasternAddressForm';
-import { connect, useDispatch } from 'react-redux';
+import { batch, connect, useDispatch } from 'react-redux';
 import { TRootState } from 'src/redux/reducers';
 import { surrogate } from 'src/utilities/otherUtilities';
 import { sendRequestToGetLocalityData } from 'src/redux/actions/localityActions';
 import useAuthorization from 'src/hooks/useAuthorization';
 import { useIsStageIncluded } from 'src/hooks/useStage';
 import Stages from 'src/models/enums/stage';
+import _cloneDeep from 'lodash/cloneDeep';
 
 type TAddressFormProps = {
     id: string,
@@ -37,40 +44,59 @@ const AddressForm = ({
     const { authorization } = useAuthorization();
     const isLoadingLocalities = useIsStageIncluded(Stages.REQUEST_TO_GET_LOCALITY_DATA_BEGIN);
 
-    const [formData, setFormData] = useState<IUnifiedAddress>(defaultAddress);
+    const [formData, setFormData] = useState<IUnifiedAddress>(initialWesternAddressFormState);
+    const [variant, setVariant] = useState<AddressVariant>(AddressVariant.Western);
 
     useEffect(() => {
         surrogate(dispatch, sendRequestToGetLocalityData(authorization));
     }, []);
 
     useEffect(() => {
-        if (action === ActionType.Add) {
-            setFormData(defaultAddress);
+        if (action === ActionType.Add || !Boolean(address)) {
+            setFormData(initialWesternAddressFormState);
             return;
         }
 
-        setFormData(getDefaultUnifiedAddress(address as IEasternAddress | IWesternAddress));
+        if (address!.variant === AddressVariant.Western) setFormData(getDefaultWesternAddressData(address as IWesternAddress));
+        else setFormData(getDefaultEasternAddressData(address as IEasternAddress));
     }, [action, address]);
 
     const { divisions, countries } = useMemo(() => {
         const countries = localities.map(locality => locality.country);
 
-        if (formData.countryId === '') return { divisions: [], countries };
+        if (!Boolean(formData[variant === AddressVariant.Western ? WesternAddressFormFields.CountryId : EasternAddressFormFields.CountryId].value))
+            return { divisions: [], countries };
 
-        const localityByCountryId = localities.filter(locality => locality.country.id === formData.countryId);
+        const localityByCountryId = localities.filter(
+            locality => locality.country.id === formData[
+                variant === AddressVariant.Western ? WesternAddressFormFields.CountryId : EasternAddressFormFields.CountryId
+            ].value,
+        );
         return { divisions: localityByCountryId[0].divisions, countries };
-    }, [formData, localities]);
+    }, [formData, localities, variant]);
 
     const handleVariantSelect = (variant: AddressVariant) => {
-        if (variant === AddressVariant.Western) {
-            setFormData(defaultAddress);
-            return;
-        }
+        batch(() => {
+            setVariant(variant);
 
-        const clone = _cloneDeep(defaultAddress);
-        clone.variant = AddressVariant.Eastern;
-        setFormData(clone);
+            if (variant === AddressVariant.Western) {
+                setFormData(Boolean(address) ? getDefaultWesternAddressData(address as IWesternAddress) : initialWesternAddressFormState);
+                return;
+            }
+
+            setFormData(Boolean(address) ? getDefaultEasternAddressData(address as IEasternAddress) : initialEasternAddressFormState);
+        });
     };
+
+    const handleFormData = useCallback((field: keyof typeof WesternAddressFormFields | keyof typeof EasternAddressFormFields, value: string) => {
+        const clone = _cloneDeep(formData);
+
+        if (field === WesternAddressFormFields.CountryId || field === EasternAddressFormFields.CountryId)
+            clone[variant === AddressVariant.Western ? WesternAddressFormFields.DivisionId : EasternAddressFormFields.DivisionId].value = undefined;
+
+        clone[field] = { value: value === '' ? undefined : value };
+        setFormData(clone);
+    }, [variant]);
 
     return (
         <Grid container spacing={2} style={{marginBottom: '10px'}}>
@@ -102,23 +128,25 @@ const AddressForm = ({
                 </Grid>
             )}
 
-            {formData.variant === AddressVariant.Western && (
+            {formData[WesternAddressFormFields.Variant].value === AddressVariant.Western && (
                 <WesternAddressForm
                     id={id}
                     data={formData}
                     isLoadingData={isLoadingLocalities}
                     divisions={divisions}
                     countries={countries}
+                    handleInput={handleFormData}
                 />
             )}
 
-            {formData.variant === AddressVariant.Eastern && (
+            {formData[EasternAddressFormFields.Variant].value === AddressVariant.Eastern && (
                 <EasternAddressForm
                     id={id}
                     data={formData}
                     isLoadingData={isLoadingLocalities}
                     divisions={divisions}
                     countries={countries}
+                    handleInput={handleFormData}
                 />
             )}
         </Grid>

@@ -39,6 +39,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
+/**
+ * Usage: to show error messages for form inputs or standalone input widgets.
+ * @param props
+ * @constructor
+ */
 const MessageCaption = (props: IMessage | IStatus) => {
     const { t } = useTranslation();
     const styles = useStyles();

@@ -17,6 +17,8 @@ export type TValidationResult<T> = {
 };
 
 export type TFieldMediatorOptions<T> = {
+    // No need to validate these fields.
+    noValidations?: Array<keyof T>,
     // Exactly 1 of the specified fields must have valid value, the others must be undefined
     // If a child array is specified, all its items must be either valid or undefined
     oneOfFields?: Array<keyof T | Array<keyof T>>,
@@ -28,13 +30,15 @@ export type TFieldMediatorOptions<T> = {
 class FieldsMediator<T> {
 
     private readonly validatorsMap: TFieldToValidatorMap<T>;
-    private validationResult?: TValidationResult<T>;
+    private validationResult: TValidationResult<T>;
     // If no validationOptions, consider all fields as required, otherwise, consider the fields specified as ruled by validationOptions
     private readonly validationOptions?: TFieldMediatorOptions<T>;
 
     constructor(validatorsMap: TFieldToValidatorMap<T>, validationOptions?: TFieldMediatorOptions<T>) {
         this.validatorsMap = validatorsMap;
         this.validationOptions = validationOptions;
+        /* eslint-disable-next-line  @typescript-eslint/no-explicit-any */
+        this.validationResult = {} as any;
     }
 
     public notifyValidationResult(): TValidationResult<T> {
@@ -54,10 +58,15 @@ class FieldsMediator<T> {
     }
 
     public validateForm(): TFormResult {
-        if (this.validationResult === undefined) return { isValid: false };
+        if (this.validationResult === undefined) this.notifyValidationResult(); //return { isValid: false };
 
-        const { oneOfFields, optionalFields } = this.validationOptions ?? {};
+        const { noValidations, oneOfFields, optionalFields } = this.validationOptions ?? {};
         const fieldNames = Object.keys(this.validationResult);
+
+        if (noValidations) for (const entry of noValidations) {
+            this.validationResult[entry as keyof T].isValid = true;
+            this.validationResult[entry as keyof T].messages = undefined;
+        }
 
         let isValidByOneOfFields = true;
         if (oneOfFields) {

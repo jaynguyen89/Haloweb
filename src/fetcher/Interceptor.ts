@@ -50,7 +50,7 @@ export class InterceptorChain {
     /* eslint-disable  @typescript-eslint/no-explicit-any */
     public runResponseInterceptors(
         dispatch: Dispatch,
-        data: AxiosResponse<any, any> | AxiosError<unknown, any> | unknown,
+        data: AxiosResponse | AxiosError<unknown, any> | unknown,
         nextChain?: InterceptorChain,
     ): void {
         if (nextChain) {

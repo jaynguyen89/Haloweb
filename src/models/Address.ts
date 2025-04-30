@@ -48,3 +48,10 @@ export interface IUnifiedAddress {
     divisionId: string,
     countryId: string,
 }
+
+export interface IAddressData {
+    isForPostage: boolean,
+    isForDelivery: boolean,
+    isForReturn: boolean,
+    address: IUnifiedAddress,
+}

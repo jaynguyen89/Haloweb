@@ -9,7 +9,15 @@ import FaIcon from 'src/components/atoms/FaIcon';
 import { faMinus } from '@fortawesome/free-solid-svg-icons/faMinus';
 import MenuItem from '@mui/material/MenuItem';
 import CountryFlag from 'src/components/atoms/CountryFlag/CountryFlag';
-import { EasternAddressFormFields } from 'src/pages/ProfilePage/ProfileSettings/AddressBook/utilities';
+import {
+    EasternAddressFormFields,
+    WesternAddressFormFields,
+} from 'src/pages/ProfilePage/ProfileSettings/AddressBook/utilities';
+import MessageCaption from 'src/components/atoms/MessageCaption';
+import Button from '@mui/material/Button';
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons/faPaperPlane';
+import { AddressVariant } from 'src/models/enums/apiEnums';
+import { TFormDataState } from 'src/utilities/data-validators/dataValidators';
 
 type TEasternAddressFormProps = {
     id: string,
@@ -18,6 +26,8 @@ type TEasternAddressFormProps = {
     divisions: Array<IDivision>,
     countries: Array<ICountryData>,
     handleInput: (field: keyof typeof EasternAddressFormFields, value: string) => void,
+    disableSubmit: boolean,
+    onSubmit: (variant: AddressVariant, formData: TFormDataState<typeof WesternAddressFormFields | typeof EasternAddressFormFields>) => void,
 };
 
 const EasternAddressForm = ({
@@ -27,6 +37,8 @@ const EasternAddressForm = ({
     divisions,
     countries,
     handleInput,
+    disableSubmit,
+    onSubmit,
 }: TEasternAddressFormProps) => {
     const { t } = useTranslation();
 
@@ -39,6 +51,9 @@ const EasternAddressForm = ({
                     value={data[EasternAddressFormFields.BuildingName].value}
                     onChange={e => handleInput(EasternAddressFormFields.BuildingName, e.target.value)}
                 />
+                {data[EasternAddressFormFields.BuildingName].caption && (
+                    <MessageCaption message={data[EasternAddressFormFields.BuildingName].caption} />
+                )}
             </Grid>
             <Grid item sm={6} xs={12}>
                 <TextField
@@ -47,6 +62,9 @@ const EasternAddressForm = ({
                     value={data[EasternAddressFormFields.PoBoxNumber].value}
                     onChange={e => handleInput(EasternAddressFormFields.PoBoxNumber, e.target.value)}
                 />
+                {data[EasternAddressFormFields.PoBoxNumber].caption && (
+                    <MessageCaption message={data[EasternAddressFormFields.PoBoxNumber].caption} />
+                )}
             </Grid>
             <Grid item sm={6} xs={12}>
                 <TextField
@@ -55,6 +73,9 @@ const EasternAddressForm = ({
                     value={data[EasternAddressFormFields.StreetAddress].value}
                     onChange={e => handleInput(EasternAddressFormFields.StreetAddress, e.target.value)}
                 />
+                {data[EasternAddressFormFields.StreetAddress].caption && (
+                    <MessageCaption message={data[EasternAddressFormFields.StreetAddress].caption} />
+                )}
             </Grid>
             <Grid item sm={6} xs={12}>
                 <TextField
@@ -63,6 +84,9 @@ const EasternAddressForm = ({
                     value={data[EasternAddressFormFields.Lane].value}
                     onChange={e => handleInput(EasternAddressFormFields.Lane, e.target.value)}
                 />
+                {data[EasternAddressFormFields.Lane].caption && (
+                    <MessageCaption message={data[EasternAddressFormFields.Lane].caption} />
+                )}
             </Grid>
             <Grid item sm={6} xs={12}>
                 <TextField
@@ -71,6 +95,9 @@ const EasternAddressForm = ({
                     value={data[EasternAddressFormFields.Group].value}
                     onChange={e => handleInput(EasternAddressFormFields.Group, e.target.value)}
                 />
+                {data[EasternAddressFormFields.Group].caption && (
+                    <MessageCaption message={data[EasternAddressFormFields.Group].caption} />
+                )}
             </Grid>
             <Grid item sm={6} xs={12}>
                 <TextField
@@ -79,6 +106,9 @@ const EasternAddressForm = ({
                     value={data[EasternAddressFormFields.Quarter].value}
                     onChange={e => handleInput(EasternAddressFormFields.Quarter, e.target.value)}
                 />
+                {data[EasternAddressFormFields.Quarter].caption && (
+                    <MessageCaption message={data[EasternAddressFormFields.Quarter].caption} />
+                )}
             </Grid>
             <Grid item sm={6} xs={12}>
                 <TextField
@@ -87,6 +117,9 @@ const EasternAddressForm = ({
                     value={data[EasternAddressFormFields.Hamlet].value}
                     onChange={e => handleInput(EasternAddressFormFields.Hamlet, e.target.value)}
                 />
+                {data[EasternAddressFormFields.Hamlet].caption && (
+                    <MessageCaption message={data[EasternAddressFormFields.Hamlet].caption} />
+                )}
             </Grid>
             <Grid item sm={6} xs={12}>
                 <TextField
@@ -95,6 +128,9 @@ const EasternAddressForm = ({
                     value={data[EasternAddressFormFields.Commute].value}
                     onChange={e => handleInput(EasternAddressFormFields.Commute, e.target.value)}
                 />
+                {data[EasternAddressFormFields.Commute].caption && (
+                    <MessageCaption message={data[EasternAddressFormFields.Commute].caption} />
+                )}
             </Grid>
             <Grid item sm={6} xs={12}>
                 <TextField
@@ -103,6 +139,9 @@ const EasternAddressForm = ({
                     value={data[EasternAddressFormFields.Ward].value}
                     onChange={e => handleInput(EasternAddressFormFields.Ward, e.target.value)}
                 />
+                {data[EasternAddressFormFields.Ward].caption && (
+                    <MessageCaption message={data[EasternAddressFormFields.Ward].caption} />
+                )}
             </Grid>
             <Grid item sm={6} xs={12}>
                 <TextField
@@ -111,6 +150,9 @@ const EasternAddressForm = ({
                     value={data[EasternAddressFormFields.District].value}
                     onChange={e => handleInput(EasternAddressFormFields.District, e.target.value)}
                 />
+                {data[EasternAddressFormFields.District].caption && (
+                    <MessageCaption message={data[EasternAddressFormFields.District].caption} />
+                )}
             </Grid>
             <Grid item sm={6} xs={12}>
                 <TextField
@@ -119,6 +161,9 @@ const EasternAddressForm = ({
                     value={data[EasternAddressFormFields.Town].value}
                     onChange={e => handleInput(EasternAddressFormFields.Town, e.target.value)}
                 />
+                {data[EasternAddressFormFields.Town].caption && (
+                    <MessageCaption message={data[EasternAddressFormFields.Town].caption} />
+                )}
             </Grid>
             <Grid item sm={6} xs={12}>
                 <TextField
@@ -127,6 +172,9 @@ const EasternAddressForm = ({
                     value={data[EasternAddressFormFields.City].value}
                     onChange={e => handleInput(EasternAddressFormFields.City, e.target.value)}
                 />
+                {data[EasternAddressFormFields.City].caption && (
+                    <MessageCaption message={data[EasternAddressFormFields.City].caption} />
+                )}
             </Grid>
 
             {isLoadingData && <FormSkeleton />}
@@ -154,6 +202,9 @@ const EasternAddressForm = ({
                                 ))}
                             </Select>
                         </FormControl>
+                        {data[EasternAddressFormFields.DivisionId].caption && (
+                            <MessageCaption message={data[EasternAddressFormFields.DivisionId].caption} />
+                        )}
                     </Grid>
                     <Grid item sm={6} xs={12}>
                         <FormControl fullWidth>
@@ -181,6 +232,19 @@ const EasternAddressForm = ({
                                 ))}
                             </Select>
                         </FormControl>
+                        {data[EasternAddressFormFields.CountryId].caption && (
+                            <MessageCaption message={data[EasternAddressFormFields.CountryId].caption} />
+                        )}
+                    </Grid>
+                    <Grid item xs={12} style={{marginBottom: '10px'}}>
+                        <Button
+                            variant='contained'
+                            disabled={disableSubmit}
+                            onClick={disableSubmit ? undefined : onSubmit}
+                        >
+                            {t('buttons.submit')}
+                            <FaIcon wrapper='fa' t='obj' ic={faPaperPlane} />
+                        </Button>
                     </Grid>
                 </>
             )}

@@ -88,7 +88,7 @@ class Request<T> {
 
         if (result) {
             this.responseInterceptorChain?.runResponseInterceptors(dispatch, result);
-            const data = (result as AxiosResponse<any, any>).data;
+            const data = (result as AxiosResponse).data;
 
             callback && callback(dispatch, { status: result.status!, data });
             return { status: result.status!, data };

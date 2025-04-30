@@ -89,10 +89,10 @@ const AccountRegistration = ({
             .filter(fieldName => fieldName !== RegistrationFormFieldNames.PasswordConfirm)
             .forEach(field => tempValidators[field as keyof TRegistrationFieldKey] = mapFieldsToValidators(
                 formData,
-                publicData,
                 registrationValidatorOptionsMapFn,
                 field as keyof TRegistrationFieldKey,
                 registrationFieldValidatorMap[field as keyof TRegistrationFieldKey],
+                publicData,
             ));
         return tempValidators as TFieldToValidatorMap<TRegistrationFieldKey>;
     }, [formData]);

@@ -17,6 +17,20 @@ export type TFlasher = CollapseProps & AlertProps & {
     showAction?: boolean,
 };
 
+/**
+ * Usage: This looks similar to the StageFlasher, and is used to flash the messages.
+ * Use this if you want more control over the message. You can set the Stage and the message for Flasher, but you can't do with StageFlasher.
+ * @param stage
+ * @param message
+ * @param messageParams
+ * @param orientation
+ * @param severity
+ * @param variant
+ * @param sx
+ * @param onClose
+ * @param showAction
+ * @constructor
+ */
 const Flasher = ({
     stage,
     message,
@@ -56,11 +70,11 @@ const Flasher = ({
         <Collapse in={visible} orientation={orientation}>
             <Alert
                 action={
-                    showAction ?<IconButton
+                    showAction ? <IconButton
                         aria-label='close'
                         color='inherit'
                         size='small'
-                        onClick={() => stage !== 'showcase' && handleHideFlasher()}
+                        onClick={() => stage !== Stages.SHOWCASE && handleHideFlasher()}
                     >
                         <CloseIcon fontSize='inherit' />
                     </IconButton> : undefined

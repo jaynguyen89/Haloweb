@@ -19,6 +19,12 @@ export const useIsStageIncluded = (stage: string) => {
     return stages.some(member => member.name === stage);
 };
 
+export const useAreStagesIncluded = (stgs: Array<string>, all: boolean = false) => {
+    const stages = useStage();
+    if (!all) return stages.some(member => stgs.includes(member.name));
+    return stgs.every(stg => stages.includes(stg));
+};
+
 export const useSiteWideMessage = () => {
     const message: ISiteWideMessage = useSelector((state: TRootState) => state.stageStore.siteWideMessage);
     return message;

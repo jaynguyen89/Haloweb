@@ -115,7 +115,7 @@ const LoginPage = ({
         Object.values(LoginFormFieldNames)
             .filter(field => field !== LoginFormFieldNames.Trusted)
             .forEach(field => tempValidators[field] = mapFieldsToValidators(
-                formData, publicData, loginValidatorOptionsMapFn, field, loginFieldValidatorMap[field], loginBy,
+                formData, loginValidatorOptionsMapFn, field, loginFieldValidatorMap[field], publicData, loginBy,
             ));
         return tempValidators;
     }, [formData, loginBy]);

@@ -92,10 +92,6 @@ const AddressBookPage = ({
         });
     }, [addressBook]);
 
-    const handleAddOrUpdateAddress = useCallback(() => {
-        console.log(modalTask, addressInAction);
-    }, [addressInAction]);
-
     return (
         <div className={styles.addressBook}>
             <h2>{t(`profile-page.${id}.heading`)}</h2>
@@ -159,10 +155,6 @@ const AddressBookPage = ({
                     text: modalTask === ActionType.Add
                         ? t(`profile-page.${id}.modal-create`)
                         : t(`profile-page.${id}.modal-update`),
-                }}
-                button={{
-                    text: modalTask === ActionType.Add ? t('buttons.add') : t('buttons.update'),
-                    onClick: handleAddOrUpdateAddress,
                 }}
             >
                 <AddressForm

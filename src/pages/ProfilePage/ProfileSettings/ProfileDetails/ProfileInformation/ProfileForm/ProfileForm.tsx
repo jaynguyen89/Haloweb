@@ -77,10 +77,10 @@ const ProfileForm = ({
         Object.values(ProfileFormFields)
             .forEach(field => tempValidators[field as keyof TProfileFormFieldKeys] = mapFieldsToValidators(
                 fieldValues,
-                publicData,
                 profileFormValidatorOptionsMapFn,
                 field as keyof TProfileFormFieldKeys,
                 profileFormFieldValidatorMap[field as keyof TProfileFormFieldKeys],
+                publicData,
                 {dateOnly: true, formats: { date: DateFormats.DDMMYYYYS }},
                 occupations.map(x => x.id),
             ));

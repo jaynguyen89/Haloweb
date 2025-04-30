@@ -8,7 +8,19 @@ import CloseIcon from '@mui/icons-material/Close';
 import { TFlasher } from 'src/components/molecules/StatusIndicators/Flasher';
 import { removeStage } from 'src/redux/actions/stageActions';
 import { surrogate } from 'src/utilities/otherUtilities';
+import Stages from 'src/models/enums/stage';
 
+/**
+ * Usage: This looks similar to the Flasher component, and both are used to flash messages on the pages.
+ * Use StageFlaser when you want to automatically show the message basing on the stage, not having to manually set the message.
+ * Ex: You have the interceptor to set the stage and message.
+ * @param stage
+ * @param orientation
+ * @param variant
+ * @param sx
+ * @param onClose
+ * @constructor
+ */
 const StageFlasher = ({
     stage,
     orientation = 'vertical',
@@ -24,7 +36,7 @@ const StageFlasher = ({
     const dispatch = useDispatch();
     const { t } = useTranslation();
     const stageData = useGetStageByName(stage);
-    const visible = stage === 'showcase' || Boolean(stageData);
+    const visible = stage === Stages.SHOWCASE || Boolean(stageData);
 
     if (stageData === undefined) return <></>;
 

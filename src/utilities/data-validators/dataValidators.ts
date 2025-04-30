@@ -146,9 +146,9 @@ export class RangeValidator<T extends string> {
 
         let patternValidity = true;
         if (this.options.pattern) {
-            patternValidity = !Boolean(this.options.wholePattern)
-                ? !(new RegExp(`[^${this.options.pattern}a-zA-Z]`, 'gi').test(data as string))
-                : new RegExp(`${this.options.pattern}`, 'gi').test(data as string);
+            patternValidity = this.options.wholePattern
+                ? new RegExp(this.options.pattern, 'gi').test(data as string)
+                : !(new RegExp(`[^${this.options.pattern}a-zA-Z]`, 'gi').test(data as string));
         }
         if (!patternValidity) messages.set('messages.input-pattern', { chars: this.options.pattern });
 
@@ -512,17 +512,17 @@ export type TValidatorOptionsMapFn<T> = (
 
 export type TFormDataState<T> = {
     [key in keyof T]: {
-        value: string | Date | DateTime | File | FileList | undefined;
+        value: string | number | Date | DateTime | File | FileList | undefined;
         caption?: string | undefined;
     };
 };
 
 export const mapFieldsToValidators = <T>(
     formData: TFormDataState<T>,
-    publicData: IPublicData,
     validatorOptionsMapFn: TValidatorOptionsMapFn<T>,
     field: keyof T,
     validatorName: string,
+    publicData?: IPublicData,
     dateFormats?: TDateFormat,
     extra?: unknown,
 ): TFieldToValidatorMap<T> => {

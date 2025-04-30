@@ -20,12 +20,12 @@ type THaloModalProps = PropsWithChildren & {
         icon: string,
         text: string,
     },
-    button: {
+    button?: {
         icon?: IconName | IconDefinition | string,
         text: string,
         onClick?: () => void,
         disabled?: boolean,
-    }
+    },
 };
 
 const HaloModal = ({
@@ -59,20 +59,22 @@ const HaloModal = ({
 
                     {children}
 
-                    <Grid container spacing={2} style={{marginBottom: '10px'}}>
-                        <Grid item xs={12}>
-                            <Button
-                                variant='contained'
-                                disabled={button.disabled}
-                                onClick={button.onClick}
-                            >
-                                {button.text}
-                                {button.icon && (
-                                    <FaIcon wrapper='i' t='obj' ic={button.icon} />
-                                )}
-                            </Button>
+                    {button && (
+                        <Grid container spacing={2} style={{marginBottom: '10px'}}>
+                            <Grid item xs={12}>
+                                <Button
+                                    variant='contained'
+                                    disabled={button.disabled}
+                                    onClick={button.onClick}
+                                >
+                                    {button.text}
+                                    {button.icon && (
+                                        <FaIcon wrapper='i' t='obj' ic={button.icon} />
+                                    )}
+                                </Button>
+                            </Grid>
                         </Grid>
-                    </Grid>
+                    )}
                 </div>
             </Box>
         </Modal>

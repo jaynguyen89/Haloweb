@@ -9,7 +9,15 @@ import MenuItem from '@mui/material/MenuItem';
 import FaIcon from 'src/components/atoms/FaIcon';
 import { faMinus } from '@fortawesome/free-solid-svg-icons/faMinus';
 import CountryFlag from 'src/components/atoms/CountryFlag/CountryFlag';
-import { WesternAddressFormFields } from 'src/pages/ProfilePage/ProfileSettings/AddressBook/utilities';
+import {
+    EasternAddressFormFields,
+    WesternAddressFormFields,
+} from 'src/pages/ProfilePage/ProfileSettings/AddressBook/utilities';
+import MessageCaption from 'src/components/atoms/MessageCaption';
+import Button from '@mui/material/Button';
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons/faPaperPlane';
+import { AddressVariant } from 'src/models/enums/apiEnums';
+import { TFormDataState } from 'src/utilities/data-validators/dataValidators';
 
 type TWesternAddressFormProps = {
     id: string,
@@ -18,6 +26,8 @@ type TWesternAddressFormProps = {
     divisions: Array<IDivision>,
     countries: Array<ICountryData>,
     handleInput: (field: keyof typeof WesternAddressFormFields, value: string) => void,
+    disableSubmit: boolean,
+    onSubmit: (variant: AddressVariant, formData: TFormDataState<typeof WesternAddressFormFields | typeof EasternAddressFormFields>) => void,
 };
 
 const WesternAddressForm = ({
@@ -27,6 +37,8 @@ const WesternAddressForm = ({
     divisions,
     countries,
     handleInput,
+    disableSubmit,
+    onSubmit,
 }: TWesternAddressFormProps) => {
     const { t } = useTranslation();
 
@@ -39,6 +51,9 @@ const WesternAddressForm = ({
                     value={data[WesternAddressFormFields.BuildingName].value}
                     onChange={e => handleInput(WesternAddressFormFields.BuildingName, e.target.value)}
                 />
+                {data[WesternAddressFormFields.BuildingName].caption && (
+                    <MessageCaption message={data[WesternAddressFormFields.BuildingName].caption} />
+                )}
             </Grid>
             <Grid item sm={6} xs={12}>
                 <TextField
@@ -47,6 +62,9 @@ const WesternAddressForm = ({
                     value={data[WesternAddressFormFields.PoBoxNumber].value}
                     onChange={e => handleInput(WesternAddressFormFields.PoBoxNumber, e.target.value)}
                 />
+                {data[WesternAddressFormFields.PoBoxNumber].caption && (
+                    <MessageCaption message={data[WesternAddressFormFields.PoBoxNumber].caption} />
+                )}
             </Grid>
             <Grid item xs={12}>
                 <TextField
@@ -55,6 +73,9 @@ const WesternAddressForm = ({
                     value={data[WesternAddressFormFields.StreetAddress].value}
                     onChange={e => handleInput(WesternAddressFormFields.StreetAddress, e.target.value)}
                 />
+                {data[WesternAddressFormFields.StreetAddress].caption && (
+                    <MessageCaption message={data[WesternAddressFormFields.StreetAddress].caption} />
+                )}
             </Grid>
             <Grid item sm={6} xs={12}>
                 <TextField
@@ -63,6 +84,9 @@ const WesternAddressForm = ({
                     value={data[WesternAddressFormFields.Suburb].value}
                     onChange={e => handleInput(WesternAddressFormFields.Suburb, e.target.value)}
                 />
+                {data[WesternAddressFormFields.Suburb].caption && (
+                    <MessageCaption message={data[WesternAddressFormFields.Suburb].caption} />
+                )}
             </Grid>
             <Grid item sm={6} xs={12}>
                 <TextField
@@ -71,6 +95,9 @@ const WesternAddressForm = ({
                     value={data[WesternAddressFormFields.Postcode].value}
                     onChange={e => handleInput(WesternAddressFormFields.Postcode, e.target.value)}
                 />
+                {data[WesternAddressFormFields.Postcode].caption && (
+                    <MessageCaption message={data[WesternAddressFormFields.Postcode].caption} />
+                )}
             </Grid>
 
             {isLoadingData && <FormSkeleton />}
@@ -98,6 +125,9 @@ const WesternAddressForm = ({
                                 ))}
                             </Select>
                         </FormControl>
+                        {data[WesternAddressFormFields.DivisionId].caption && (
+                            <MessageCaption message={data[WesternAddressFormFields.DivisionId].caption} />
+                        )}
                     </Grid>
                     <Grid item sm={6} xs={12}>
                         <FormControl fullWidth>
@@ -125,6 +155,19 @@ const WesternAddressForm = ({
                                 ))}
                             </Select>
                         </FormControl>
+                        {data[WesternAddressFormFields.CountryId].caption && (
+                            <MessageCaption message={data[WesternAddressFormFields.CountryId].caption} />
+                        )}
+                    </Grid>
+                    <Grid item xs={12} style={{marginBottom: '10px'}}>
+                        <Button
+                            variant='contained'
+                            disabled={disableSubmit}
+                            onClick={disableSubmit ? undefined : onSubmit}
+                        >
+                            {t('buttons.submit')}
+                            <FaIcon wrapper='fa' t='obj' ic={faPaperPlane} />
+                        </Button>
                     </Grid>
                 </>
             )}

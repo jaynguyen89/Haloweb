@@ -1,4 +1,4 @@
-import { IEasternAddress, IWesternAddress } from 'src/models/Address';
+import { IAddressData, IEasternAddress, IUnifiedAddress, IWesternAddress } from 'src/models/Address';
 import { AddressVariant } from 'src/models/enums/apiEnums';
 import {
     TFormDataState,
@@ -154,6 +154,7 @@ export const getDefaultEasternAddressData = (address: IEasternAddress): TFormDat
 };
 
 export const westernAddressFormValidatorMap = {
+    [WesternAddressFormFields.Variant]: ValidatorNames.RangeValidator,
     [WesternAddressFormFields.BuildingName]: ValidatorNames.RangeValidator,
     [WesternAddressFormFields.PoBoxNumber]: ValidatorNames.RangeValidator,
     [WesternAddressFormFields.StreetAddress]: ValidatorNames.RangeValidator,
@@ -164,6 +165,7 @@ export const westernAddressFormValidatorMap = {
 };
 
 export const easternAddressFormValidatorMap = {
+    [EasternAddressFormFields.Variant]: ValidatorNames.RangeValidator,
     [EasternAddressFormFields.BuildingName]: ValidatorNames.RangeValidator,
     [EasternAddressFormFields.PoBoxNumber]: ValidatorNames.RangeValidator,
     [EasternAddressFormFields.StreetAddress]: ValidatorNames.RangeValidator,
@@ -180,14 +182,136 @@ export const easternAddressFormValidatorMap = {
     [EasternAddressFormFields.CountryId]: ValidatorNames.RangeValidator,
 };
 
-export const westernAddressFormValidatorOptionsMapFn: TValidatorOptionsMapFn<TWesternAddressFormKeys> =
-    (publicData?: IPublicData, extra?: unknown): TValidatorOption<TWesternAddressFormKeys> =>
+export const westernAddressFormValidatorOptionsMapFn: TValidatorOptionsMapFn<typeof WesternAddressFormFields> =
+    (publicData?: IPublicData, extra?: unknown): TValidatorOption<typeof WesternAddressFormFields> =>
 ({
-
+    [WesternAddressFormFields.Variant]: {
+        among: [AddressVariant.Western, AddressVariant.Eastern],
+    },
+    [WesternAddressFormFields.BuildingName]: {
+        min: 1,
+        max: 50,
+        pattern: '^[a-zA-Z0-9 _\'.\\-]+$',
+        wholePattern: true,
+    },
+    [WesternAddressFormFields.PoBoxNumber]: {
+        min: 1,
+        max: 50,
+    },
+    [WesternAddressFormFields.StreetAddress]: {
+        min: 5,
+        max: 100,
+    },
+    [WesternAddressFormFields.Suburb]: {
+        min: 1,
+        max: 100,
+    },
+    [WesternAddressFormFields.Postcode]: {
+        min: 4,
+        max: 10,
+        pattern: '^[\\d]+$',
+        wholePattern: true,
+    },
+    [WesternAddressFormFields.DivisionId]: {
+        /* eslint-disable-next-line  @typescript-eslint/no-explicit-any */
+        among: (extra as any).divisionIds,
+    },
+    [WesternAddressFormFields.CountryId]: {
+        /* eslint-disable-next-line  @typescript-eslint/no-explicit-any */
+        among: (extra as any).countryIds,
+    },
 });
 
-export const easternAddressFormValidatorOptionsMapFn: TValidatorOptionsMapFn<TEasternAddressFormKeys> =
-    (publicData?: IPublicData, extra?: unknown): TValidatorOption<TEasternAddressFormKeys> =>
+export const easternAddressFormValidatorOptionsMapFn: TValidatorOptionsMapFn<typeof EasternAddressFormFields> =
+    (publicData?: IPublicData, extra?: unknown): TValidatorOption<typeof EasternAddressFormFields> =>
 ({
+    [EasternAddressFormFields.Variant]: {
+        among: [AddressVariant.Western, AddressVariant.Eastern],
+    },
+    [EasternAddressFormFields.BuildingName]: {
+        min: 1,
+        max: 50,
+        pattern: '^[a-zA-Z0-9 _\'.\\-]+$',
+        wholePattern: true,
+    },
+    [EasternAddressFormFields.PoBoxNumber]: {
+        min: 1,
+        max: 50,
+    },
+    [EasternAddressFormFields.StreetAddress]: {
+        min: 5,
+        max: 100,
+    },
+    [EasternAddressFormFields.Lane]: {
+        min: 1,
+        max: 50,
+    },
+    [EasternAddressFormFields.Group]: {
+        min: 1,
+        max: 50,
+    },
+    [EasternAddressFormFields.Quarter]: {
+        min: 1,
+        max: 50,
+    },
+    [EasternAddressFormFields.Hamlet]: {
+        min: 1,
+        max: 50,
+    },
+    [EasternAddressFormFields.Commute]: {
+        min: 1,
+        max: 50,
+    },
+    [EasternAddressFormFields.Ward]: {
+        min: 1,
+        max: 50,
+    },
+    [EasternAddressFormFields.District]: {
+        min: 1,
+        max: 50,
+    },
+    [EasternAddressFormFields.Town]: {
+        min: 1,
+        max: 50,
+    },
+    [EasternAddressFormFields.City]: {
+        min: 1,
+        max: 50,
+    },
+    [EasternAddressFormFields.DivisionId]: {
+        /* eslint-disable-next-line  @typescript-eslint/no-explicit-any */
+        among: (extra as any).divisionIds,
+    },
+    [EasternAddressFormFields.CountryId]: {
+        /* eslint-disable-next-line  @typescript-eslint/no-explicit-any */
+        among: (extra as any).countryIds,
+    },
+});
 
+export const createAddressData = (
+    variant: AddressVariant,
+    formData: TFormDataState<typeof WesternAddressFormFields | typeof EasternAddressFormFields>,
+): IAddressData => ({
+    isForPostage: false,
+    isForDelivery: false,
+    isForReturn: false,
+    address: {
+        variant: formData[variant === AddressVariant.Western ? WesternAddressFormFields.Variant : EasternAddressFormFields.Variant],
+        buildingName: formData[variant === AddressVariant.Western ? WesternAddressFormFields.BuildingName : EasternAddressFormFields.BuildingName],
+        poBoxNumber: formData[variant === AddressVariant.Western ? WesternAddressFormFields.PoBoxNumber : EasternAddressFormFields.PoBoxNumber],
+        streetAddress: formData[variant === AddressVariant.Western ? WesternAddressFormFields.StreetAddress : EasternAddressFormFields.StreetAddress],
+        lane: formData[variant === AddressVariant.Western ? undefined : EasternAddressFormFields.Lane],
+        group: formData[variant === AddressVariant.Western ? undefined : EasternAddressFormFields.Group],
+        quarter: formData[variant === AddressVariant.Western ? undefined : EasternAddressFormFields.Quarter],
+        hamlet: formData[variant === AddressVariant.Western ? undefined : EasternAddressFormFields.Hamlet],
+        commute: formData[variant === AddressVariant.Western ? undefined : EasternAddressFormFields.Commute],
+        ward: formData[variant === AddressVariant.Western ? undefined : EasternAddressFormFields.Ward],
+        district: formData[variant === AddressVariant.Western ? undefined : EasternAddressFormFields.District],
+        town: formData[variant === AddressVariant.Western ? undefined : EasternAddressFormFields.Town],
+        city: formData[variant === AddressVariant.Western ? undefined : EasternAddressFormFields.City],
+        suburb: formData[variant === AddressVariant.Western ? WesternAddressFormFields.Suburb : undefined],
+        postcode: formData[variant === AddressVariant.Western ? WesternAddressFormFields.Postcode : undefined],
+        divisionId: formData[variant === AddressVariant.Western ? WesternAddressFormFields.DivisionId : EasternAddressFormFields.DivisionId],
+        countryId: formData[variant === AddressVariant.Western ? WesternAddressFormFields.CountryId : EasternAddressFormFields.CountryId],
+    } as IUnifiedAddress,
 });
